@@ -2,20 +2,22 @@ spring:
   application:
     name: fitsloth-backend
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/fitsloth}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:fitslothdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: validate # Use Flyway for schema management
+      ddl-auto: update # Flyway might have issues with H2 if scripts are Postgres-specific, so we use update for now
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   flyway:
-    enabled: true
-    baseline-on-migrate: true
+    enabled: false # Disable Flyway for H2 to avoid syntax errors with Postgres-specific SQL
 
 # JWT Configuration
 jwt:
@@ -25,4 +27,4 @@ jwt:
 logging:
   level:
     org.springframework.web: INFO
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: INFO
