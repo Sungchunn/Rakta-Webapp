@@ -3,11 +3,13 @@ import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <section className={styles.hero}>
+    <div className={styles.hero}>
       <div className={styles.content}>
-        <h1 className={styles.title}>Welcome to Rakta</h1>
+        <h1 className={styles.title}>
+          Be the <span className={styles.highlight}>Hero</span> in Someone's Story
+        </h1>
         <p className={styles.subtitle}>
-          Join the movement. Save lives. Feel proud.
+          Join the community of proud blood donors. Track your impact, stay healthy, and save lives.
         </p>
         <div className={styles.ctaGroup}>
           <Link href="/auth/register" className="btn btn-primary">
@@ -18,6 +20,6 @@ export default function Home() {
           </Link>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

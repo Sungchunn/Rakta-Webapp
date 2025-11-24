@@ -4,11 +4,11 @@ import styles from './Navbar.module.css';
 export default function Navbar() {
     return (
         <nav className={styles.navbar}>
-            <div className={styles.container}>
+            <div className={`container ${styles.navContainer}`}>
                 <Link href="/" className={styles.logo}>
-                    Rakta
+                    🩸 Rakta Blood
                 </Link>
-                <div className={styles.links}>
+                <div className={styles.navLinks}>
                     <Link href="/dashboard">Dashboard</Link>
                     <Link href="/donate">Donate</Link>
                     <Link href="/locations">Locations</Link>
