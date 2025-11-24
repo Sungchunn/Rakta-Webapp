@@ -12,8 +12,8 @@ export default function MilestoneCard({ title, description, date }: MilestoneCar
     const handleShare = () => {
         if (navigator.share) {
             navigator.share({
-                title: `FitSloth Milestone: ${title}`,
-                text: `I just achieved ${title} on FitSloth! ${description}`,
+                title: `Rakta Milestone: ${title}`,
+                text: `I just achieved ${title} on Rakta! ${description}`,
                 url: window.location.href,
             }).catch(console.error);
         } else {

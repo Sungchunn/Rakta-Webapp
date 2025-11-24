@@ -1,7 +1,7 @@
-package com.fitsloth.controller;
+package com.rakta.controller;
 
-import com.fitsloth.entity.Donation;
-import com.fitsloth.service.DonationService;
+import com.rakta.entity.Donation;
+import com.rakta.service.DonationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

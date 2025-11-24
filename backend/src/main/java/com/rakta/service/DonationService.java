@@ -1,11 +1,11 @@
-package com.fitsloth.service;
+package com.rakta.service;
 
-import com.fitsloth.entity.Donation;
-import com.fitsloth.entity.DonationLocation;
-import com.fitsloth.entity.User;
-import com.fitsloth.repository.DonationLocationRepository;
-import com.fitsloth.repository.DonationRepository;
-import com.fitsloth.repository.UserRepository;
+import com.rakta.entity.Donation;
+import com.rakta.entity.DonationLocation;
+import com.rakta.entity.User;
+import com.rakta.repository.DonationLocationRepository;
+import com.rakta.repository.DonationRepository;
+import com.rakta.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

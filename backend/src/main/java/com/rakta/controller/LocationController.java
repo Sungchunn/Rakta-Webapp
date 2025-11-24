@@ -1,7 +1,7 @@
-package com.fitsloth.controller;
+package com.rakta.controller;
 
-import com.fitsloth.entity.DonationLocation;
-import com.fitsloth.service.LocationService;
+import com.rakta.entity.DonationLocation;
+import com.rakta.service.LocationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

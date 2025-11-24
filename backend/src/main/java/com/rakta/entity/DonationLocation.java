@@ -1,4 +1,4 @@
-package com.fitsloth.entity;
+package com.rakta.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

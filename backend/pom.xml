@@ -8,11 +8,11 @@
 		<version>4.0.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.fitsloth</groupId>
-	<artifactId>fitsloth-backend</artifactId>
+	<groupId>com.rakta</groupId>
+	<artifactId>rakta-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>fitsloth-backend</name>
-	<description>Demo project for Spring Boot</description>
+	<name>rakta-backend</name>
+	<description>Backend for Rakta Blood Donation Webapp</description>
 	<url/>
 	<licenses>
 		<license/>

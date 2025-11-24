@@ -1,4 +1,4 @@
-package com.fitsloth.security;
+package com.rakta.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

@@ -1,4 +1,4 @@
-package com.fitsloth.entity;
+package com.rakta.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "health_logs")
-public class HealthLog {
+@Table(name = "donations")
+public class Donation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +27,16 @@ public class HealthLog {
     private User user;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDate donationDate;
 
-    private Integer sleepHours;
+    @Column(nullable = false)
+    private String donationType; // "WHOLE_BLOOD", "PLATELETS", "PLASMA"
 
-    private String feeling; // "GREAT", "GOOD", "OKAY", "TIRED", "SICK"
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private DonationLocation location;
+
+    private String notes;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

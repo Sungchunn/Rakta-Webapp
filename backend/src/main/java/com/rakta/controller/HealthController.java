@@ -1,9 +1,9 @@
-package com.fitsloth.controller;
+package com.rakta.controller;
 
-import com.fitsloth.entity.HealthLog;
-import com.fitsloth.entity.User;
-import com.fitsloth.repository.HealthLogRepository;
-import com.fitsloth.repository.UserRepository;
+import com.rakta.entity.HealthLog;
+import com.rakta.entity.User;
+import com.rakta.repository.HealthLogRepository;
+import com.rakta.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

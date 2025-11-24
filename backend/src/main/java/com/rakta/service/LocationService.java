@@ -1,7 +1,7 @@
-package com.fitsloth.service;
+package com.rakta.service;
 
-import com.fitsloth.entity.DonationLocation;
-import com.fitsloth.repository.DonationLocationRepository;
+import com.rakta.entity.DonationLocation;
+import com.rakta.repository.DonationLocationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

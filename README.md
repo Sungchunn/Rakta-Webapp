@@ -1,10 +1,10 @@
-# FitSloth Blood Donation Webapp
+# Rakta Blood Donation Webapp
 
-A full-stack web application designed to help people build a consistent, healthy, and proud blood-donation habit. FitSloth empowers users to track their donation journey, monitor health readiness, and find nearby donation centers.
+A full-stack web application designed to help people build a consistent, healthy, and proud blood-donation habit. Rakta empowers users to track their donation journey, monitor health readiness, and find nearby donation centers.
 
 ## Overview
 
-FitSloth provides comprehensive tools for blood donors:
+Rakta provides comprehensive tools for blood donors:
 - **Track donation history** with detailed records
 - **Monitor eligibility** with real-time countdown (56-day waiting period)
 - **Log daily health metrics** (sleep hours and feeling status)
@@ -45,8 +45,8 @@ FitSloth provides comprehensive tools for blood donors:
 
 1. **Clone the repository**
    ```bash
-   git clone git@github.com:Sungchunn/FitSloth-Junior-Dev-Webapp.git
-   cd FitSloth-Junior-Dev-Webapp
+   git clone git@github.com:Sungchunn/Rakta-Junior-Dev-Webapp.git
+   cd Rakta-Junior-Dev-Webapp
    ```
 
 2. **Start the backend**
@@ -72,7 +72,7 @@ FitSloth provides comprehensive tools for blood donors:
 
 1. **Create PostgreSQL database**
    ```bash
-   createdb fitsloth
+   createdb rakta
    ```
 
 2. **Configure backend**
@@ -83,7 +83,7 @@ FitSloth provides comprehensive tools for blood donors:
      ```yaml
      spring:
        datasource:
-         url: jdbc:postgresql://localhost:5432/fitsloth
+         url: jdbc:postgresql://localhost:5432/rakta
          username: your_username
          password: your_password
      ```
@@ -153,9 +153,9 @@ FitSloth provides comprehensive tools for blood donors:
 ## Project Structure
 
 ```
-FitSloth Webapp/
+Rakta Webapp/
 ├── backend/                          # Spring Boot REST API
-│   ├── src/main/java/com/fitsloth/
+│   ├── src/main/java/com/rakta/
 │   │   ├── controller/               # REST endpoints (4 controllers)
 │   │   │   ├── AuthController.java
 │   │   │   ├── DonationController.java
@@ -195,7 +195,7 @@ FitSloth Webapp/
 │   └── package.json
 │
 └── Task/                             # Project requirements
-    └── FitSloth Junior Software Engineer Technical Challenge.md
+    └── Rakta Junior Software Engineer Technical Challenge.md
 ```
 
 ## Database Schema
@@ -260,7 +260,7 @@ For detailed API documentation with request/response examples, see [docs/API.md]
 Create a `.env` file in the `backend` directory (see `.env.example`):
 ```properties
 JWT_SECRET=your-secret-key-here-minimum-32-characters
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/fitsloth
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/rakta
 SPRING_DATASOURCE_USERNAME=your_username
 SPRING_DATASOURCE_PASSWORD=your_password
 ```
@@ -319,19 +319,19 @@ npm test -- --coverage
    cd backend
    ./mvnw clean package -DskipTests
    ```
-   Output: `target/fitsloth-0.0.1-SNAPSHOT.jar`
+   Output: `target/rakta-0.0.1-SNAPSHOT.jar`
 
 2. **Set environment variables** (Railway, Heroku, AWS, etc.)
    ```bash
    JWT_SECRET=your-production-secret
-   SPRING_DATASOURCE_URL=jdbc:postgresql://host:5432/fitsloth
+   SPRING_DATASOURCE_URL=jdbc:postgresql://host:5432/rakta
    SPRING_DATASOURCE_USERNAME=your_username
    SPRING_DATASOURCE_PASSWORD=your_password
    ```
 
 3. **Run the JAR**
    ```bash
-   java -jar target/fitsloth-0.0.1-SNAPSHOT.jar
+   java -jar target/rakta-0.0.1-SNAPSHOT.jar
    ```
 
 4. **Database setup**

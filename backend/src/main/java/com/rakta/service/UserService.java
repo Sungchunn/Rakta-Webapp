@@ -1,9 +1,9 @@
-package com.fitsloth.service;
+package com.rakta.service;
 
-import com.fitsloth.dto.AuthDto;
-import com.fitsloth.entity.User;
-import com.fitsloth.repository.UserRepository;
-import com.fitsloth.security.JwtTokenProvider;
+import com.rakta.dto.AuthDto;
+import com.rakta.entity.User;
+import com.rakta.repository.UserRepository;
+import com.rakta.security.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

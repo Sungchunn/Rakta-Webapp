@@ -1,7 +1,7 @@
-package com.fitsloth.controller;
+package com.rakta.controller;
 
-import com.fitsloth.dto.AuthDto;
-import com.fitsloth.service.UserService;
+import com.rakta.dto.AuthDto;
+import com.rakta.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

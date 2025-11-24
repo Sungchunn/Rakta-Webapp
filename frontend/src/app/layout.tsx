@@ -6,8 +6,8 @@ import Navbar from "@/components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FitSloth Blood Donation",
-  description: "Build a consistent, healthy, and proud blood-donation habit.",
+  title: "Rakta - Blood Donation Habit",
+  description: "Build a consistent, healthy, and proud blood donation habit.",
 };
 
 export default function RootLayout({

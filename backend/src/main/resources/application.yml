@@ -1,8 +1,8 @@
 spring:
   application:
-    name: fitsloth-backend
+    name: rakta-backend
   datasource:
-    url: jdbc:h2:mem:fitslothdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:raktadb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driverClassName: org.h2.Driver
     username: sa
     password: password

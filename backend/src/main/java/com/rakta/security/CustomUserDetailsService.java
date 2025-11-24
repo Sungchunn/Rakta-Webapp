@@ -1,7 +1,7 @@
-package com.fitsloth.security;
+package com.rakta.security;
 
-import com.fitsloth.entity.User;
-import com.fitsloth.repository.UserRepository;
+import com.rakta.entity.User;
+import com.rakta.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
-package com.fitsloth.repository;
+package com.rakta.repository;
 
-import com.fitsloth.entity.User;
+import com.rakta.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

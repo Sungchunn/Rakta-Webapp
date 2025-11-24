@@ -1,10 +1,10 @@
-package com.fitsloth;
+package com.rakta;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FitslothBackendApplicationTests {
+class RaktaBackendApplicationTests {
 
 	@Test
 	void contextLoads() {
