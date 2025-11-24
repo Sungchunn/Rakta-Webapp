@@ -1,0 +1,50 @@
+.dashboard {
+    padding: 20px 0;
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.welcome {
+    font-size: 2rem;
+    color: var(--text-color);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.sectionTitle {
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 5px;
+}
+
+.statCard {
+    background: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+}
+
+.statValue {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.statLabel {
+    color: #666;
+}

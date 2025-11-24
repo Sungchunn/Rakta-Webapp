@@ -1,0 +1,21 @@
+.card {
+    background: #f0f7ff;
+    /* Light blue tint */
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+}
+
+.list li {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.list li:last-child {
+    margin-bottom: 0;
+}
