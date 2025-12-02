@@ -1,6 +1,6 @@
-# FitSloth Backend - Spring Boot API
+# Rakta Backend - Spring Boot API
 
-This is the backend REST API for the FitSloth blood donation tracking application, built with Spring Boot 4.0.0 and Java 17.
+This is the backend REST API for the Rakta blood donation tracking application, built with Spring Boot 4.0.0 and Java 17.
 
 ## Architecture
 
@@ -16,15 +16,14 @@ Controller → Service → Repository → Database
 ### Package Structure
 
 ```
-com.fitsloth/
+com.rakta/
 ├── controller/         # REST API endpoints
 │   ├── AuthController.java
 │   ├── DonationController.java
-│   ├── DonationLocationController.java
-│   └── HealthLogController.java
+│   ├── LocationController.java
+│   └── HealthController.java
 ├── dto/                # Data Transfer Objects (request/response)
-│   ├── request/        # API request DTOs
-│   └── response/       # API response DTOs
+│   └── AuthDto.java
 ├── entity/             # JPA entities (database models)
 │   ├── User.java
 │   ├── Donation.java
@@ -39,12 +38,12 @@ com.fitsloth/
 │   ├── JwtAuthenticationFilter.java
 │   ├── JwtTokenProvider.java
 │   ├── SecurityConfig.java
-│   ├── UserDetailsServiceImpl.java
-│   └── AuthenticationResponse.java
+│   ├── CustomUserDetailsService.java
+│   └── JwtAuthenticationEntryPoint.java
 └── service/            # Business logic
     ├── UserService.java
     ├── DonationService.java
-    └── HealthLogService.java
+    └── LocationService.java
 ```
 
 ## Technology Stack
@@ -74,8 +73,8 @@ com.fitsloth/
 
 1. **Clone the repository** (if not already done)
    ```bash
-   git clone git@github.com:Sungchunn/FitSloth-Junior-Dev-Webapp.git
-   cd FitSloth-Junior-Dev-Webapp/backend
+   git clone git@github.com:Sungchunn/Rakta-Junior-Dev-Webapp.git
+   cd Rakta-Junior-Dev-Webapp/backend
    ```
 
 2. **Run the application**
@@ -108,7 +107,7 @@ com.fitsloth/
 
 2. **Create database**
    ```bash
-   createdb fitsloth
+   createdb rakta
    ```
 
 3. **Configure database connection**
@@ -119,7 +118,7 @@ com.fitsloth/
      ```yaml
      spring:
        datasource:
-         url: jdbc:postgresql://localhost:5432/fitsloth
+         url: jdbc:postgresql://localhost:5432/rakta
          username: your_username
          password: your_password
      ```
@@ -152,7 +151,7 @@ server:
 
 spring:
   application:
-    name: fitsloth
+    name: rakta
 
   datasource:
     # Choose one: H2 (development) or PostgreSQL (production)
@@ -179,7 +178,7 @@ Create a `.env` file or set environment variables:
 JWT_SECRET=your-secure-secret-key-minimum-32-characters
 
 # Database configuration (if using PostgreSQL)
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/fitsloth
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/rakta
 SPRING_DATASOURCE_USERNAME=your_username
 SPRING_DATASOURCE_PASSWORD=your_password
 ```
@@ -458,20 +457,20 @@ public CorsFilter corsFilter() {
 ./mvnw clean package -DskipTests
 
 # Output location
-# target/fitsloth-0.0.1-SNAPSHOT.jar
+# target/rakta-0.0.1-SNAPSHOT.jar
 ```
 
 ### Run JAR
 
 ```bash
 # Run the built JAR
-java -jar target/fitsloth-0.0.1-SNAPSHOT.jar
+java -jar target/rakta-0.0.1-SNAPSHOT.jar
 
 # With environment variables
-JWT_SECRET=my-secret java -jar target/fitsloth-0.0.1-SNAPSHOT.jar
+JWT_SECRET=my-secret java -jar target/rakta-0.0.1-SNAPSHOT.jar
 
 # With specific profile
-java -jar target/fitsloth-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+java -jar target/rakta-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
 
 ## Testing
@@ -509,7 +508,7 @@ Logging is configured in `application.yml`:
 logging:
   level:
     root: INFO
-    com.fitsloth: DEBUG
+    com.rakta: DEBUG
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
 ```
@@ -543,14 +542,14 @@ server:
 
 1. Verify PostgreSQL is running:
    ```bash
-   psql -h localhost -U your_username -d fitsloth
+   psql -h localhost -U your_username -d rakta
    ```
 
 2. Check credentials in `application.yml`
 
 3. Ensure database exists:
    ```bash
-   createdb fitsloth
+   createdb rakta
    ```
 
 ### JWT Token Issues
@@ -633,7 +632,7 @@ java -jar app.jar --spring.profiles.active=prod
 
 #### Heroku
 ```bash
-heroku create fitsloth-api
+heroku create rakta-api
 heroku addons:create heroku-postgresql:hobby-dev
 heroku config:set JWT_SECRET=your-secret
 git push heroku main
@@ -649,8 +648,8 @@ railway up
 
 #### AWS Elastic Beanstalk
 ```bash
-eb init -p java-17 fitsloth-api
-eb create fitsloth-prod
+eb init -p java-17 rakta-api
+eb create rakta-prod
 eb deploy
 ```
 
