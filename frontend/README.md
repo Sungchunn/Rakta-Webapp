@@ -1,10 +1,10 @@
-# FitSloth Frontend - Next.js Application
+# Rakta Frontend - Next.js Application
 
-This is the frontend user interface for the FitSloth blood donation tracking application, built with Next.js 16.0.3, React 19.2.0, and TypeScript.
+This is the frontend user interface for the Rakta blood donation tracking application, built with Next.js 16.0.3, React 19.2.0, and TypeScript.
 
 ## Overview
 
-The FitSloth frontend provides an intuitive web interface for users to:
+The Rakta frontend provides an intuitive web interface for users to:
 - Register and authenticate securely
 - Track their blood donation history
 - Monitor donation eligibility with countdown timers
@@ -373,11 +373,11 @@ NEXT_PUBLIC_API_URL=https://your-backend.com
 npm run build
 
 # Run with PM2 or similar
-pm2 start npm --name "fitsloth-frontend" -- start
+pm2 start npm --name "rakta-frontend" -- start
 
 # Or use Docker
-docker build -t fitsloth-frontend .
-docker run -p 3000:3000 fitsloth-frontend
+docker build -t rakta-frontend .
+docker run -p 3000:3000 rakta-frontend
 ```
 
 ### Environment Variables for Production
@@ -385,7 +385,7 @@ docker run -p 3000:3000 fitsloth-frontend
 Update `.env.local` or configure in your hosting platform:
 
 ```properties
-NEXT_PUBLIC_API_URL=https://api.fitsloth.com
+NEXT_PUBLIC_API_URL=https://api.rakta.com
 ```
 
 For Vercel, set these in: Project Settings → Environment Variables
@@ -434,7 +434,7 @@ import Navbar from './Navbar'
 
 test('renders navbar', () => {
   render(<Navbar />)
-  expect(screen.getByText('FitSloth')).toBeInTheDocument()
+  expect(screen.getByText('Rakta Blood')).toBeInTheDocument()
 })
 ```
 
