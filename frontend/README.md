@@ -16,7 +16,7 @@ The Rakta frontend provides an intuitive web interface for users to:
 
 - **Framework**: Next.js 16.0.3 with React 19.2.0
 - **Language**: TypeScript 5.x
-- **Routing**: App Router (Next.js 14+ architecture)
+- **Routing**: App Router (Next.js 16 architecture)
 - **Styling**: CSS Modules for component-scoped styling
 - **HTTP Client**: Fetch API with custom wrapper
 - **State Management**: React hooks with localStorage persistence

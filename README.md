@@ -27,7 +27,7 @@ Rakta provides comprehensive tools for blood donors:
 ### Frontend
 - **Framework**: Next.js 16.0.3 with React 19.2.0
 - **Language**: TypeScript 5.x
-- **Routing**: App Router (Next.js 14+ architecture)
+- **Routing**: App Router (Next.js 16 architecture)
 - **Styling**: CSS Modules
 - **HTTP Client**: Fetch API with custom wrapper
 - **State Management**: React hooks with localStorage persistence
@@ -159,8 +159,8 @@ Rakta Webapp/
 │   │   ├── controller/               # REST endpoints (4 controllers)
 │   │   │   ├── AuthController.java
 │   │   │   ├── DonationController.java
-│   │   │   ├── DonationLocationController.java
-│   │   │   └── HealthLogController.java
+│   │   │   ├── HealthController.java
+│   │   │   └── LocationController.java
 │   │   ├── dto/                      # Data Transfer Objects
 │   │   ├── entity/                   # JPA entities (4 models)
 │   │   │   ├── User.java

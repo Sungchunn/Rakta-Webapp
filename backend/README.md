@@ -20,8 +20,8 @@ com.rakta/
 ├── controller/         # REST API endpoints
 │   ├── AuthController.java
 │   ├── DonationController.java
-│   ├── LocationController.java
-│   └── HealthController.java
+│   ├── HealthController.java
+│   └── LocationController.java
 ├── dto/                # Data Transfer Objects (request/response)
 │   └── AuthDto.java
 ├── entity/             # JPA entities (database models)
@@ -32,8 +32,8 @@ com.rakta/
 ├── repository/         # Spring Data JPA repositories
 │   ├── UserRepository.java
 │   ├── DonationRepository.java
-│   ├── DonationLocationRepository.java
-│   └── HealthLogRepository.java
+│   ├── HealthLogRepository.java
+│   └── LocationRepository.java
 ├── security/           # Security configuration
 │   ├── JwtAuthenticationFilter.java
 │   ├── JwtTokenProvider.java
