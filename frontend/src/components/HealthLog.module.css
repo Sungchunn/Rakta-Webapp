@@ -1,9 +1,18 @@
 .card {
     background: white;
+    border-radius: 12px;
     padding: 20px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
+}
+
+.row {
+    display: flex;
+    gap: 15px;
+}
+
+.row .group {
+    flex: 1;
 }
 
 .form {

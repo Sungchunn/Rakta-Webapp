@@ -7,6 +7,7 @@ import DonationList from '@/components/DonationList';
 import HealthLog from '@/components/HealthLog';
 import ReadinessGuidance from '@/components/ReadinessGuidance';
 import MilestoneCard from '@/components/MilestoneCard';
+import ReadinessScore from '@/components/ReadinessScore';
 import Link from 'next/link';
 import styles from './dashboard.module.css';
 
