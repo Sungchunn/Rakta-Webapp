@@ -1,16 +1,38 @@
 :root {
-  --primary-color: #e63946; /* Red for blood donation */
-  --secondary-color: #f1faee; /* Off-white */
-  --accent-color: #457b9d; /* Blue */
-  --background-color: #f8f9fa;
-  --text-color: #1d3557;
-  --success-color: #2a9d8f;
-  --warning-color: #e9c46a;
-  --error-color: #d62828;
-  
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --border-radius: 8px;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Modern Dark Palette */
+  --bg-color: #0f172a;
+  /* Slate 900 */
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  /* Slate to Indigo */
+
+  --primary-color: #f43f5e;
+  /* Rose 500 - Electric Crimson */
+  --primary-glow: rgba(244, 63, 94, 0.5);
+
+  --secondary-color: #8b5cf6;
+  /* Violet 500 */
+  --accent-color: #2dd4bf;
+  /* Teal 400 - Recovery */
+
+  --text-primary: #f8fafc;
+  /* Slate 50 */
+  --text-secondary: #94a3b8;
+  /* Slate 400 */
+
+  --surface-color: rgba(30, 41, 59, 0.7);
+  /* Slate 800 with opacity */
+  --surface-border: rgba(255, 255, 255, 0.1);
+
+  --success-color: #34d399;
+  /* Emerald 400 */
+  --warning-color: #fbbf24;
+  /* Amber 400 */
+  --error-color: #ef4444;
+  /* Red 500 */
+
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --border-radius: 16px;
+  --nav-height: 80px;
 }
 
 * {
@@ -21,9 +43,13 @@
 
 body {
   font-family: var(--font-family);
-  background-color: var(--background-color);
-  color: var(--text-color);
+  background: var(--bg-color);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
   line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -34,41 +60,85 @@ a {
 button {
   cursor: pointer;
   font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+/* Utilities */
+.glass-panel {
+  background: var(--surface-color);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 20px;
 }
 
+/* Typography */
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Buttons */
 .btn {
-  display: inline-block;
-  padding: 10px 20px;
-  border-radius: var(--border-radius);
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 12px;
   font-weight: 600;
-  transition: opacity 0.2s;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color), #e11d48);
   color: white;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
 }
 
 .btn-secondary {
-  background-color: var(--accent-color);
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.btn:hover {
-  opacity: 0.9;
-}
+/* Animations */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4);
+  }
 
-.card {
-  background: white;
-  border-radius: var(--border-radius);
-  padding: 20px;
-  box-shadow: var(--box-shadow);
-  margin-bottom: 20px;
+  70% {
+    box-shadow: 0 0 0 10px rgba(244, 63, 94, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
+  }
 }

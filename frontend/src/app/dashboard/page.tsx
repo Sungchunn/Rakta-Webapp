@@ -1,74 +1,58 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import EligibilityCountdown from '@/components/EligibilityCountdown';
-import DonationList from '@/components/DonationList';
-import HealthLog from '@/components/HealthLog';
-import ReadinessGuidance from '@/components/ReadinessGuidance';
-import MilestoneCard from '@/components/MilestoneCard';
-import ReadinessScore from '@/components/ReadinessScore';
-import Link from 'next/link';
-import styles from './dashboard.module.css';
+import React, { useEffect, useState } from "react";
+import ReadinessCard from "@/components/ReadinessCard";
+import Link from "next/link";
 
-export default function DashboardPage() {
-    const [user, setUser] = useState<any>(null);
-    const router = useRouter();
+interface ReadinessData {
+    totalScore: number;
+    rbcComponent: number;
+    ironComponent: number;
+    lifestyleComponent: number;
+}
+
+export default function Dashboard() {
+    const [readiness, setReadiness] = useState<ReadinessData | null>(null);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            router.push('/auth/login');
-            return;
-        }
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            setUser(JSON.parse(userData));
-        }
-    }, [router]);
-
-    if (!user) return null;
+        // Mock data for now, or fetch from API if available
+        // In a real implementation, we'd fetch from /api/v1/readiness/latest
+        setReadiness({
+            totalScore: 85,
+            rbcComponent: 90,
+            ironComponent: 80,
+            lifestyleComponent: 85,
+        });
+    }, []);
 
     return (
-        <div className={styles.dashboard}>
-            <header className={styles.header}>
-                <h1 className={styles.welcome}>Hello, {user.name} 👋</h1>
-                <p>Thank you for being a life-saver.</p>
-            </header>
+        <div>
+            <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Good Morning</h1>
 
-            <div className={styles.grid}>
-                <div>
-                    <h2 className={styles.sectionTitle}>Your Impact</h2>
-                    <DonationList />
-                    <div style={{ marginTop: '20px' }}>
-                        <Link href="/donate" className="btn btn-primary">
-                            Log New Donation
-                        </Link>
-                    </div>
+            {readiness && (
+                <ReadinessCard
+                    score={readiness.totalScore}
+                    rbc={readiness.rbcComponent}
+                    iron={readiness.ironComponent}
+                    lifestyle={readiness.lifestyleComponent}
+                />
+            )}
 
-                    <div style={{ marginTop: '30px' }}>
-                        <h2 className={styles.sectionTitle}>Milestones</h2>
-                        {/* Static milestone for MVP */}
-                        <MilestoneCard
-                            title="First Step"
-                            description="You joined the community of life-savers."
-                            date={new Date().toLocaleDateString()}
-                        />
-                    </div>
-                </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "20px" }}>
+                <Link href="/coach" className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                    <span style={{ fontSize: "2rem" }}>🤖</span>
+                    <span style={{ fontWeight: 600 }}>Ask Coach</span>
+                </Link>
 
-                <div>
-                    <div>
-                        <EligibilityCountdown />
-                        <HealthLog />
-                        <ReadinessGuidance />
+                <Link href="/log" className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                    <span style={{ fontSize: "2rem" }}>📝</span>
+                    <span style={{ fontWeight: 600 }}>Log Data</span>
+                </Link>
+            </div>
 
-                        <div className={styles.statCard}>
-                            <div className={styles.statValue}>0</div>
-                            <div className={styles.statLabel}>Lives Impacted (Est.)</div>
-                        </div>
-                    </div>
-                </div>
+            <div className="glass-panel" style={{ marginTop: "20px", padding: "20px" }}>
+                <h3>Recent Activity</h3>
+                <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>No recent donations.</p>
             </div>
         </div>
     );
