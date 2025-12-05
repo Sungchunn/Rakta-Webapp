@@ -54,6 +54,12 @@ public class DailyMetric {
     @Column(name = "energy_level")
     private Integer energyLevel;
 
+    @Column(name = "hydration_liters", precision = 3, scale = 1)
+    private BigDecimal hydrationLiters;
+
+    @Column(name = "menstrual_cycle_day")
+    private Integer menstrualCycleDay;
+
     @Column(name = "source")
     private String source; // 'MANUAL', 'APPLE_HEALTH', 'GARMIN'
 
