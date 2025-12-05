@@ -37,15 +37,15 @@ public class ChatController {
 
     @GetMapping("/sessions/{sessionId}/messages")
     public ResponseEntity<List<ChatMessage>> getSessionMessages(@PathVariable UUID sessionId) {
-        // TODO: Verify session belongs to user
-        return ResponseEntity.ok(aiCoachService.getSessionMessages(sessionId));
+        User user = getAuthenticatedUser();
+        return ResponseEntity.ok(aiCoachService.getSessionMessages(sessionId, user.getId()));
     }
 
     @PostMapping("/sessions/{sessionId}/messages")
     public ResponseEntity<ChatMessage> sendMessage(@PathVariable UUID sessionId,
             @RequestBody SendMessageRequest request) {
-        // TODO: Verify session belongs to user
-        return ResponseEntity.ok(aiCoachService.sendMessage(sessionId, request.getContent()));
+        User user = getAuthenticatedUser();
+        return ResponseEntity.ok(aiCoachService.sendMessage(sessionId, user.getId(), request.getContent()));
     }
 
     private User getAuthenticatedUser() {

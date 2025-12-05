@@ -5,7 +5,6 @@ import com.rakta.entity.ChatSession;
 import com.rakta.entity.User;
 import com.rakta.repository.ChatMessageRepository;
 import com.rakta.repository.ChatSessionRepository;
-import com.rakta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,6 @@ public class AiCoachService {
 
     private final ChatSessionRepository chatSessionRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public ChatSession createSession(User user, String title) {
@@ -31,9 +29,13 @@ public class AiCoachService {
     }
 
     @Transactional
-    public ChatMessage sendMessage(UUID sessionId, String content) {
+    public ChatMessage sendMessage(UUID sessionId, Long userId, String content) {
         ChatSession session = chatSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
+
+        if (!session.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized access to session");
+        }
 
         // 1. Save User Message
         ChatMessage userMsg = ChatMessage.builder()
@@ -60,7 +62,14 @@ public class AiCoachService {
         return chatSessionRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 
-    public List<ChatMessage> getSessionMessages(UUID sessionId) {
+    public List<ChatMessage> getSessionMessages(UUID sessionId, Long userId) {
+        ChatSession session = chatSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+
+        if (!session.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized access to session");
+        }
+
         return chatMessageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId);
     }
 

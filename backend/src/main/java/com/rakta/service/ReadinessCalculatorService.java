@@ -1,12 +1,12 @@
 package com.rakta.service;
 
 import com.rakta.entity.DailyMetric;
+import com.rakta.entity.Donation;
 import com.rakta.entity.ReadinessSnapshot;
 import com.rakta.entity.User;
 import com.rakta.repository.DailyMetricRepository;
 import com.rakta.repository.DonationRepository;
 import com.rakta.repository.ReadinessSnapshotRepository;
-import com.rakta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +18,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.OptionalDouble;
 
 @Service
 @Slf4j
@@ -28,7 +27,6 @@ public class ReadinessCalculatorService {
     private final DailyMetricRepository dailyMetricRepository;
     private final ReadinessSnapshotRepository readinessSnapshotRepository;
     private final DonationRepository donationRepository;
-    private final UserRepository userRepository;
 
     @Value("${calculator.tau-rbc-days:45}")
     private int tauRbcDays;
@@ -45,26 +43,14 @@ public class ReadinessCalculatorService {
     @Transactional
     public ReadinessSnapshot calculateAndSaveSnapshot(User user, LocalDate date) {
         // 1. Fetch Context
-        // Get last donation date - assuming we need to find the latest donation before
-        // or on this date
-        // For simplicity and based on spec, we'll just get the latest donation for now
-        // In a real scenario, we'd query for donation date <= calculation date
-
-        // Note: DonationRepository needs a method to find latest donation.
-        // Assuming findFirstByUserIdOrderByDonationDateDesc exists or similar.
-        // If not, we'll need to add it. For now, let's assume no donation if repo
-        // method missing or returns empty.
-
-        LocalDate lastDonationDate = null;
-        // Placeholder: lastDonationDate =
-        // donationRepository.findLatestDonationDate(user.getId());
-        // We will implement this properly once we check DonationRepository
+        List<Donation> donations = donationRepository.findByUserIdOrderByDonationDateDesc(user.getId());
+        LocalDate lastDonationDate = donations.isEmpty() ? null : donations.get(0).getDonationDate();
 
         long daysSinceDonation = 0;
         if (lastDonationDate != null) {
             daysSinceDonation = ChronoUnit.DAYS.between(lastDonationDate, date);
             if (daysSinceDonation < 0)
-                daysSinceDonation = 0; // Should not happen if logic is correct
+                daysSinceDonation = 0;
         } else {
             daysSinceDonation = 365; // Treat as fully recovered if no donation history
         }
@@ -94,15 +80,6 @@ public class ReadinessCalculatorService {
         }
 
         // Apply Multiplier based on iron_intake_score (1-5)
-        // Spec says: "Apply Multiplier based on daily_metrics.iron_intake_score"
-        // Interpretation: We need an average or recent iron intake to boost recovery?
-        // Or does it apply to the daily rate?
-        // Let's assume a simple model: Average iron score over last 7 days boosts the
-        // base recovery
-        // If iron score is 5 (high), we boost recovery. If 1 (low), we might lag.
-        // For v1, let's take the latest daily metric's iron score or average of last 7
-        // days.
-
         double avgIronScore = recentMetrics.stream()
                 .filter(m -> !m.getDate().isBefore(date.minusDays(7)))
                 .mapToInt(DailyMetric::getIronIntakeScore)
@@ -112,9 +89,6 @@ public class ReadinessCalculatorService {
         // Multiplier logic: 3 is neutral (1.0x). 5 is 1.2x, 1 is 0.8x.
         double ironMultiplier = 0.8 + (avgIronScore - 1) * 0.1;
 
-        // Apply multiplier to the recovery *rate* effectively, or just the final score?
-        // "Calculate Base Iron Recovery... Apply Multiplier" -> Let's scale the final
-        // iron score
         double ironScore = Math.min(100.0, (baseIronRecovery * 100.0) * ironMultiplier);
 
         // C. Lifestyle Penalty
@@ -127,7 +101,6 @@ public class ReadinessCalculatorService {
                 .orElse(baselineSleep);
 
         // Acute Chronic Ratio (ACR)
-        // Load = training_load_acute
         double avgLoad7d = recentMetrics.stream()
                 .filter(m -> !m.getDate().isBefore(date.minusDays(7)))
                 .mapToInt(DailyMetric::getTrainingLoadAcute)
@@ -148,7 +121,6 @@ public class ReadinessCalculatorService {
         double lifestyleScore = 100.0;
 
         // Sleep penalty: If avg sleep < baseline, deduct points
-        // e.g. 10 points per hour missed
         if (avgSleep7d < baselineSleep) {
             lifestyleScore -= (baselineSleep - avgSleep7d) * 10.0;
         }
