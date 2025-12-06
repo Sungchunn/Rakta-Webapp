@@ -1,16 +1,12 @@
 package com.rakta.controller;
 
-import com.rakta.dto.DeviceSyncRequest;
 import com.rakta.service.HealthIntegrationService;
-import com.rakta.entity.User;
-import com.rakta.entity.UserIntegration;
 import com.rakta.repository.UserIntegrationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
