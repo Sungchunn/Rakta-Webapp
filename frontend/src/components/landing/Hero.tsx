@@ -13,8 +13,7 @@ export default function Hero() {
                         Save Life <br /> Donate <br /> Blood
                     </h1>
                     <p className={styles.description}>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                        Your contribution can save up to three lives. Join our community of heroes and make a difference today.
                     </p>
                     <div className={styles.buttonGroup}>
                         <Link href="/donate">

@@ -45,7 +45,7 @@ export default function Steps() {
                     {/* Adjusted position to match the start of the line approximation */}
                     <StepNode
                         number="1"
-                        text="Lorem Ipsum is simply dummy text."
+                        text="Register & Qualify. Sign up in seconds and check your eligibility with our AI health coach."
                         top="50px"
                         left="50%"
                         transform="translateX(-50%)"
@@ -54,7 +54,7 @@ export default function Steps() {
                     {/* Step 2 - Left */}
                     <StepNode
                         number="2"
-                        text="Lorem Ipsum is simply dummy text."
+                        text="Locate & Book. Find a nearby donation camp or center and book a convenient slot."
                         top="250px"
                         left="10%"
                     />
@@ -62,7 +62,7 @@ export default function Steps() {
                     {/* Step 3 - Right */}
                     <StepNode
                         number="3"
-                        text="Lorem Ipsum is simply dummy text."
+                        text="Donate & Track. Give blood, earn badges, and track your health recovery."
                         top="250px"
                         right="10%"
                     />
