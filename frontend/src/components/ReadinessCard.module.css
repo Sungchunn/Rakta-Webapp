@@ -5,6 +5,10 @@
     align-items: center;
     position: relative;
     overflow: hidden;
+    background: white;
+    /* Ensure white background */
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--surface-shadow);
 }
 
 .header {
@@ -34,6 +38,11 @@
     transform: rotate(-90deg);
 }
 
+.progressRingBg {
+    stroke: var(--bg-secondary);
+    /* Softer background ring */
+}
+
 .progressRingCircle {
     transition: stroke-dashoffset 1s ease-in-out;
     stroke-linecap: round;
@@ -50,6 +59,7 @@
     font-size: 2.5rem;
     font-weight: 800;
     line-height: 1;
+    color: var(--text-primary);
 }
 
 .label {
@@ -80,7 +90,7 @@
 .barBg {
     flex: 1;
     height: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-secondary);
     border-radius: 4px;
     overflow: hidden;
 }

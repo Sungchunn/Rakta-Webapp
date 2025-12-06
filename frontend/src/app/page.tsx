@@ -1,25 +1,22 @@
-import Link from "next/link";
-import styles from "./page.module.css";
+'use client';
+
+// Components
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/landing/Hero';
+import Mission from '@/components/landing/Mission';
+import Collaborators from '@/components/landing/Collaborators';
+import Steps from '@/components/landing/Steps';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
-    <div className={styles.hero}>
-      <div className={styles.content}>
-        <h1 className={styles.title}>
-          Be the <span className={styles.highlight}>Hero</span> in Someone's Story
-        </h1>
-        <p className={styles.subtitle}>
-          Join the community of proud blood donors. Track your impact, stay healthy, and save lives.
-        </p>
-        <div className={styles.ctaGroup}>
-          <Link href="/auth/register" className="btn btn-primary">
-            Start Your Journey
-          </Link>
-          <Link href="/locations" className="btn btn-secondary">
-            Find a Center
-          </Link>
-        </div>
-      </div>
-    </div>
+    <main style={{ background: 'white', minHeight: '100vh' }}>
+      <Navbar />
+      <Hero />
+      <Mission />
+      <Collaborators />
+      <Steps />
+      <Footer />
+    </main>
   );
 }

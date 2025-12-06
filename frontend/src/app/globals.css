@@ -1,37 +1,19 @@
 :root {
-  /* Modern Dark Palette */
-  --bg-color: #0f172a;
-  /* Slate 900 */
-  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  /* Slate to Indigo */
+  /* Premium Blood Donation Palette */
+  --primary-red: #8B0000;
+  --bright-red: #D90429;
+  --blood-gradient: linear-gradient(135deg, #8B0000 0%, #D90429 100%);
 
-  --primary-color: #f43f5e;
-  /* Rose 500 - Electric Crimson */
-  --primary-glow: rgba(244, 63, 94, 0.5);
+  --bg-color: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
 
-  --secondary-color: #8b5cf6;
-  /* Violet 500 */
-  --accent-color: #2dd4bf;
-  /* Teal 400 - Recovery */
+  --surface-white: #ffffff;
+  --surface-off-white: #f9fafb;
 
-  --text-primary: #f8fafc;
-  /* Slate 50 */
-  --text-secondary: #94a3b8;
-  /* Slate 400 */
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
 
-  --surface-color: rgba(30, 41, 59, 0.7);
-  /* Slate 800 with opacity */
-  --surface-border: rgba(255, 255, 255, 0.1);
-
-  --success-color: #34d399;
-  /* Emerald 400 */
-  --warning-color: #fbbf24;
-  /* Amber 400 */
-  --error-color: #ef4444;
-  /* Red 500 */
-
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --border-radius: 16px;
   --nav-height: 80px;
 }
 
@@ -41,104 +23,54 @@
   padding: 0;
 }
 
+html,
 body {
-  font-family: var(--font-family);
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
   background: var(--bg-color);
-  background-image: var(--bg-gradient);
-  background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
-  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 a {
   text-decoration: none;
   color: inherit;
+  transition: opacity 0.2s;
 }
 
 button {
-  cursor: pointer;
   font-family: inherit;
+  cursor: pointer;
   border: none;
-  outline: none;
+  background: none;
 }
 
 /* Utilities */
-.glass-panel {
-  background: var(--surface-color);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--border-radius);
-}
-
 .container {
-  max-width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* Typography */
-h1,
-h2,
-h3 {
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.75rem;
-}
-
-h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-}
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary-color), #e11d48);
-  color: white;
-  box-shadow: 0 4px 12px var(--primary-glow);
-}
-
-.btn-primary:active {
-  transform: scale(0.98);
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Animations */
-@keyframes pulse-glow {
-  0% {
-    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4);
-  }
-
-  70% {
-    box-shadow: 0 0 0 10px rgba(244, 63, 94, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
-  }
+.text-gradient {
+  background: var(--blood-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

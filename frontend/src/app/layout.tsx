@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import MobileLayout from "@/components/MobileLayout";
+import ClientLayout from "@/components/ClientLayout";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-body",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
 
 export const metadata: Metadata = {
-  title: "Rakta - Blood Donation Habit",
-  description: "Build a consistent, healthy, and proud blood donation habit.",
+  title: "Rakta - Give Blood, Feel Alive",
+  description: "Your personal AI coach for blood donation readiness.",
 };
 
 export default function RootLayout({
@@ -17,10 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <MobileLayout>
+      <body className={`${inter.variable} ${outfit.variable}`}>
+        <ClientLayout>
           {children}
-        </MobileLayout>
+        </ClientLayout>
       </body>
     </html>
   );
