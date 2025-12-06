@@ -2,7 +2,7 @@
 
 export default function Steps() {
     return (
-        <section style={{ padding: '6rem 2rem', background: 'white', position: 'relative', overflow: 'hidden' }}>
+        <section style={{ padding: '6rem 2rem', background: 'transparent', position: 'relative', overflow: 'hidden', zIndex: 1 }}>
             <div className="container" style={{ position: 'relative', zIndex: 2 }}>
                 <h2 style={{ fontSize: '2.5rem', marginBottom: '8rem', fontFamily: 'var(--font-heading)', color: 'black' }}>
                     How to get Blood?

@@ -1,6 +1,6 @@
 export default function Mission() {
     return (
-        <section style={{ padding: '6rem 2rem', background: 'white' }}>
+        <section style={{ padding: '6rem 2rem', background: 'transparent', position: 'relative', zIndex: 1 }}>
             <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
                 <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', fontFamily: 'var(--font-heading)' }}>
                     Our Mission

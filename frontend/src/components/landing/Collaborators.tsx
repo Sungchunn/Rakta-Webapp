@@ -4,7 +4,7 @@ export default function Collaborators() {
     const orgs = ['NCC', 'NSS', 'YMCA'];
 
     return (
-        <section style={{ padding: '4rem 2rem 8rem', background: 'white' }}>
+        <section style={{ padding: '4rem 2rem 8rem', background: 'transparent', position: 'relative', zIndex: 1 }}>
             <div className="container">
                 <h2 style={{ fontSize: '2rem', marginBottom: '3rem', fontFamily: 'var(--font-heading)' }}>
                     Our Collaborators
