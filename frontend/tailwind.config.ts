@@ -10,45 +10,45 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                background: 'hsl(var(--background))',
-                foreground: 'hsl(var(--foreground))',
+                background: '#09090B', // Deep Gunmetal
+                foreground: '#EDEDED',
                 card: {
-                    DEFAULT: 'hsl(var(--card))',
-                    foreground: 'hsl(var(--card-foreground))'
+                    DEFAULT: '#27272A', // Zinc-900
+                    foreground: '#FAFAFA'
                 },
                 popover: {
-                    DEFAULT: 'hsl(var(--popover))',
-                    foreground: 'hsl(var(--popover-foreground))'
+                    DEFAULT: '#27272A',
+                    foreground: '#FAFAFA'
                 },
                 primary: {
-                    DEFAULT: 'hsl(var(--primary))',  // Neon Red
-                    foreground: 'hsl(var(--primary-foreground))'
+                    DEFAULT: '#EF4444', // Neon Red (Coral)
+                    foreground: '#FFFFFF'
                 },
                 secondary: {
-                    DEFAULT: 'hsl(var(--secondary))',
-                    foreground: 'hsl(var(--secondary-foreground))'
+                    DEFAULT: '#27272A',
+                    foreground: '#FAFAFA'
                 },
                 muted: {
-                    DEFAULT: 'hsl(var(--muted))',
-                    foreground: 'hsl(var(--muted-foreground))'
+                    DEFAULT: '#27272A',
+                    foreground: '#A1A1AA'
                 },
                 accent: {
-                    DEFAULT: 'hsl(var(--accent))',
-                    foreground: 'hsl(var(--accent-foreground))'
+                    DEFAULT: '#EF4444',
+                    foreground: '#FFFFFF'
                 },
                 destructive: {
-                    DEFAULT: 'hsl(var(--destructive))',
-                    foreground: 'hsl(var(--destructive-foreground))'
+                    DEFAULT: '#7F1D1D',
+                    foreground: '#FFFFFF'
                 },
-                border: 'hsl(var(--border))',
-                input: 'hsl(var(--input))',
-                ring: 'hsl(var(--ring))',
+                border: '#3F3F46',
+                input: '#3F3F46',
+                ring: '#EF4444',
                 chart: {
-                    '1': 'hsl(var(--chart-1))',
-                    '2': 'hsl(var(--chart-2))',
-                    '3': 'hsl(var(--chart-3))',
-                    '4': 'hsl(var(--chart-4))',
-                    '5': 'hsl(var(--chart-5))'
+                    '1': '#EF4444',
+                    '2': '#F87171',
+                    '3': '#B91C1C',
+                    '4': '#991B1B',
+                    '5': '#7F1D1D'
                 }
             },
             borderRadius: {
