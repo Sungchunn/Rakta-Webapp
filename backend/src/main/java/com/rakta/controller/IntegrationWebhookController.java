@@ -1,8 +1,5 @@
 package com.rakta.controller;
 
-import com.rakta.service.HealthIntegrationService;
-import com.rakta.repository.UserIntegrationRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +8,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/integrations")
-@RequiredArgsConstructor
+
 @Slf4j
 public class IntegrationWebhookController {
-
-    private final HealthIntegrationService healthIntegrationService;
-    private final UserIntegrationRepository userIntegrationRepository;
 
     @PostMapping("/webhook/{provider}")
     public ResponseEntity<String> handleWebhook(@PathVariable String provider,

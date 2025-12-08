@@ -1,29 +1,31 @@
 import Link from "next/link";
-import styles from './Navbar.module.css'; // Reusing logo style if needed or creating new
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowRight } from "lucide-react";
 
 export default function Footer() {
     return (
-        <footer style={{ background: '#1c1f26', color: 'white', padding: '4rem 2rem' }}>
-            <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '2rem' }}>
+        <footer className="bg-card text-card-foreground py-16 border-t border-border">
+            <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
 
                 {/* Brand */}
-                <div style={{ maxWidth: '300px' }}>
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M12 21.5C16.1421 21.5 19.5 18.1421 19.5 14C19.5 10.5 12 2.5 12 2.5C12 2.5 4.5 10.5 4.5 14C4.5 18.1421 7.85786 21.5 12 21.5Z" /></svg>
-                    </div>
-                    <p style={{ marginBottom: '2rem', fontSize: '1rem', color: '#ccc' }}>Subscribe to our newsletter</p>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <input type="email" placeholder="Email address" style={{ background: '#2a2d35', border: 'none', padding: '0.75rem 1rem', borderRadius: '8px', color: 'white', outline: 'none', width: '100%' }} />
-                        <button style={{ background: '#ffcccb', borderRadius: '8px', width: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" stroke="black" strokeWidth="2" fill="none"><path d="M9 18l6-6-6-6" /></svg>
-                        </button>
+                <div className="flex flex-col gap-6">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-primary">
+                        <path d="M12 21.5C16.1421 21.5 19.5 18.1421 19.5 14C19.5 10.5 12 2.5 12 2.5C12 2.5 4.5 10.5 4.5 14C4.5 18.1421 7.85786 21.5 12 21.5Z" fill="currentColor" />
+                    </svg>
+                    <p className="text-sm text-muted-foreground">Subscribe to our newsletter</p>
+                    <div className="flex gap-2">
+                        <Input type="email" placeholder="Email address" className="bg-background border-border" />
+                        <Button size="icon" variant="secondary">
+                            <ArrowRight className="w-4 h-4" />
+                        </Button>
                     </div>
                 </div>
 
                 {/* Links Column 1 */}
                 <div>
-                    <h4 style={{ marginBottom: '1.5rem', opacity: 0.8 }}>Services</h4>
-                    <ul style={{ listStyle: 'none', opacity: 0.6, display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem' }}>
+                    <h4 className="font-semibold mb-4 text-foreground/80">Services</h4>
+                    <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
                         <li>Email Marketing</li>
                         <li>Campaigns</li>
                         <li>Branding</li>
@@ -33,8 +35,8 @@ export default function Footer() {
 
                 {/* Links Column 2 */}
                 <div>
-                    <h4 style={{ marginBottom: '1.5rem', opacity: 0.8 }}>About</h4>
-                    <ul style={{ listStyle: 'none', opacity: 0.6, display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem' }}>
+                    <h4 className="font-semibold mb-4 text-foreground/80">About</h4>
+                    <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
                         <li>Our Story</li>
                         <li>Benefits</li>
                         <li>Team</li>
@@ -44,31 +46,32 @@ export default function Footer() {
 
                 {/* Links Column 3 */}
                 <div>
-                    <h4 style={{ marginBottom: '1.5rem', opacity: 0.8 }}>Help</h4>
-                    <ul style={{ listStyle: 'none', opacity: 0.6, display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem' }}>
+                    <h4 className="font-semibold mb-4 text-foreground/80">Help</h4>
+                    <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
                         <li>FAQs</li>
                         <li>Contact Us</li>
                     </ul>
                 </div>
-
-                {/* CTA */}
-                <div style={{ textAlign: 'right' }}>
-                    <p style={{ marginBottom: '1rem' }}>Ready to get started?</p>
-                    <Link href="/donate">
-                        <button style={{ background: 'white', color: 'black', padding: '0.75rem 2rem', borderRadius: '4px', fontWeight: 'bold' }}>
-                            Donate
-                        </button>
-                    </Link>
-                </div>
             </div>
 
-            <div className="container" style={{ borderTop: '1px solid #333', marginTop: '3rem', paddingTop: '2rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', opacity: 0.6 }}>
-                <div style={{ display: 'flex', gap: '2rem' }}>
+            {/* CTA */}
+            <div className="container mx-auto px-6 mt-12 pt-8 text-center border-t border-border/40">
+                <p className="mb-4 text-muted-foreground">Ready to get started?</p>
+                <Link href="/donate">
+                    <Button variant="default" size="lg" className="bg-primary text-primary-foreground font-bold shadow-[0_0_15px_rgba(255,0,51,0.4)] hover:shadow-[0_0_25px_rgba(255,0,51,0.6)] transition-all">
+                        Donate Now
+                    </Button>
+                </Link>
+            </div>
+
+
+            <div className="container mx-auto px-6 mt-12 pt-8 border-t border-border/20 flex flex-col md:flex-row justify-between text-xs text-muted-foreground/60">
+                <div className="flex gap-8">
                     <span>Terms & Conditions</span>
                     <span>Privacy Policy</span>
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div className="flex gap-4 mt-4 md:mt-0">
                     {/* Social Icons Placeholder */}
                     <span>FB</span>
                     <span>TW</span>

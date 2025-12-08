@@ -1,10 +1,9 @@
-import CoachChat from "@/components/CoachChat";
+import ChatInterface from "@/components/coach/ChatInterface";
 
 export default function CoachPage() {
     return (
-        <div>
-            <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>AI Coach</h1>
-            <CoachChat />
+        <div className="h-full pt-2">
+            <ChatInterface />
         </div>
     );
 }

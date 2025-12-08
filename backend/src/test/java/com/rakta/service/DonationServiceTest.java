@@ -1,7 +1,7 @@
 package com.rakta.service;
 
 import com.rakta.entity.Donation;
-import com.rakta.entity.DonationLocation;
+
 import com.rakta.entity.User;
 import com.rakta.repository.DonationLocationRepository;
 import com.rakta.repository.DonationRepository;
