@@ -44,8 +44,8 @@ export default function EligibilityCountdown({ daysRemaining }: EligibilityCount
 
             {!isEligible && (
                 <div className="relative z-10 text-right">
-                    <span className="text-3xl font-bold tabular-nums text-primary">{daysRemaining}</span>
-                    <span className="block text-[10px] uppercase text-muted-foreground">Days Left</span>
+                    <span className="text-4xl font-black font-mono tracking-tighter text-primary tabular-nums">{daysRemaining}</span>
+                    <span className="block text-[10px] uppercase text-muted-foreground font-mono tracking-widest">Days Left</span>
                 </div>
             )}
         </motion.div>

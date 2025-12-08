@@ -76,15 +76,24 @@ export default function DonationMap() {
         return <div className="flex justify-center items-center h-96 text-primary animate-pulse">Loading Map...</div>;
     }
 
+    // Custom Beacon Icon
+    const createBeaconIcon = () => L.divIcon({
+        className: 'custom-beacon',
+        html: '<div class="beacon-pin"></div>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+        popupAnchor: [0, -10]
+    });
+
     return (
         <div className="relative w-full h-[calc(100vh-140px)] rounded-xl overflow-hidden shadow-2xl border border-border/50">
             {/* Note: Leaflet CSS must be imported globally or in layout. I will assume it's done or I'll add a link/import */}
             <MapContainer
                 center={center}
-                zoom={11}
+                zoom={12}
                 scrollWheelZoom={true}
-                className="w-full h-full z-0"
-                style={{ height: "100%", width: "100%", background: "#0f172a" }} // Dark fallback
+                className="w-full h-full rounded-xl z-0"
+                style={{ background: '#27272A' }} // Zinc-900 background while loading
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -92,24 +101,38 @@ export default function DonationMap() {
                 />
 
                 {locations.map((loc) => (
-                    <Marker key={loc.id} position={[loc.latitude, loc.longitude]}>
+                    <Marker
+                        key={loc.id}
+                        position={[loc.latitude, loc.longitude]}
+                        icon={createBeaconIcon()}
+                    >
                         <Popup>
-                            <div className="p-2 min-w-[200px]">
-                                <h3 className="font-bold text-lg text-foreground">{loc.name}</h3>
-                                <p className="text-sm text-muted-foreground my-1">{loc.type} • {loc.openHours}</p>
-                                <Button size="sm" className="mt-2 w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                                    Navigate
-                                </Button>
+                            <div className="p-1">
+                                <h3 className="font-bold text-base mb-1 text-primary">{loc.name}</h3>
+                                <p className="text-xs text-muted-foreground mb-2">{loc.address}</p>
+                                <div className="flex gap-2">
+                                    <span className="text-[10px] uppercase tracking-wider bg-secondary px-1 py-0.5 rounded">
+                                        {loc.type}
+                                    </span>
+                                    <button className="ml-auto text-xs bg-primary text-white px-2 py-0.5 rounded font-bold hover:bg-red-500">
+                                        NAVIGATE
+                                    </button>
+                                </div>
                             </div>
                         </Popup>
                     </Marker>
                 ))}
-            </MapContainer>
 
-            <div className="absolute bottom-4 left-4 z-[1000] bg-card/90 backdrop-blur p-4 rounded-lg border border-border/50 shadow-lg max-w-xs">
-                <h4 className="font-semibold text-primary mb-2">Donation Sites</h4>
-                <p className="text-xs text-muted-foreground">Showing {locations.length} permanent collection centers in Bangkok.</p>
-            </div>
+                {/* HUD Overlay */}
+                <div className="absolute top-4 right-4 z-[400] bg-card/90 backdrop-blur border border-border p-3 rounded-lg shadow-xl">
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <span className="text-xs font-mono text-muted-foreground uppercase">Live Feed</span>
+                    </div>
+                    <p className="text-xl font-bold font-mono text-white leading-none">{locations.length}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Active Sites</p>
+                </div>
+            </MapContainer>
         </div>
     );
 }
