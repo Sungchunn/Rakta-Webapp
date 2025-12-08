@@ -11,6 +11,7 @@ spring:
       enabled: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: update # Flyway might have issues with H2 if scripts are Postgres-specific, so we use update for now
     properties:
