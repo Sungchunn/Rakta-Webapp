@@ -1,95 +1,94 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root {
+  /* Brand Colors */
+  --blood-red: #8B0025;
+  --blood-dark: #5c0018;
+  --blood-light: #a81c3d;
 
-@layer base {
-    :root {
-        /* "Deep Gunmetal" #121212 is heavily utilized here as the base dark mode */
-        /* Light mode is technically not used per strict rules, but putting fallbacks just in case */
-        --background: 0 0% 100%;
-        --foreground: 224 71.4% 4.1%;
-        --card: 0 0% 100%;
-        --card-foreground: 224 71.4% 4.1%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 224 71.4% 4.1%;
-        --primary: 350 100% 50%;
-        /* Placeholder for light mode red */
-        --primary-foreground: 210 20% 98%;
-        --secondary: 220 14.3% 95.9%;
-        --secondary-foreground: 220.9 39.3% 11%;
-        --muted: 220 14.3% 95.9%;
-        --muted-foreground: 220 8.9% 46.1%;
-        --accent: 220 14.3% 95.9%;
-        --accent-foreground: 220.9 39.3% 11%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 210 20% 98%;
-        --border: 220 13% 91%;
-        --input: 220 13% 91%;
-        --ring: 350 100% 50%;
-        --radius: 0.5rem;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-    }
+  /* UI Colors */
+  --bg-color: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #6b7280;
 
-    /* STRICT DARK MODE DEFAULT */
-    /* Rakta Theme: Deep Gunmetal & Neon Red (#FF0033 -> HSL ~348 100 50) */
-    .dark {
-        --background: 240 5% 7%;
-        /* #121212 approx */
-        --foreground: 210 20% 98%;
+  --surface-white: #ffffff;
+  --surface-off-white: #f9fafb;
 
-        --card: 240 5% 10%;
-        /* Slightly lighter than background */
-        --card-foreground: 210 20% 98%;
+  --button-primary: #000000;
+  --button-text: #ffffff;
 
-        --popover: 240 5% 10%;
-        --popover-foreground: 210 20% 98%;
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
 
-        /* Neon Red / Coral Red - Vitality */
-        --primary: 348 100% 58%;
-        /* A bit brighter for neon feel */
-        --primary-foreground: 210 20% 98%;
-
-        --secondary: 240 4% 16%;
-        --secondary-foreground: 210 20% 98%;
-
-        --muted: 240 4% 16%;
-        --muted-foreground: 240 5% 65%;
-
-        --accent: 240 4% 16%;
-        --accent-foreground: 210 20% 98%;
-
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 20% 98%;
-
-        --border: 240 4% 16%;
-        --input: 240 4% 16%;
-        --ring: 348 100% 58%;
-
-        --chart-1: 348 100% 58%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
-    }
+  --nav-height: 80px;
 }
 
-@layer base {
-    * {
-        @apply border-border;
-    }
-
-    body {
-        @apply bg-background text-foreground;
-    }
+/* Micro-grain texture overlay */
+.texture-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
-/* Force dark mode if class not present, though we will add it to html */
-@media (prefers-color-scheme: dark) {
-    :root {
-        color-scheme: dark;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.text-gradient {
+  background: var(--blood-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
