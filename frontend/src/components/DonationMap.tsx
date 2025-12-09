@@ -48,13 +48,17 @@ export default function DonationMap({ hoveredId }: DonationMapProps) {
 
     useEffect(() => {
         // Mock data or fetch from API
-        async function fetchLocations() {
-            try {
-                const res = await fetch('http://localhost:8080/api/locations');
-                if (res.ok) {
-                    const data = await res.json();
+        import { apiRequest } from "@/lib/api";
+
+        // ... inside the component
+        useEffect(() => {
+            // Mock data or fetch from API
+            async function fetchLocations() {
+                try {
+                    const data = await apiRequest('/locations');
                     setLocations(data);
-                } else {
+                } catch (error) {
+                    console.error("Failed to fetch locations", error);
                     // Fallback mock data
                     setLocations([
                         { id: 1, name: "National Blood Centre", latitude: 13.7375, longitude: 100.5311, type: "HQ", openHours: "07:30 - 19:30", address: "Pathum Wan, Bangkok" },
