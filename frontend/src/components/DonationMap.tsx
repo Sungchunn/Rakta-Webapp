@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet"; // Import L to fix UMD error
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { apiRequest } from "@/lib/api";
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -38,8 +39,6 @@ interface DonationLocation {
 interface DonationMapProps {
     hoveredId?: number | null;
 }
-
-import { apiRequest } from "@/lib/api";
 
 export default function DonationMap({ hoveredId }: DonationMapProps) {
     const [locations, setLocations] = useState<DonationLocation[]>([]);
