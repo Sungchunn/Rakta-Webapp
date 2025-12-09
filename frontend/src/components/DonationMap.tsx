@@ -71,6 +71,11 @@ export default function DonationMap({ hoveredId }: DonationMapProps) {
                 setLocations([
                     { id: 1, name: "National Blood Centre", latitude: 13.7375, longitude: 100.5311, type: "HQ", openHours: "07:30 - 19:30", address: "Pathum Wan, Bangkok" },
                     { id: 2, name: "Emporium Donation Room", latitude: 13.7297, longitude: 100.5693, type: "STATION", openHours: "10:00 - 19:00", address: "The Emporium, Sukhumvit" },
+                    { id: 3, name: "The Mall Bangkapi", latitude: 13.7661, longitude: 100.6429, type: "MALL", openHours: "12:00 - 18:00", address: "Bangkapi, Bangkok" },
+                    { id: 4, name: "Red Cross Station 11", latitude: 13.8853, longitude: 100.5905, type: "STATION", openHours: "08:30 - 16:30", address: "Bang Khen" },
+                    { id: 5, name: "Central World Mobile Unit", latitude: 13.7469, longitude: 100.5398, type: "MOBILE", openHours: "11:00 - 15:00", address: "Central World" },
+                    { id: 6, name: "Siriraj Hospital", latitude: 13.7593, longitude: 100.4851, type: "HOSPITAL", openHours: "08:00 - 16:00", address: "Bangkok Noi" },
+                    { id: 7, name: "Ramathibodi Hospital", latitude: 13.7668, longitude: 100.5262, type: "HOSPITAL", openHours: "08:30 - 16:30", address: "Ratchathewi" },
                 ]);
             } finally {
                 setLoading(false);
