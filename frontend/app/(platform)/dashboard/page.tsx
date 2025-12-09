@@ -21,7 +21,7 @@ export default function DashboardPage() {
             <div className="flex justify-between items-end mb-6">
                 <div>
                     <h1 className="text-3xl font-black font-heading tracking-tight text-white mb-1">COMMAND CENTER</h1>
-                    <p className="text-muted-foreground font-mono uppercase tracking-widest text-xs">
+                    <p className="text-zinc-400 font-mono uppercase tracking-widest text-xs">
                         {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </p>
                 </div>
@@ -96,8 +96,9 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="md:col-span-1 bg-gradient-to-br from-primary/10 to-transparent rounded-xl border border-primary/20 p-4 flex flex-col justify-center">
-                    <p className="text-sm text-zinc-300 italic">"{readinessData.insight}"</p>
+                <div className="md:col-span-1 bg-card rounded-xl border border-primary/20 p-4 flex flex-col justify-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
+                    <p className="text-sm text-zinc-300 italic relative z-10">"{readinessData.insight}"</p>
                     <div className="mt-2 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                         <span className="text-[10px] uppercase font-bold text-primary">AI Coach Active</span>
