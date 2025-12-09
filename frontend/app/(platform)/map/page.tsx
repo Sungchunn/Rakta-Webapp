@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { MapPin, Clock, Navigation, Locate } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { DonationSiteReviewForm } from "@/components/map/DonationSiteReviewForm";
 
 const DonationMap = dynamic(() => import("@/components/DonationMap"), { ssr: false });
 
@@ -115,6 +116,10 @@ export default function MapPage() {
                             </div>
                         </div>
                     ))}
+
+                    <div className="mt-8 pt-6 border-t border-border">
+                        <DonationSiteReviewForm />
+                    </div>
                 </div>
             </div>
 
