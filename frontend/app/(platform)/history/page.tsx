@@ -4,6 +4,15 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Badge } from "@/components/ui/badge";
 import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const donations = [
     { id: "DON-001", date: "2024-01-15", type: "Whole Blood", location: "National Blood Centre", volume: "450ml", status: "Completed" },
@@ -65,6 +74,31 @@ export default function HistoryPage() {
                         ))}
                     </TableBody>
                 </Table>
+            </div>
+
+            <div className="mt-8">
+                <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious href="#" className="text-white hover:text-primary hover:bg-zinc-800" />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" isActive className="bg-primary hover:bg-red-600 text-white border-primary">1</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" className="text-muted-foreground hover:text-white hover:bg-zinc-800">2</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" className="text-muted-foreground hover:text-white hover:bg-zinc-800">3</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationEllipsis className="text-muted-foreground" />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext href="#" className="text-white hover:text-primary hover:bg-zinc-800" />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
             </div>
         </div>
     );
