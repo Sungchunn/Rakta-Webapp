@@ -96,4 +96,28 @@ frontend/
     - *Responsibility*: Standardizes HTTP requests to the backend.
     - *Features*: Automatically injects `Authorization` header with JWT token from `localStorage`.
 - **`utils.ts`**: Helper functions.
-    - *Key Function*: `cn(...)` - Utility for conditional Tailwind class merging (uses `clsx` and `tailwind-merge`).
+
+## 🔧 How to Extend & Modify
+
+### 1. Adjusting the Dashboard Layout
+- **File**: `src/app/(platform)/dashboard/page.tsx`
+- **Method**: The dashboard uses a CSS Grid (`grid-cols-1 md:grid-cols-3`).
+- **To Modify**:
+    - Change `grid-cols-3` to `grid-cols-4` for more density.
+    - Add new `div` blocks with `md:col-span-X` to create new widgets.
+    - Import new components from `src/components/dashboard/`.
+
+### 2. Adding a New Chart
+- **Step 1**: Create component in `src/components/dashboard/MyNewChart.tsx`.
+- **Step 2**: Use `Recharts` (already installed) or another library.
+- **Step 3**: Import and place it in `dashboard/page.tsx`.
+
+### 3. Customizing the Theme
+- **File**: `src/app/globals.css`
+- **Method**: Modify CSS variables in `:root`.
+    - `--primary`: Changes the main accent color (currently Neon Red #EF4444).
+    - `--background`: Changes the page background (currently Deep Gunmetal #09090B).
+
+### 4. modifying Application Logic
+- **Authentication**: `src/lib/api.ts` handles token storage and injection. Modify `apiRequest` to change auth headers.
+- **State**: Currently uses local state (`useState`). For global state, consider adding React Context or Redux in `src/app/layout.tsx`.
