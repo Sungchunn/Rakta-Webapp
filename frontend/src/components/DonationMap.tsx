@@ -35,7 +35,11 @@ interface DonationLocation {
     address?: string; // Add optional address
 }
 
-export default function DonationMap() {
+interface DonationMapProps {
+    hoveredId?: number | null;
+}
+
+export default function DonationMap({ hoveredId }: DonationMapProps) {
     const [locations, setLocations] = useState<DonationLocation[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -44,11 +48,8 @@ export default function DonationMap() {
 
     useEffect(() => {
         // Mock data or fetch from API
-        // For MVP, if backend isn't running, we mock.
-        // But plan is to fetch.
         async function fetchLocations() {
             try {
-                // Correct endpoint found in LocationController
                 const res = await fetch('http://localhost:8080/api/locations');
                 if (res.ok) {
                     const data = await res.json();
@@ -56,16 +57,20 @@ export default function DonationMap() {
                 } else {
                     // Fallback mock data
                     setLocations([
-                        { id: 1, name: "National Blood Centre (NBC)", latitude: 13.7375, longitude: 100.5311, type: "HQ", openHours: "07:30 - 19:30" },
-                        { id: 2, name: "Emporium Donation Room", latitude: 13.7297, longitude: 100.5693, type: "STATION", openHours: "10:00 - 19:00" },
-                        { id: 3, name: "The Mall Bangkapi", latitude: 13.7661, longitude: 100.6429, type: "MALL", openHours: "12:00 - 18:00" },
+                        { id: 1, name: "National Blood Centre", latitude: 13.7375, longitude: 100.5311, type: "HQ", openHours: "07:30 - 19:30", address: "Pathum Wan, Bangkok" },
+                        { id: 2, name: "Emporium Donation Room", latitude: 13.7297, longitude: 100.5693, type: "STATION", openHours: "10:00 - 19:00", address: "The Emporium, Sukhumvit" },
+                        { id: 3, name: "The Mall Bangkapi", latitude: 13.7661, longitude: 100.6429, type: "MALL", openHours: "12:00 - 18:00", address: "Bangkapi, Bangkok" },
+                        { id: 4, name: "Red Cross Station 11", latitude: 13.8853, longitude: 100.5905, type: "STATION", openHours: "08:30 - 16:30", address: "Bang Khen" },
+                        { id: 5, name: "Central World Mobile Unit", latitude: 13.7469, longitude: 100.5398, type: "MOBILE", openHours: "11:00 - 15:00", address: "Central World" },
+                        { id: 6, name: "Siriraj Hospital", latitude: 13.7593, longitude: 100.4851, type: "HOSPITAL", openHours: "08:00 - 16:00", address: "Bangkok Noi" },
+                        { id: 7, name: "Ramathibodi Hospital", latitude: 13.7668, longitude: 100.5262, type: "HOSPITAL", openHours: "08:30 - 16:30", address: "Ratchathewi" },
                     ]);
                 }
             } catch (error) {
                 console.error("Failed to fetch locations", error);
                 setLocations([
-                    { id: 1, name: "National Blood Centre (NBC)", latitude: 13.7375, longitude: 100.5311, type: "HQ", openHours: "07:30 - 19:30" },
-                    { id: 2, name: "Emporium Donation Room", latitude: 13.7297, longitude: 100.5693, type: "STATION", openHours: "10:00 - 19:00" },
+                    { id: 1, name: "National Blood Centre", latitude: 13.7375, longitude: 100.5311, type: "HQ", openHours: "07:30 - 19:30", address: "Pathum Wan, Bangkok" },
+                    { id: 2, name: "Emporium Donation Room", latitude: 13.7297, longitude: 100.5693, type: "STATION", openHours: "10:00 - 19:00", address: "The Emporium, Sukhumvit" },
                 ]);
             } finally {
                 setLoading(false);
@@ -75,38 +80,41 @@ export default function DonationMap() {
     }, []);
 
     if (loading) {
-        return <div className="flex justify-center items-center h-96 text-primary animate-pulse">Loading Map...</div>;
+        return <div className="flex justify-center items-center h-full text-primary animate-pulse">Loading Map...</div>;
     }
 
-    // Custom Beacon Icon
-    const createBeaconIcon = () => L.divIcon({
-        className: 'custom-beacon',
-        html: '<div class="beacon-pin"></div>',
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
-        popupAnchor: [0, -10]
-    });
+    // Custom Beacon Icon with Dynamic sizing based on Hover
+    const createBeaconIcon = (id: number) => {
+        const isHovered = hoveredId === id;
+        return L.divIcon({
+            className: 'custom-beacon',
+            html: `<div class="beacon-pin ${isHovered ? 'scale-150 shadow-[0_0_20px_#EF4444]' : ''}"></div>`,
+            iconSize: isHovered ? [24, 24] : [16, 16],
+            iconAnchor: isHovered ? [12, 12] : [8, 8],
+            popupAnchor: [0, -10]
+        });
+    };
 
     return (
-        <div className="relative w-full h-[calc(100vh-140px)] rounded-xl overflow-hidden shadow-2xl border border-border/50">
-            {/* Note: Leaflet CSS must be imported globally or in layout. I will assume it's done or I'll add a link/import */}
+        <div className="relative w-full h-full bg-zinc-900 border-none rounded-none">
             <MapContainer
                 center={center}
                 zoom={12}
                 scrollWheelZoom={true}
-                className="w-full h-full rounded-xl z-0"
-                style={{ background: '#27272A' }} // Zinc-900 background while loading
+                className="w-full h-full z-0"
+                style={{ background: '#27272A' }}
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
                 {locations.map((loc) => (
                     <Marker
                         key={loc.id}
                         position={[loc.latitude, loc.longitude]}
-                        icon={createBeaconIcon()}
+                        icon={createBeaconIcon(loc.id)}
+                        zIndexOffset={hoveredId === loc.id ? 1000 : 0}
                     >
                         <Popup>
                             <div className="p-1">
