@@ -1,8 +1,8 @@
 "use client";
 
-import { BentoGrid, BentoGridItem } from "@/app/components/ui/bento-grid";
-import RadialSeparator from "@/app/components/dashboard/RadialSeparator";
-import DashboardCharts from "@/components/dashboard/DashboardCharts";
+import { BentoGrid, BentoGridItem } from "./components/ui/bento-grid";
+import RadialSeparator from "./components/dashboard/RadialSeparator";
+import DashboardCharts from "@/components/dashboard/DashboardCharts"; // Keep @ if it points to src/components
 import DailyCheckIn from "@/components/dashboard/DailyCheckIn";
 import InsightCard from "@/components/dashboard/InsightCard";
 import { Activity, Zap, Moon } from "lucide-react";

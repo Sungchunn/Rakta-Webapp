@@ -1,4 +1,8 @@
-import DonationMap from "@/components/DonationMap";
+"use client";
+
+import dynamic from "next/dynamic";
+
+const DonationMap = dynamic(() => import("@/components/DonationMap"), { ssr: false });
 
 export default function MapPage() {
     return (
