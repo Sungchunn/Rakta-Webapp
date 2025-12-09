@@ -2,15 +2,17 @@
     max-width: 400px;
     margin: 40px auto;
     padding: 30px;
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .title {
     text-align: center;
     margin-bottom: 20px;
-    color: var(--primary-color);
+    color: hsl(var(--primary));
+    font-weight: 700;
 }
 
 .formGroup {
@@ -21,34 +23,44 @@
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
+    color: hsl(var(--foreground));
 }
 
 .input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--input));
+    color: hsl(var(--foreground));
     border-radius: 4px;
     font-size: 1rem;
 }
 
 .input:focus {
-    border-color: var(--primary-color);
+    border-color: hsl(var(--primary));
     outline: none;
+    ring: 2px solid hsl(var(--primary));
 }
 
 .error {
-    color: var(--error-color);
+    color: hsl(var(--destructive));
     margin-bottom: 15px;
     text-align: center;
+    font-size: 0.9rem;
 }
 
 .footer {
     margin-top: 20px;
     text-align: center;
     font-size: 0.9rem;
+    color: hsl(var(--muted-foreground));
 }
 
 .footer a {
-    color: var(--primary-color);
+    color: hsl(var(--primary));
+    text-decoration: none;
+}
+
+.footer a:hover {
     text-decoration: underline;
 }
