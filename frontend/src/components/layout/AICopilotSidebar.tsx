@@ -1,18 +1,86 @@
 "use client";
 
-import { useState } from "react";
-import { Send, Sparkles, X, ChevronRight, ChevronLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Send, Sparkles, ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { apiRequest } from "@/lib/api";
 
 export default function AICopilotSidebar() {
     const [isOpen, setIsOpen] = useState(true);
-    const [messages, setMessages] = useState([
+    const [messages, setMessages] = useState<any[]>([
         { role: "assistant", content: "Hello. I am your physiological recovery coach. How can I assist you today?" }
     ]);
     const [input, setInput] = useState("");
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        // Initialize session
+        const initSession = async () => {
+            try {
+                // Check if we have a stored session or create new
+                // For now, simplify by creating a new session or getting the last one
+                const sessions = await apiRequest('/v1/coach/sessions');
+                if (sessions && sessions.length > 0) {
+                    setSessionId(sessions[0].id);
+                    // Optionally load history:
+                    // const history = await apiRequest(`/v1/coach/sessions/${sessions[0].id}/messages`);
+                    // setMessages(history.map((m: any) => ({ role: m.role.toLowerCase(), content: m.content })));
+                } else {
+                    const newSession = await apiRequest('/v1/coach/sessions', 'POST', { title: "New Recovery Chat" });
+                    setSessionId(newSession.id);
+                }
+            } catch (e) {
+                console.error("Failed to init chat session", e);
+            }
+        };
+        // specific check to avoid running on landing page if not auth, but sidebar assumes auth
+        if (localStorage.getItem('token')) {
+            initSession();
+        }
+    }, []);
 
     const toggleSidebar = () => setIsOpen(!isOpen);
+
+    const handleSend = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!input.trim() || isLoading) return;
+
+        const userMsg = input;
+        setInput("");
+        setMessages(prev => [...prev, { role: "user", content: userMsg }]);
+        setIsLoading(true);
+
+        try {
+            let currentSessionId = sessionId;
+            if (!currentSessionId) {
+                const newSession = await apiRequest('/v1/coach/sessions', 'POST', { title: "New Recovery Chat" });
+                currentSessionId = newSession.id;
+                setSessionId(newSession.id);
+            }
+
+            const response = await apiRequest(`/v1/coach/sessions/${currentSessionId}/messages`, 'POST', { content: userMsg });
+
+            // The backend returns the ASSISTANT message that was generated?
+            // Usually returns the message object created. 
+            // If backend logic sends user message then returns AI response, 
+            // we should check the response structure. 
+            // Assuming standard flow: response is the assistant's reply or we fetch it.
+            // Let's assume response includes the AI reply or we need to poll?
+            // Looking at Controller: returns aiCoachService.sendMessage(...)
+            // Service likely calls LLM and saves both. Returns the AI response message?
+            // Let's assume it returns the AI message.
+
+            setMessages(prev => [...prev, { role: "assistant", content: response.content }]);
+
+        } catch (error) {
+            console.error(error);
+            setMessages(prev => [...prev, { role: "assistant", content: "I'm having trouble connecting to the neural link. Please try again." }]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <>
@@ -67,38 +135,31 @@ export default function AICopilotSidebar() {
                             </div>
                         </div>
                     ))}
+                    {isLoading && (
+                        <div className="flex gap-3">
+                            <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center bg-primary/20">
+                                <Sparkles className="w-4 h-4 text-primary animate-spin" />
+                            </div>
+                            <div className="bg-zinc-800/50 text-zinc-400 p-3 rounded-lg text-xs italic">Thinking...</div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Input Area */}
                 <div className="p-4 border-t border-border bg-card">
                     <form
                         className="relative"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            if (!input.trim()) return;
-
-                            // Add user message
-                            const newMessages = [...messages, { role: "user", content: input }];
-                            setMessages(newMessages);
-                            setInput("");
-
-                            // Simulate AI Response (Mock)
-                            setTimeout(() => {
-                                setMessages(prev => [...prev, {
-                                    role: "assistant",
-                                    content: "I'm analyzing your recent physiological data. Your recovery metrics suggest you are 87% ready for donation. Keep your iron intake high."
-                                }]);
-                            }, 1000);
-                        }}
+                        onSubmit={handleSend}
                     >
                         <input
                             type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask about your recovery..."
-                            className="w-full bg-black/20 border border-zinc-700 rounded-lg pl-3 pr-10 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors font-mono"
+                            disabled={isLoading}
+                            className="w-full bg-black/20 border border-zinc-700 rounded-lg pl-3 pr-10 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors font-mono disabled:opacity-50"
                         />
-                        <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-primary rounded-md text-white hover:bg-primary/90 transition-colors">
+                        <button type="submit" disabled={isLoading} className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-primary rounded-md text-white hover:bg-primary/90 transition-colors disabled:opacity-50">
                             <Send className="w-3 h-3" />
                         </button>
                     </form>
