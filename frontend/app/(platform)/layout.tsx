@@ -9,7 +9,7 @@ export default function PlatformLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex h-screen bg-background overflow-hidden">
+        <div className="flex h-screen bg-zinc-950 text-white overflow-hidden">
             {/* Persistent Left Navigation */}
             <AppSidebar />
 
