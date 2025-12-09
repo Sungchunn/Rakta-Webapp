@@ -12,5 +12,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         return <>{children}</>;
     }
 
-    return <MobileLayout>{children}</MobileLayout>;
+    // MobileLayout was constraining the view to a mobile card. 
+    // We now render children directly to allow the platform layout to control the full screen.
+    return <>{children}</>;
 }
