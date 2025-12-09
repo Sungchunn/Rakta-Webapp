@@ -54,7 +54,7 @@ export default function AppSidebar() {
 
             {/* Footer Profile */}
             <div className="p-4 border-t border-border">
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-black/20 hover:bg-black/40 transition-colors cursor-pointer">
+                <div className="flex items-center gap-3 p-2 rounded-lg bg-black/20 hover:bg-black/40 transition-colors cursor-pointer group">
                     <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
                         <User className="w-4 h-4 text-zinc-400" />
                     </div>
@@ -62,7 +62,14 @@ export default function AppSidebar() {
                         <p className="text-sm font-medium text-white truncate">User Name</p>
                         <p className="text-xs text-muted-foreground truncate">O+ Positive</p>
                     </div>
-                    <LogOut className="w-4 h-4 text-muted-foreground hover:text-red-400 transition-colors" />
+                    <LogOut
+                        className="w-4 h-4 text-muted-foreground hover:text-red-400 transition-colors"
+                        onClick={() => {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            window.location.href = '/auth/login';
+                        }}
+                    />
                 </div>
             </div>
         </aside>

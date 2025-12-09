@@ -13,7 +13,15 @@ export default function ProfilePage() {
             <ProfileForm />
             <WearableSync />
 
-            <Button variant="destructive" className="mt-8 flex items-center gap-2">
+            <Button
+                variant="destructive"
+                className="mt-8 flex items-center gap-2"
+                onClick={() => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/auth/login';
+                }}
+            >
                 <LogOut size={16} /> Sign Out
             </Button>
         </div>
