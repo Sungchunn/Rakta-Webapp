@@ -21,13 +21,13 @@ export default function DashboardPage() {
             <div className="flex justify-between items-end mb-6">
                 <div>
                     <h1 className="text-3xl font-black font-heading tracking-tight text-white mb-1">COMMAND CENTER</h1>
-                    <p className="text-zinc-400 font-mono uppercase tracking-widest text-xs">
+                    <p className="text-zinc-500 font-bold font-mono uppercase tracking-widest text-xs">
                         {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    <Button className="bg-red-900/20 text-red-400 hover:bg-red-900/40 border border-red-900/50">
-                        <PlusCircle className="mr-2 w-4 h-4" /> Record Donation
+                    <Button className="bg-primary hover:bg-red-600 text-white font-bold tracking-wide shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-red-500/50">
+                        <PlusCircle className="mr-2 w-4 h-4" /> RECORD DONATION
                     </Button>
                 </div>
             </div>
