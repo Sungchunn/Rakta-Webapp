@@ -1,3 +1,5 @@
+"use client";
+
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { MapPin, Clock, Navigation, Locate } from "lucide-react";
