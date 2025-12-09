@@ -1,39 +1,47 @@
 .container {
     max-width: 400px;
-    margin: 40px auto;
-    padding: 30px;
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
+    margin: 80px auto;
+    padding: 40px;
+    background-color: #18181B;
+    /* Zinc 900 - distinct from page background */
+    border: 1px solid #27272A;
+    /* Zinc 800 */
     border-radius: var(--radius);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
 }
 
 .title {
     text-align: center;
-    margin-bottom: 20px;
-    color: hsl(var(--primary));
-    font-weight: 700;
+    margin-bottom: 30px;
+    color: white;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    font-size: 1.5rem;
 }
 
 .formGroup {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: 500;
-    color: hsl(var(--foreground));
+    color: #A1A1AA;
+    /* Zinc 400 */
+    font-size: 0.875rem;
 }
 
 .input {
     width: 100%;
-    padding: 10px;
-    background: hsl(var(--background));
-    border: 1px solid hsl(var(--input));
-    color: hsl(var(--foreground));
-    border-radius: 4px;
-    font-size: 1rem;
+    padding: 12px;
+    background-color: #09090B;
+    /* Zinc 950 - "cutout" look */
+    border: 1px solid #27272A;
+    color: white;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
 }
 
 .input:focus {
