@@ -20,8 +20,10 @@ export default function DashboardPage() {
             {/* Header */}
             <div className="flex justify-between items-end mb-6">
                 <div>
-                    <h1 className="text-3xl font-black font-heading tracking-tight text-white mb-1">COMMAND CENTER</h1>
-                    <p className="text-zinc-500 font-bold font-mono uppercase tracking-widest text-xs">
+                    <h1 className="text-4xl font-black font-heading tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 mb-2">
+                        COMMAND CENTER
+                    </h1>
+                    <p className="text-zinc-400 font-bold font-mono uppercase tracking-widest text-sm">
                         {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </p>
                 </div>
