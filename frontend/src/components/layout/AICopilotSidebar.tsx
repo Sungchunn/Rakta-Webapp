@@ -71,7 +71,26 @@ export default function AICopilotSidebar() {
 
                 {/* Input Area */}
                 <div className="p-4 border-t border-border bg-card">
-                    <div className="relative">
+                    <form
+                        className="relative"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            if (!input.trim()) return;
+
+                            // Add user message
+                            const newMessages = [...messages, { role: "user", content: input }];
+                            setMessages(newMessages);
+                            setInput("");
+
+                            // Simulate AI Response (Mock)
+                            setTimeout(() => {
+                                setMessages(prev => [...prev, {
+                                    role: "assistant",
+                                    content: "I'm analyzing your recent physiological data. Your recovery metrics suggest you are 87% ready for donation. Keep your iron intake high."
+                                }]);
+                            }, 1000);
+                        }}
+                    >
                         <input
                             type="text"
                             value={input}
@@ -79,10 +98,10 @@ export default function AICopilotSidebar() {
                             placeholder="Ask about your recovery..."
                             className="w-full bg-black/20 border border-zinc-700 rounded-lg pl-3 pr-10 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors font-mono"
                         />
-                        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-primary rounded-md text-white hover:bg-primary/90 transition-colors">
+                        <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-primary rounded-md text-white hover:bg-primary/90 transition-colors">
                             <Send className="w-3 h-3" />
                         </button>
-                    </div>
+                    </form>
                 </div>
             </aside>
         </>
