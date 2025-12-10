@@ -1,81 +1,215 @@
+'use client';
+
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+
+const footerLinks = {
+    services: [
+        { label: 'Blood Donation', href: '/donate' },
+        { label: 'Health Tracking', href: '/dashboard' },
+        { label: 'AI Coach', href: '/coach' },
+        { label: 'Find Centers', href: '/donate' },
+    ],
+    about: [
+        { label: 'Our Mission', href: '/about' },
+        { label: 'Partners', href: '/partners' },
+        { label: 'Team', href: '/team' },
+        { label: 'Careers', href: '/careers' },
+    ],
+    support: [
+        { label: 'FAQs', href: '/faq' },
+        { label: 'Contact Us', href: '/contact' },
+        { label: 'Terms of Service', href: '/terms' },
+        { label: 'Privacy Policy', href: '/privacy' },
+    ],
+};
 
 export default function Footer() {
     return (
-        <footer className="bg-card text-card-foreground py-16 border-t border-border">
-            <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <footer
+            style={{
+                background: 'var(--charcoal)',
+                borderTop: '1px solid var(--zinc-border)',
+                padding: '80px 24px 40px',
+            }}
+        >
+            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+                {/* Main Grid */}
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                        gap: '48px',
+                        marginBottom: '64px',
+                    }}
+                >
+                    {/* Brand Column */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        {/* Logo */}
+                        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <motion.svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                animate={{ scale: [1, 1.05, 1] }}
+                                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                            >
+                                <path
+                                    d="M12 21.5C16.1421 21.5 19.5 18.1421 19.5 14C19.5 10.5 12 2.5 12 2.5C12 2.5 4.5 10.5 4.5 14C4.5 18.1421 7.85786 21.5 12 21.5Z"
+                                    fill="var(--arterial-red)"
+                                />
+                            </motion.svg>
+                            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--bone-white)' }}>
+                                Rakta
+                            </span>
+                        </Link>
 
-                {/* Brand */}
-                <div className="flex flex-col gap-6">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-primary">
-                        <path d="M12 21.5C16.1421 21.5 19.5 18.1421 19.5 14C19.5 10.5 12 2.5 12 2.5C12 2.5 4.5 10.5 4.5 14C4.5 18.1421 7.85786 21.5 12 21.5Z" fill="currentColor" />
-                    </svg>
-                    <p className="text-sm text-muted-foreground">Subscribe to our newsletter</p>
-                    <div className="flex gap-2">
-                        <Input type="email" placeholder="Email address" className="bg-background border-border" />
-                        <Button size="icon" variant="secondary">
-                            <ArrowRight className="w-4 h-4" />
-                        </Button>
+                        <p style={{ fontSize: '0.875rem', color: 'var(--iron-silver)', lineHeight: 1.6 }}>
+                            Empowering blood donors to save lives and track their health journey.
+                        </p>
+
+                        {/* Newsletter */}
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                style={{
+                                    flex: 1,
+                                    padding: '12px 16px',
+                                    fontSize: '0.875rem',
+                                    background: 'var(--void-black)',
+                                    border: '1px solid var(--zinc-border)',
+                                    borderRadius: '10px',
+                                    color: 'var(--bone-white)',
+                                    outline: 'none',
+                                }}
+                            />
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                style={{
+                                    padding: '12px 16px',
+                                    background: 'var(--arterial-red)',
+                                    border: 'none',
+                                    borderRadius: '10px',
+                                    cursor: 'pointer',
+                                    color: 'var(--bone-white)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </motion.button>
+                        </div>
+                    </div>
+
+                    {/* Links Columns */}
+                    <div>
+                        <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', fontWeight: 600, color: 'var(--bone-white)', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            Services
+                        </h4>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {footerLinks.services.map((link) => (
+                                <li key={link.label}>
+                                    <Link
+                                        href={link.href}
+                                        style={{ fontSize: '0.9375rem', color: 'var(--iron-silver)', textDecoration: 'none', transition: 'color 0.2s' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--bone-white)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--iron-silver)'}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', fontWeight: 600, color: 'var(--bone-white)', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            About
+                        </h4>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {footerLinks.about.map((link) => (
+                                <li key={link.label}>
+                                    <Link
+                                        href={link.href}
+                                        style={{ fontSize: '0.9375rem', color: 'var(--iron-silver)', textDecoration: 'none', transition: 'color 0.2s' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--bone-white)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--iron-silver)'}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', fontWeight: 600, color: 'var(--bone-white)', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            Support
+                        </h4>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {footerLinks.support.map((link) => (
+                                <li key={link.label}>
+                                    <Link
+                                        href={link.href}
+                                        style={{ fontSize: '0.9375rem', color: 'var(--iron-silver)', textDecoration: 'none', transition: 'color 0.2s' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--bone-white)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--iron-silver)'}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
 
-                {/* Links Column 1 */}
-                <div>
-                    <h4 className="font-semibold mb-4 text-foreground/80">Services</h4>
-                    <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
-                        <li>Email Marketing</li>
-                        <li>Campaigns</li>
-                        <li>Branding</li>
-                        <li>Offline</li>
-                    </ul>
-                </div>
+                {/* Bottom Bar */}
+                <div
+                    style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '16px',
+                        paddingTop: '32px',
+                        borderTop: '1px solid var(--zinc-border)',
+                    }}
+                >
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--iron-silver)' }}>
+                        © 2024 Rakta. All rights reserved.
+                    </p>
 
-                {/* Links Column 2 */}
-                <div>
-                    <h4 className="font-semibold mb-4 text-foreground/80">About</h4>
-                    <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
-                        <li>Our Story</li>
-                        <li>Benefits</li>
-                        <li>Team</li>
-                        <li>Careers</li>
-                    </ul>
-                </div>
-
-                {/* Links Column 3 */}
-                <div>
-                    <h4 className="font-semibold mb-4 text-foreground/80">Help</h4>
-                    <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
-                        <li>FAQs</li>
-                        <li>Contact Us</li>
-                    </ul>
-                </div>
-            </div>
-
-            {/* CTA */}
-            <div className="container mx-auto px-6 mt-12 pt-8 text-center border-t border-border/40">
-                <p className="mb-4 text-muted-foreground">Ready to get started?</p>
-                <Link href="/donate">
-                    <Button variant="default" size="lg" className="bg-primary text-primary-foreground font-bold shadow-[0_0_15px_rgba(255,0,51,0.4)] hover:shadow-[0_0_25px_rgba(255,0,51,0.6)] transition-all">
-                        Donate Now
-                    </Button>
-                </Link>
-            </div>
-
-
-            <div className="container mx-auto px-6 mt-12 pt-8 border-t border-border/20 flex flex-col md:flex-row justify-between text-xs text-muted-foreground/60">
-                <div className="flex gap-8">
-                    <span>Terms & Conditions</span>
-                    <span>Privacy Policy</span>
-                </div>
-
-                <div className="flex gap-4 mt-4 md:mt-0">
-                    {/* Social Icons Placeholder */}
-                    <span>FB</span>
-                    <span>TW</span>
-                    <span>IG</span>
+                    {/* Social Icons */}
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                        {['X', 'IG', 'LI'].map((social) => (
+                            <motion.a
+                                key={social}
+                                href="#"
+                                whileHover={{ scale: 1.1, color: 'var(--bone-white)' }}
+                                style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: 'var(--void-black)',
+                                    border: '1px solid var(--zinc-border)',
+                                    borderRadius: '8px',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 600,
+                                    color: 'var(--iron-silver)',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                {social}
+                            </motion.a>
+                        ))}
+                    </div>
                 </div>
             </div>
         </footer>
