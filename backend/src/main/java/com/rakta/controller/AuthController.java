@@ -29,4 +29,23 @@ public class AuthController {
     public ResponseEntity<AuthDto.AuthResponse> login(@Valid @RequestBody AuthDto.LoginRequest loginRequest) {
         return new ResponseEntity<>(userService.login(loginRequest), HttpStatus.OK);
     }
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<Void> verifyEmail(@org.springframework.web.bind.annotation.RequestParam String token) {
+        userService.verifyEmail(token);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@org.springframework.web.bind.annotation.RequestParam String email) {
+        userService.forgotPassword(email);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@org.springframework.web.bind.annotation.RequestParam String token,
+            @org.springframework.web.bind.annotation.RequestParam String newPassword) {
+        userService.resetPassword(token, newPassword);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

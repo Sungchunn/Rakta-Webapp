@@ -31,16 +31,33 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private Integer age;
-
+    // Physiological Data
+    private java.time.LocalDate dateOfBirth; // Replaces 'age'
     private String gender;
-
     private Double weight;
 
     @Column(name = "blood_type")
     private String bloodType;
 
+    // Contact & Legal
     private String city;
+    private String phone;
+
+    @Column(name = "agreed_to_terms", nullable = false)
+    private boolean agreedToTerms;
+
+    // Authentication Flags
+    @Column(name = "enabled")
+    private boolean enabled; // False until email verified
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "auth_provider")
+    private AuthProvider authProvider;
+
+    public enum AuthProvider {
+        LOCAL,
+        GOOGLE
+    }
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

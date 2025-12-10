@@ -18,17 +18,20 @@ export default function AICopilotSidebar() {
     useEffect(() => {
         // Initialize session
         const initSession = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
             try {
                 // Check if we have a stored session or create new
                 // For now, simplify by creating a new session or getting the last one
-                const sessions = await apiRequest('/v1/coach/sessions');
+                const sessions = await apiRequest('/v1/coach/sessions', 'GET', undefined, token);
                 if (sessions && sessions.length > 0) {
                     setSessionId(sessions[0].id);
                     // Optionally load history:
-                    // const history = await apiRequest(`/v1/coach/sessions/${sessions[0].id}/messages`);
+                    // const history = await apiRequest(`/v1/coach/sessions/${sessions[0].id}/messages`, 'GET', undefined, token);
                     // setMessages(history.map((m: any) => ({ role: m.role.toLowerCase(), content: m.content })));
                 } else {
-                    const newSession = await apiRequest('/v1/coach/sessions', 'POST', { title: "New Recovery Chat" });
+                    const newSession = await apiRequest('/v1/coach/sessions', 'POST', { title: "New Recovery Chat" }, token);
                     setSessionId(newSession.id);
                 }
             } catch (e) {
@@ -47,6 +50,12 @@ export default function AICopilotSidebar() {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
 
+        const token = localStorage.getItem('token');
+        if (!token) {
+            setMessages(prev => [...prev, { role: "assistant", content: "Please log in to chat with the coach." }]);
+            return;
+        }
+
         const userMsg = input;
         setInput("");
         setMessages(prev => [...prev, { role: "user", content: userMsg }]);
@@ -55,12 +64,12 @@ export default function AICopilotSidebar() {
         try {
             let currentSessionId = sessionId;
             if (!currentSessionId) {
-                const newSession = await apiRequest('/v1/coach/sessions', 'POST', { title: "New Recovery Chat" });
+                const newSession = await apiRequest('/v1/coach/sessions', 'POST', { title: "New Recovery Chat" }, token);
                 currentSessionId = newSession.id;
                 setSessionId(newSession.id);
             }
 
-            const response = await apiRequest(`/v1/coach/sessions/${currentSessionId}/messages`, 'POST', { content: userMsg });
+            const response = await apiRequest(`/v1/coach/sessions/${currentSessionId}/messages`, 'POST', { content: userMsg }, token);
 
             // The backend returns the ASSISTANT message that was generated?
             // Usually returns the message object created. 

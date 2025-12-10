@@ -14,9 +14,35 @@ spring:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: update # Flyway might have issues with H2 if scripts are Postgres-specific, so we use update for now
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+  # Email Configuration (SMTP)
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # OAuth2 Configuration (Google)
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            scope:
+              - email
+              - profile
   flyway:
     enabled: false # Disable Flyway for H2 to avoid syntax errors with Postgres-specific SQL
 

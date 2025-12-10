@@ -7,10 +7,13 @@ import BloodCarpet from '@/components/BloodCarpet';
 export default function Template({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
+    // Only show BloodCarpet on landing/marketing pages
+    const showBloodCarpet = pathname === '/' || pathname === '/about' || pathname === '/landing';
+
     return (
         <AnimatePresence mode="wait">
             <div key={pathname}>
-                <BloodCarpet />
+                {showBloodCarpet && <BloodCarpet />}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

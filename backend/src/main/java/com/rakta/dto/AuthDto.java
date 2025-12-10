@@ -30,10 +30,13 @@ public class AuthDto {
         @Size(min = 6, message = "Password must be at least 6 characters")
         private String password;
 
-        private Integer age;
+        private java.time.LocalDate dateOfBirth;
         private String gender;
         private Double weight;
+        private String bloodType;
         private String city;
+        private String phone;
+        private boolean agreedToTerms;
     }
 
     @Data

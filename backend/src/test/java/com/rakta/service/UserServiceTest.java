@@ -3,6 +3,7 @@ package com.rakta.service;
 import com.rakta.dto.AuthDto;
 import com.rakta.entity.User;
 import com.rakta.repository.UserRepository;
+import com.rakta.repository.VerificationTokenRepository;
 import com.rakta.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,10 @@ class UserServiceTest {
     private AuthenticationManager authenticationManager;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private VerificationTokenRepository tokenRepository;
 
     @InjectMocks
     private UserService userService;
@@ -42,14 +47,15 @@ class UserServiceTest {
     }
 
     @Test
-    void register_NewUser_Success() {
+    void register_NewUser_SendsVerificationEmail() {
         // Given
         AuthDto.RegisterRequest request = new AuthDto.RegisterRequest();
         request.setName("Test User");
         request.setEmail("test@example.com");
         request.setPassword("password123");
-        request.setAge(25);
+        request.setDateOfBirth(java.time.LocalDate.of(1995, 1, 1));
         request.setGender("MALE");
+        request.setAgreedToTerms(true);
 
         when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encoded_password");
@@ -59,24 +65,16 @@ class UserServiceTest {
             return u;
         });
 
-        Authentication mockAuth = mock(Authentication.class);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenReturn(mockAuth);
-        when(jwtTokenProvider.generateToken(mockAuth)).thenReturn("mock_jwt_token");
-        when(userRepository.findByEmail("test@example.com"))
-                .thenReturn(Optional.of(User.builder()
-                        .id(1L)
-                        .name("Test User")
-                        .email("test@example.com")
-                        .build()));
-
         // When
         AuthDto.AuthResponse result = userService.register(request);
 
         // Then
-        assertNotNull(result.getToken());
+        assertNull(result.getToken()); // Token should be null until verified
         assertEquals("Test User", result.getName());
         assertEquals("test@example.com", result.getEmail());
+
+        verify(emailService, times(1)).sendVerificationEmail(eq("test@example.com"), anyString());
+        verify(tokenRepository, times(1)).save(any(com.rakta.entity.VerificationToken.class));
     }
 
     @Test
@@ -107,6 +105,7 @@ class UserServiceTest {
                         .id(1L)
                         .name("Test User")
                         .email("test@example.com")
+                        .enabled(true) // Ensure user is enabled
                         .build()));
 
         // When
