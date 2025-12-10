@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
             )}
 
             <div className={styles.footer}>
-                <Link href="/auth/login" className="text-primary hover:underline">Back to Login</Link>
+                <Link href="/login" className="text-primary hover:underline">Back to Login</Link>
             </div>
         </div>
     );

@@ -61,7 +61,7 @@ export default function RegisterPage() {
 
             // Redirect to verify page instead of dashboard
             toast.success("Account created! Please check your email for verification.");
-            router.push(`/auth/verify?email=${encodeURIComponent(formData.email)}`);
+            router.push(`/verify?email=${encodeURIComponent(formData.email)}`);
         } catch (err: any) {
             toast.error(err.message || "Registration failed");
         } finally {
@@ -235,7 +235,7 @@ export default function RegisterPage() {
 
             </form>
             <div className={styles.footer}>
-                Already have an account? <Link href="/auth/login" className="text-primary hover:underline">Login here</Link>
+                Already have an account? <Link href="/login" className="text-primary hover:underline">Login here</Link>
             </div>
         </div>
     );

@@ -74,9 +74,9 @@ export default function LoginPage() {
                 </button>
             </form>
             <div className={styles.footer}>
-                Don't have an account? <Link href="/auth/register">Register here</Link>
+                Don't have an account? <Link href="/signup">Register here</Link>
                 <br />
-                <Link href="/auth/forgot-password" className="text-sm text-zinc-400 hover:text-white mt-2 inline-block">Forgot password?</Link>
+                <Link href="/forgot-password" className="text-sm text-zinc-400 hover:text-white mt-2 inline-block">Forgot password?</Link>
             </div>
         </div>
     );
