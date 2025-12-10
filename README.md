@@ -2,6 +2,12 @@
 
 A full-stack web application designed to help people build a consistent, healthy, and proud blood-donation habit. Rakta empowers users to track their donation journey, monitor health readiness, and find nearby donation centers.
 
+## Demo
+
+![Rakta Demo Walkthrough](assets/demo.webp)
+
+*Landing page with dark "Liquid Precision" theme, featuring hero section, donation steps, and footer.*
+
 ## Overview
 
 Rakta provides comprehensive tools for blood donors:
