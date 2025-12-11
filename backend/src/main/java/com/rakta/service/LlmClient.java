@@ -1,20 +1,28 @@
 package com.rakta.service;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class LlmClient {
+
+    private static final String LLM_SERVICE = "openai";
+    private static final Duration TIMEOUT = Duration.ofSeconds(30);
+    private static final String FALLBACK_RESPONSE = "I'm having trouble connecting right now. Please try again in a moment.";
 
     private final WebClient openAiWebClient;
 
@@ -24,29 +32,49 @@ public class LlmClient {
     @Value("${openai.temperature:0.7}")
     private double temperature;
 
+    @CircuitBreaker(name = LLM_SERVICE, fallbackMethod = "fallbackResponse")
+    @Retry(name = LLM_SERVICE, fallbackMethod = "fallbackResponse")
     public String generateCoachReply(LlmCoachRequest request) {
-        try {
-            OpenAiChatRequest chatRequest = buildChatRequest(request);
+        log.debug("Sending request to OpenAI for session: {}", request.getSessionId());
 
-            OpenAiChatResponse response = openAiWebClient.post()
-                    .uri("/chat/completions")
-                    .bodyValue(chatRequest)
-                    .retrieve()
-                    .bodyToMono(OpenAiChatResponse.class)
-                    .block();
+        OpenAiChatRequest chatRequest = buildChatRequest(request);
 
-            if (response != null && !response.getChoices().isEmpty()) {
-                return response.getChoices().get(0).getMessage().getContent();
-            }
-            return "I'm sorry, I couldn't generate a response at this time.";
+        OpenAiChatResponse response = openAiWebClient.post()
+                .uri("/chat/completions")
+                .bodyValue(chatRequest)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                    if (clientResponse.statusCode().value() == 429) {
+                        log.warn("OpenAI rate limit hit (429). Will retry with backoff.");
+                        return clientResponse.createException();
+                    }
+                    return clientResponse.createException();
+                })
+                .bodyToMono(OpenAiChatResponse.class)
+                .timeout(TIMEOUT)
+                .block();
 
-        } catch (WebClientResponseException e) {
-            log.error("OpenAI API error: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            return "I'm having trouble connecting to my brain right now. Please try again later.";
-        } catch (Exception e) {
-            log.error("Unexpected error calling OpenAI", e);
-            return "Something went wrong. Please try again.";
+        if (response != null && !response.getChoices().isEmpty()) {
+            log.debug("Received successful response from OpenAI");
+            return response.getChoices().get(0).getMessage().getContent();
         }
+
+        log.warn("OpenAI returned empty response");
+        return FALLBACK_RESPONSE;
+    }
+
+    /**
+     * Fallback method invoked when circuit breaker opens or retries exhausted.
+     */
+    @SuppressWarnings("unused")
+    private String fallbackResponse(LlmCoachRequest request, Throwable t) {
+        if (t instanceof WebClientResponseException wce) {
+            log.error("OpenAI API error after retries: {} - {}",
+                    wce.getStatusCode(), wce.getResponseBodyAsString());
+        } else {
+            log.error("OpenAI call failed after retries: {}", t.getMessage());
+        }
+        return FALLBACK_RESPONSE;
     }
 
     private OpenAiChatRequest buildChatRequest(LlmCoachRequest request) {
