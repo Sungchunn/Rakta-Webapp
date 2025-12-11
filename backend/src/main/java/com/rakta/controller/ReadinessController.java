@@ -34,26 +34,42 @@ public class ReadinessController {
     @PostMapping("/health/daily")
     public ResponseEntity<ReadinessSnapshot> submitDailyMetric(@RequestBody @Valid DailyMetricDto metricDto) {
         User user = getAuthenticatedUser();
+        LocalDate targetDate = metricDto.getDate() != null ? metricDto.getDate() : LocalDate.now();
 
-        DailyMetric metric = DailyMetric.builder()
-                .user(user)
-                .date(metricDto.getDate() != null ? metricDto.getDate() : LocalDate.now())
-                .sleepHours(metricDto.getSleepHours())
-                .sleepEfficiency(metricDto.getSleepEfficiency())
-                .trainingLoadAcute(metricDto.getTrainingLoadAcute())
-                .restingHeartRate(metricDto.getRestingHeartRate())
-                .hrvMs(metricDto.getHrvMs())
-                .ironIntakeScore(metricDto.getIronIntakeScore())
-                .energyLevel(metricDto.getEnergyLevel())
-                .source(metricDto.getSource())
-                .build();
+        // Upsert: Find existing metric for this user/date or create new
+        DailyMetric metric = dailyMetricRepository.findByUserIdAndDate(user.getId(), targetDate)
+                .orElse(DailyMetric.builder()
+                        .user(user)
+                        .date(targetDate)
+                        .build());
 
-        // Save metric
+        // Update fields (merge new values with existing)
+        if (metricDto.getSleepHours() != null)
+            metric.setSleepHours(metricDto.getSleepHours());
+        if (metricDto.getSleepEfficiency() != null)
+            metric.setSleepEfficiency(metricDto.getSleepEfficiency());
+        if (metricDto.getTrainingLoadAcute() != null)
+            metric.setTrainingLoadAcute(metricDto.getTrainingLoadAcute());
+        if (metricDto.getRestingHeartRate() != null)
+            metric.setRestingHeartRate(metricDto.getRestingHeartRate());
+        if (metricDto.getHrvMs() != null)
+            metric.setHrvMs(metricDto.getHrvMs());
+        if (metricDto.getIronIntakeScore() != null)
+            metric.setIronIntakeScore(metricDto.getIronIntakeScore());
+        if (metricDto.getEnergyLevel() != null)
+            metric.setEnergyLevel(metricDto.getEnergyLevel());
+        if (metricDto.getSource() != null)
+            metric.setSource(metricDto.getSource());
+
+        // Save metric (insert or update)
         dailyMetricRepository.save(metric);
 
         // Calculate and return snapshot
         ReadinessSnapshot snapshot = readinessService.processDailyMetric(metric);
-        return ResponseEntity.status(HttpStatus.CREATED).body(snapshot);
+
+        // Return 200 OK for update, 201 CREATED for new (based on ID presence before
+        // save)
+        return ResponseEntity.status(HttpStatus.OK).body(snapshot);
     }
 
     @GetMapping("/readiness/current")
