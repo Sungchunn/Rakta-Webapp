@@ -1,3 +1,5 @@
+import { getToken } from './auth';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 
 export async function apiRequest(endpoint: string, method: string = 'GET', body?: any, token?: string) {
@@ -5,8 +7,10 @@ export async function apiRequest(endpoint: string, method: string = 'GET', body?
         'Content-Type': 'application/json',
     };
 
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+    // Use provided token or get from cookies/localStorage
+    const authToken = token ?? getToken();
+    if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${API_URL}${endpoint}`, {
@@ -22,3 +26,4 @@ export async function apiRequest(endpoint: string, method: string = 'GET', body?
 
     return response.json();
 }
+

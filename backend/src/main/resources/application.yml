@@ -33,13 +33,14 @@ spring:
             enable: true
 
   # OAuth2 Configuration (Google)
+  # For local dev without real OAuth, use placeholder values
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID:}
-            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            client-id: ${GOOGLE_CLIENT_ID:placeholder-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:placeholder-secret}
             scope:
               - email
               - profile

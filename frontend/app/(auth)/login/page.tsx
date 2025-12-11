@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { apiRequest } from '@/lib/api';
+import { setAuthCookies } from '@/lib/auth';
 import styles from '../auth.module.css';
 
 export default function LoginPage() {
@@ -18,8 +19,8 @@ export default function LoginPage() {
 
         try {
             const data = await apiRequest('/auth/login', 'POST', { email, password });
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify({ name: data.name, email: data.email }));
+            // Use cookie-based auth for SSR/middleware compatibility
+            setAuthCookies(data.token, { name: data.name, email: data.email });
             router.push('/dashboard');
         } catch (err: any) {
             setError(err.message);
