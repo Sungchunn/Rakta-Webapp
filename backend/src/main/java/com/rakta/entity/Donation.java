@@ -29,8 +29,9 @@ public class Donation {
     @Column(nullable = false)
     private LocalDate donationDate;
 
-    @Column(nullable = false)
-    private String donationType; // "WHOLE_BLOOD", "PLATELETS", "PLASMA"
+    @Enumerated(EnumType.STRING)
+    @Column(name = "donation_type", nullable = false)
+    private DonationType donationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")

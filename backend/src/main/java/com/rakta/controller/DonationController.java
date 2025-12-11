@@ -1,6 +1,7 @@
 package com.rakta.controller;
 
 import com.rakta.entity.Donation;
+import com.rakta.entity.DonationType;
 import com.rakta.service.DonationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,6 @@ public class DonationController {
         return new ResponseEntity<>(donationService.checkEligibility(authentication.getName()), HttpStatus.OK);
     }
 
-    public record DonationRequest(java.time.LocalDate date, String type, Long locationId, String notes) {
+    public record DonationRequest(java.time.LocalDate date, DonationType type, Long locationId, String notes) {
     }
 }

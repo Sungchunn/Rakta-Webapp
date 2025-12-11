@@ -1,6 +1,7 @@
 package com.rakta.service;
 
 import com.rakta.entity.Donation;
+import com.rakta.entity.DonationType;
 
 import com.rakta.entity.User;
 import com.rakta.repository.DonationLocationRepository;
@@ -53,7 +54,7 @@ class DonationServiceTest {
                 .id(1L)
                 .user(testUser)
                 .donationDate(LocalDate.now().minusDays(30))
-                .donationType("WHOLE_BLOOD")
+                .donationType(DonationType.WHOLE_BLOOD)
                 .build();
 
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
@@ -64,7 +65,7 @@ class DonationServiceTest {
 
         // Then
         assertEquals(1, result.size());
-        assertEquals("WHOLE_BLOOD", result.get(0).getDonationType());
+        assertEquals(DonationType.WHOLE_BLOOD, result.get(0).getDonationType());
     }
 
     @Test
@@ -72,7 +73,7 @@ class DonationServiceTest {
         // Given
         Donation request = Donation.builder()
                 .donationDate(LocalDate.now())
-                .donationType("PLATELETS")
+                .donationType(DonationType.PLATELETS)
                 .notes("Test donation")
                 .build();
 
@@ -88,7 +89,7 @@ class DonationServiceTest {
 
         // Then
         assertNotNull(result.getId());
-        assertEquals("PLATELETS", result.getDonationType());
+        assertEquals(DonationType.PLATELETS, result.getDonationType());
         assertEquals(testUser, result.getUser());
     }
 
@@ -113,7 +114,7 @@ class DonationServiceTest {
                 .id(1L)
                 .user(testUser)
                 .donationDate(LocalDate.now().minusDays(10))
-                .donationType("WHOLE_BLOOD")
+                .donationType(DonationType.WHOLE_BLOOD)
                 .build();
 
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
@@ -134,7 +135,7 @@ class DonationServiceTest {
                 .id(1L)
                 .user(testUser)
                 .donationDate(LocalDate.now().minusDays(60))
-                .donationType("WHOLE_BLOOD")
+                .donationType(DonationType.WHOLE_BLOOD)
                 .build();
 
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
