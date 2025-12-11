@@ -1,7 +1,7 @@
 package com.rakta.controller;
 
-import com.rakta.entity.Location;
-import com.rakta.repository.LocationRepository;
+import com.rakta.entity.DonationLocation;
+import com.rakta.repository.DonationLocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class LocationControllerTest {
 
     @Mock
-    private LocationRepository locationRepository;
+    private DonationLocationRepository locationRepository;
 
     @InjectMocks
     private LocationController locationController;
@@ -30,54 +30,52 @@ class LocationControllerTest {
     }
 
     @Test
-    void getLocations_ReturnsActiveLocations() {
+    void getLocations_ReturnsAllLocations() {
         // Given
-        Location nbc = Location.builder()
+        DonationLocation hospital = DonationLocation.builder()
                 .id(1L)
-                .nameEn("National Blood Centre (NBC)")
-                .type("HQ")
-                .lat(13.7323)
-                .lng(100.5312)
-                .nearestTransport("MRT Samyan (Exit 2)")
-                .openHours("Mon-Fri: 07:30 - 19:30")
-                .isActive(true)
+                .name("City General Hospital")
+                .type("HOSPITAL")
+                .address("123 Main St")
+                .latitude(40.7128)
+                .longitude(-74.0060)
+                .contactInfo("555-0101")
+                .openingHours("Mon-Fri 8am-5pm")
                 .build();
 
-        Location mall = Location.builder()
+        DonationLocation mobile = DonationLocation.builder()
                 .id(2L)
-                .nameEn("The Mall Bangkae")
-                .type("MALL")
-                .lat(13.7135)
-                .lng(100.4078)
-                .nearestTransport("MRT Lak Song")
-                .openHours("Daily: 12:00 - 18:00")
-                .isActive(true)
+                .name("Community Center Drive")
+                .type("MOBILE_VAN")
+                .address("456 Park Ave")
+                .latitude(40.7138)
+                .longitude(-74.0070)
                 .build();
 
-        when(locationRepository.findByIsActiveTrue()).thenReturn(List.of(nbc, mall));
+        when(locationRepository.findAll()).thenReturn(List.of(hospital, mobile));
 
         // When
-        ResponseEntity<List<Location>> response = locationController.getLocations();
+        ResponseEntity<List<DonationLocation>> response = locationController.getLocations();
 
         // Then
         assertEquals(200, response.getStatusCode().value());
         assertEquals(2, response.getBody().size());
 
         // Verify lat/lng for map visualization
-        Location firstLocation = response.getBody().get(0);
-        assertNotNull(firstLocation.getLat());
-        assertNotNull(firstLocation.getLng());
-        assertEquals(13.7323, firstLocation.getLat());
-        assertEquals(100.5312, firstLocation.getLng());
+        DonationLocation firstLocation = response.getBody().get(0);
+        assertNotNull(firstLocation.getLatitude());
+        assertNotNull(firstLocation.getLongitude());
+        assertEquals(40.7128, firstLocation.getLatitude());
+        assertEquals(-74.0060, firstLocation.getLongitude());
     }
 
     @Test
     void getLocations_EmptyList() {
         // Given
-        when(locationRepository.findByIsActiveTrue()).thenReturn(List.of());
+        when(locationRepository.findAll()).thenReturn(List.of());
 
         // When
-        ResponseEntity<List<Location>> response = locationController.getLocations();
+        ResponseEntity<List<DonationLocation>> response = locationController.getLocations();
 
         // Then
         assertEquals(200, response.getStatusCode().value());
@@ -85,21 +83,23 @@ class LocationControllerTest {
     }
 
     @Test
-    void getLocations_FiltersInactiveLocations() {
-        // Given - only active locations returned by repository method
-        Location activeLocation = Location.builder()
+    void getLocations_VerifiesLocationDetails() {
+        // Given
+        DonationLocation location = DonationLocation.builder()
                 .id(1L)
-                .nameEn("Active Location")
-                .isActive(true)
+                .name("Test Blood Bank")
+                .type("HOSPITAL")
+                .address("Test Address")
                 .build();
 
-        when(locationRepository.findByIsActiveTrue()).thenReturn(List.of(activeLocation));
+        when(locationRepository.findAll()).thenReturn(List.of(location));
 
         // When
-        ResponseEntity<List<Location>> response = locationController.getLocations();
+        ResponseEntity<List<DonationLocation>> response = locationController.getLocations();
 
         // Then
         assertEquals(1, response.getBody().size());
-        assertTrue(response.getBody().get(0).getIsActive());
+        assertEquals("Test Blood Bank", response.getBody().get(0).getName());
+        assertEquals("HOSPITAL", response.getBody().get(0).getType());
     }
 }

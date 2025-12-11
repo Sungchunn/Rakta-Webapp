@@ -10,6 +10,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @deprecated This entity maps to 'locations' table which is not created by
+ *             Flyway migrations.
+ *             Use {@link DonationLocation} instead, which maps to
+ *             'donation_locations' table
+ *             (created in V2__create_location_table.sql) and is the FK target
+ *             for Donation.
+ *             This class will be removed in a future version.
+ * @see DonationLocation
+ */
+@Deprecated(since = "MVP", forRemoval = true)
 @Entity
 @Table(name = "locations")
 @Data

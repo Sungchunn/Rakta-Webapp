@@ -1,7 +1,7 @@
 package com.rakta.controller;
 
-import com.rakta.entity.Location;
-import com.rakta.repository.LocationRepository;
+import com.rakta.entity.DonationLocation;
+import com.rakta.repository.DonationLocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,15 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * REST API for browsing donation locations/centers.
+ */
 @RestController
 @RequestMapping("/api/locations")
 @RequiredArgsConstructor
 public class LocationController {
 
-    private final LocationRepository locationRepository;
+    private final DonationLocationRepository locationRepository;
 
     @GetMapping
-    public ResponseEntity<List<Location>> getLocations() {
-        return ResponseEntity.ok(locationRepository.findByIsActiveTrue());
+    public ResponseEntity<List<DonationLocation>> getLocations() {
+        return ResponseEntity.ok(locationRepository.findAll());
     }
 }
