@@ -4,7 +4,7 @@ A full-stack web application designed to help people build a consistent, healthy
 
 ## Demo
 
-![Rakta Demo Walkthrough](assets/demo.webp)
+![Rakta Demo Walkthrough](assets/landing_verification_1765355131723.webp)
 
 *Landing page with dark "Liquid Precision" theme, featuring hero section, donation steps, and footer.*
 
