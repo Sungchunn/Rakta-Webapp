@@ -41,14 +41,22 @@ public class CommunityService {
         userFollowRepository.deleteByFollowerIdAndFollowingId(follower.getId(), followingId);
     }
 
+    /**
+     * Get list of users that this user is following.
+     * Uses JOIN FETCH to load all users in a single query (no N+1).
+     */
     public List<User> getFollowing(Long userId) {
-        return userFollowRepository.findByFollowerId(userId).stream()
+        return userFollowRepository.findByFollowerIdWithFollowing(userId).stream()
                 .map(UserFollow::getFollowing)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get list of users that follow this user.
+     * Uses JOIN FETCH to load all users in a single query (no N+1).
+     */
     public List<User> getFollowers(Long userId) {
-        return userFollowRepository.findByFollowingId(userId).stream()
+        return userFollowRepository.findByFollowingIdWithFollower(userId).stream()
                 .map(UserFollow::getFollower)
                 .collect(Collectors.toList());
     }
