@@ -152,6 +152,19 @@
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.9.22</version>
 		</dependency>
+		<!-- MockWebServer for WebClient testing -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>4.12.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.12.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
