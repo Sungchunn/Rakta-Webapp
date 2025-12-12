@@ -11,6 +11,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * User entity representing registered application users.
+ * Contains personal info, physiological data, and account status.
+ * Users are enabled immediately upon registration (no email verification).
+ */
 @Data
 @Builder
 @NoArgsConstructor

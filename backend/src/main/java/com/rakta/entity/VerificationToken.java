@@ -6,12 +6,21 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity for storing verification tokens used for password reset.
+ * Tokens are single-use and expire after 30 minutes.
+ */
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "verification_tokens")
 public class VerificationToken {
 
+    /**
+     * Token types supported by the system.
+     * Currently only PASSWORD_RESET is implemented.
+     * Kept as enum for future extensibility (e.g., account recovery, 2FA).
+     */
     public enum TokenType {
         PASSWORD_RESET
     }
