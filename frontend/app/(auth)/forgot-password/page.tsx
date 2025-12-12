@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { apiRequest } from '@/lib/api';
 import styles from '../auth.module.css';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ForgotPasswordPage() {
@@ -21,18 +20,20 @@ export default function ForgotPasswordPage() {
         setIsLoading(true);
 
         try {
-            await apiRequest(`/auth/forgot-password?email=${encodeURIComponent(email)}`, 'POST');
+            // API now expects JSON body: { email: "..." }
+            await apiRequest('/auth/forgot-password', 'POST', { email });
             setIsSubmitted(true);
-            toast.success("Reset link sent to your email.");
-        } catch (err: any) {
-            toast.error(err.message || "Failed to send reset link");
+            // Don't show specific message for security - same response whether email exists or not
+        } catch (err: unknown) {
+            // Still show success message for security (don't reveal if email exists)
+            setIsSubmitted(true);
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className={styles.container} style={{ maxWidth: '400px' }}>
+        <div className={styles.container} style={{ maxWidth: '420px' }}>
             <h2 className={styles.title}>Forgot Password</h2>
 
             {!isSubmitted ? (
@@ -42,32 +43,75 @@ export default function ForgotPasswordPage() {
                     </p>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <Label>Email</Label>
-                            <Input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                className="bg-zinc-950 border-zinc-800"
-                            />
+                            <Label htmlFor="email">Email Address</Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="john@example.com"
+                                    required
+                                    className="bg-zinc-950 border-zinc-800 pl-10"
+                                />
+                            </div>
                         </div>
 
-                        <Button type="submit" className="w-full mt-6" disabled={isLoading}>
-                            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Send Reset Link
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={isLoading}
+                            size="lg"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Sending...
+                                </>
+                            ) : (
+                                'Send Reset Link'
+                            )}
                         </Button>
                     </form>
                 </>
             ) : (
                 <div className="text-center space-y-4">
-                    <p className="text-green-400">Check your email for the reset link.</p>
-                    <p className="text-zinc-400 text-sm">Didn't receive it? Check your spam folder.</p>
+                    <div className="flex justify-center">
+                        <div className="rounded-full bg-green-500/10 p-3">
+                            <CheckCircle2 className="h-8 w-8 text-green-500" />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <p className="text-green-400 font-medium">Check your email</p>
+                        <p className="text-zinc-400 text-sm">
+                            If an account exists with <span className="text-white">{email}</span>,
+                            you will receive a password reset link shortly.
+                        </p>
+                        <p className="text-zinc-500 text-xs mt-4">
+                            Didn't receive it? Check your spam folder or try again.
+                        </p>
+                    </div>
+                    <Button
+                        variant="outline"
+                        onClick={() => setIsSubmitted(false)}
+                        className="mt-4"
+                    >
+                        Try another email
+                    </Button>
                 </div>
             )}
 
             <div className={styles.footer}>
-                <Link href="/login" className="text-primary hover:underline">Back to Login</Link>
+                <Link
+                    href="/login"
+                    className="text-primary hover:underline inline-flex items-center gap-1"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Login
+                </Link>
             </div>
         </div>
     );
 }
+

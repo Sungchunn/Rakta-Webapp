@@ -13,8 +13,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PasswordInput } from "@/components/ui/password-input";
 import { format } from "date-fns";
-import { CalendarIcon, Loader2, Phone } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -68,6 +69,7 @@ export default function RegisterPage() {
         lastName: '',
         email: '',
         password: '',
+        confirmPassword: '',
         countryCode: '+66', // Default to Thailand
         phoneNumber: '',
         city: '',
@@ -105,6 +107,12 @@ export default function RegisterPage() {
             }
             if (!formData.phoneNumber.trim()) {
                 throw new Error("Phone number is required.");
+            }
+            if (formData.password !== formData.confirmPassword) {
+                throw new Error("Passwords do not match.");
+            }
+            if (formData.password.length < 6) {
+                throw new Error("Password must be at least 6 characters.");
             }
 
             // Build payload matching backend RegisterRequest DTO
@@ -180,28 +188,41 @@ export default function RegisterPage() {
                     </div>
                 </div>
 
-                {/* Email and Password */}
+                {/* Email */}
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+                    <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => handleChange('email', e.target.value)}
+                        placeholder="john@example.com"
+                        required
+                        className="bg-zinc-950 border-zinc-800"
+                    />
+                </div>
+
+                {/* Password and Confirm Password */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => handleChange('email', e.target.value)}
-                            placeholder="john@example.com"
+                        <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
+                        <PasswordInput
+                            id="password"
+                            value={formData.password}
+                            onChange={(e) => handleChange('password', e.target.value)}
+                            placeholder="Min 6 characters"
                             required
+                            minLength={6}
                             className="bg-zinc-950 border-zinc-800"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            value={formData.password}
-                            onChange={(e) => handleChange('password', e.target.value)}
-                            placeholder="Min 6 characters"
+                        <Label htmlFor="confirmPassword">Confirm Password <span className="text-red-500">*</span></Label>
+                        <PasswordInput
+                            id="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                            placeholder="Re-enter password"
                             required
                             minLength={6}
                             className="bg-zinc-950 border-zinc-800"
