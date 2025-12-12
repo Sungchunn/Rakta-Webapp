@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,15 +48,18 @@ class UserServiceTest {
     }
 
     @Test
-    void register_NewUser_SendsVerificationEmail() {
-        // Given
+    void register_NewUser_ReturnsTokenImmediately() {
+        // Given - Updated to use new DTO fields
         AuthDto.RegisterRequest request = new AuthDto.RegisterRequest();
-        request.setName("Test User");
+        request.setFirstName("Test");
+        request.setLastName("User");
         request.setEmail("test@example.com");
         request.setPassword("password123");
-        request.setDateOfBirth(java.time.LocalDate.of(1995, 1, 1));
+        request.setPhone("+66123456789");
+        request.setDateOfBirth(LocalDate.of(1995, 1, 1));
         request.setGender("MALE");
-        request.setAgreedToTerms(true);
+        request.setCity("Bangkok");
+        request.setTermsAccepted(true);
 
         when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encoded_password");
@@ -65,16 +69,24 @@ class UserServiceTest {
             return u;
         });
 
+        // Mock authentication for immediate token generation
+        Authentication mockAuth = mock(Authentication.class);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(mockAuth);
+        when(jwtTokenProvider.generateToken(mockAuth)).thenReturn("mock_jwt_token");
+
         // When
         AuthDto.AuthResponse result = userService.register(request);
 
-        // Then
-        assertNull(result.getToken()); // Token should be null until verified
-        assertEquals("Test User", result.getName());
+        // Then - Users now get token immediately (no email verification)
+        assertNotNull(result.getToken());
+        assertEquals("mock_jwt_token", result.getToken());
+        assertEquals("Test", result.getFirstName());
+        assertEquals("User", result.getLastName());
         assertEquals("test@example.com", result.getEmail());
 
-        verify(emailService, times(1)).sendVerificationEmail(eq("test@example.com"), anyString());
-        verify(tokenRepository, times(1)).save(any(com.rakta.entity.VerificationToken.class));
+        // Verify NO verification email is sent (email verification removed)
+        verify(emailService, never()).sendPasswordResetEmail(anyString(), anyString());
     }
 
     @Test
@@ -103,9 +115,11 @@ class UserServiceTest {
         when(userRepository.findByEmail("test@example.com"))
                 .thenReturn(Optional.of(User.builder()
                         .id(1L)
-                        .name("Test User")
+                        .firstName("Test")
+                        .lastName("User")
                         .email("test@example.com")
-                        .enabled(true) // Ensure user is enabled
+                        .enabled(true)
+                        .termsAccepted(true)
                         .build()));
 
         // When
@@ -113,6 +127,7 @@ class UserServiceTest {
 
         // Then
         assertEquals("mock_jwt_token", result.getToken());
-        assertEquals("Test User", result.getName());
+        assertEquals("Test", result.getFirstName());
+        assertEquals("User", result.getLastName());
     }
 }

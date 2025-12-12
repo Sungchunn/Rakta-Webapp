@@ -39,7 +39,7 @@ public class CommunityController {
     public ResponseEntity<List<UserDto>> getFollowing() {
         User user = getAuthenticatedUser();
         List<UserDto> following = communityService.getFollowing(user.getId()).stream()
-                .map(u -> new UserDto(u.getId(), u.getName(), u.getCity()))
+                .map(u -> new UserDto(u.getId(), u.getFullName(), u.getCity()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(following);
     }
@@ -48,7 +48,7 @@ public class CommunityController {
     public ResponseEntity<List<UserDto>> getFollowers() {
         User user = getAuthenticatedUser();
         List<UserDto> followers = communityService.getFollowers(user.getId()).stream()
-                .map(u -> new UserDto(u.getId(), u.getName(), u.getCity()))
+                .map(u -> new UserDto(u.getId(), u.getFullName(), u.getCity()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(followers);
     }
@@ -64,7 +64,7 @@ public class CommunityController {
     @RequiredArgsConstructor
     public static class UserDto {
         private final Long id;
-        private final String name;
+        private final String fullName;
         private final String city;
     }
 }

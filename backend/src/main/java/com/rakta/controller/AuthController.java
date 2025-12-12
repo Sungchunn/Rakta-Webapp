@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -20,32 +22,40 @@ public class AuthController {
         this.userService = userService;
     }
 
+    /**
+     * Register a new user account.
+     * Users are enabled immediately - no email verification required.
+     */
     @PostMapping("/register")
     public ResponseEntity<AuthDto.AuthResponse> register(@Valid @RequestBody AuthDto.RegisterRequest registerRequest) {
         return new ResponseEntity<>(userService.register(registerRequest), HttpStatus.CREATED);
     }
 
+    /**
+     * Login with email and password.
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthDto.AuthResponse> login(@Valid @RequestBody AuthDto.LoginRequest loginRequest) {
         return new ResponseEntity<>(userService.login(loginRequest), HttpStatus.OK);
     }
 
-    @PostMapping("/verify-email")
-    public ResponseEntity<Void> verifyEmail(@org.springframework.web.bind.annotation.RequestParam String token) {
-        userService.verifyEmail(token);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
+    /**
+     * Request a password reset email.
+     */
     @PostMapping("/forgot-password")
-    public ResponseEntity<Void> forgotPassword(@org.springframework.web.bind.annotation.RequestParam String email) {
-        userService.forgotPassword(email);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Map<String, String>> forgotPassword(
+            @Valid @RequestBody AuthDto.ForgotPasswordRequest request) {
+        userService.forgotPassword(request.getEmail());
+        return ResponseEntity
+                .ok(Map.of("message", "If an account exists with this email, a password reset link has been sent."));
     }
 
+    /**
+     * Reset password using the token from email.
+     */
     @PostMapping("/reset-password")
-    public ResponseEntity<Void> resetPassword(@org.springframework.web.bind.annotation.RequestParam String token,
-            @org.springframework.web.bind.annotation.RequestParam String newPassword) {
-        userService.resetPassword(token, newPassword);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody AuthDto.ResetPasswordRequest request) {
+        userService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok(Map.of("message", "Password has been reset successfully. You may now login."));
     }
 }

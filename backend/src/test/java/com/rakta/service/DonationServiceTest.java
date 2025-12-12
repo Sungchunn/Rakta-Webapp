@@ -42,8 +42,10 @@ class DonationServiceTest {
     void setUp() {
         testUser = User.builder()
                 .id(1L)
-                .name("Test User")
+                .firstName("Test")
+                .lastName("User")
                 .email("test@example.com")
+                .termsAccepted(true)
                 .build();
     }
 
