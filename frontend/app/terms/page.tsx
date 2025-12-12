@@ -5,9 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-import { ArrowLeft } from "lucide-react";
-import Link from 'next/link';
+import { X } from "lucide-react";
 
 export default function TermsPage() {
     const router = useRouter();
@@ -15,84 +13,97 @@ export default function TermsPage() {
 
     const handleAgree = () => {
         if (hasAgreed) {
-            router.back(); // Go back to signup/previous page
+            router.back();
         }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6">
             {/* Modal Container */}
-            <div className="flex h-[85vh] w-full max-w-[640px] flex-col overflow-hidden rounded-2xl bg-[#18181B] shadow-2xl ring-1 ring-white/10">
+            <div className="flex h-full max-h-[800px] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-[#18181B] shadow-2xl ring-1 ring-white/10">
 
                 {/* Header */}
-                <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
-                    <h1 className="text-xl font-bold text-white tracking-tight">Rakta Terms of Service</h1>
-                    <span className="text-xs font-medium text-zinc-500 uppercase tracking-widest">Legal</span>
+                <div className="flex items-center justify-between border-b border-white/5 px-8 py-6 bg-[#18181B]/50">
+                    <div>
+                        <h1 className="text-2xl font-bold text-white tracking-tight">Rakta Terms of Service</h1>
+                        <p className="text-zinc-400 text-sm mt-1">Last updated: December 13, 2025</p>
+                    </div>
+                    {/* Optional close button for non-mandatory flows */}
+                    <button onClick={() => router.back()} className="rounded-full p-2 text-zinc-500 hover:bg-white/5 hover:text-white transition-colors">
+                        <X className="h-5 w-5" />
+                    </button>
                 </div>
 
                 {/* Scrollable Content */}
                 <ScrollArea className="flex-1 bg-[#18181B] px-8">
-                    <div className="pb-8 pt-6">
-                        <div className="prose prose-invert prose-zinc max-w-none prose-headings:font-bold prose-h2:text-white prose-h2:mt-8 prose-h2:mb-4 prose-p:text-zinc-300 prose-p:leading-relaxed prose-li:text-zinc-300">
+                    <div className="flex flex-col gap-8 pb-8 pt-8">
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-bold text-white uppercase tracking-wide">1. Acceptance of Terms</h2>
+                            <p className="text-zinc-300 leading-7">
+                                By creating an account, accessing, or using Rakta in any manner, you acknowledge that you have read, understood, and agree to be bound by these Terms and all applicable laws and regulations. You represent that you are at least 17 years of age (or the minimum age required for blood donation in your jurisdiction) and have the legal capacity to enter into this agreement.
+                            </p>
+                        </div>
 
-                            <p className="text-zinc-400 text-sm mb-8 font-mono">Last Updated: December 13, 2025</p>
+                        <div className="space-y-6">
+                            <h2 className="text-lg font-bold text-white uppercase tracking-wide">2. Medical Disclaimer and Health Information</h2>
 
-                            <h2>1. ACCEPTANCE OF TERMS</h2>
-                            <p>By creating an account, accessing, or using Rakta in any manner, you acknowledge that you have read, understood, and agree to be bound by these Terms and all applicable laws and regulations. You represent that you are at least 17 years of age (or the minimum age required for blood donation in your jurisdiction) and have the legal capacity to enter into this agreement.</p>
+                            <div className="pl-4 border-l-2 border-white/10 space-y-2">
+                                <h3 className="text-base font-semibold text-white">2.1 Not a Medical Device or Service</h3>
+                                <div className="text-zinc-300 leading-7">
+                                    <span className="text-red-400 font-medium">IMPORTANT NOTICE:</span> Rakta is NOT a medical device, does NOT provide medical advice, diagnosis, or treatment, and should NOT be used as a substitute for professional medical consultation. The Application is designed solely for informational and educational purposes.
+                                </div>
+                            </div>
 
-                            <h2>2. MEDICAL DISCLAIMER AND HEALTH INFORMATION</h2>
+                            <div className="pl-4 border-l-2 border-white/10 space-y-2">
+                                <h3 className="text-base font-semibold text-white">2.2 AI-Powered Coaching Limitations</h3>
+                                <p className="text-zinc-300 leading-7">The AI-powered health coaching features provided through Rakta are:</p>
+                                <ul className="list-disc list-inside text-zinc-300 space-y-1 ml-2">
+                                    <li>For informational and educational purposes only</li>
+                                    <li>Based on general wellness guidelines</li>
+                                    <li>NOT personalized medical advice</li>
+                                </ul>
+                            </div>
 
-                            <h3 className="text-white font-semibold mt-6 mb-2">2.1 Not a Medical Device or Service</h3>
-                            <p><strong>IMPORTANT NOTICE:</strong> Rakta is NOT a medical device, does NOT provide medical advice, diagnosis, or treatment, and should NOT be used as a substitute for professional medical consultation. The Application is designed solely for informational and educational purposes to help users track their general wellness metrics related to blood donation readiness.</p>
+                            <div className="pl-4 border-l-2 border-white/10 space-y-2">
+                                <h3 className="text-base font-semibold text-white">2.3 Medical Consultation Advisory</h3>
+                                <p className="text-zinc-300 leading-7">
+                                    You should <span className="text-white font-medium">ALWAYS</span> consult with a qualified healthcare provider before making any significant lifestyle changes or if you have any concerns about your ability to donate blood.
+                                </p>
+                            </div>
+                        </div>
 
-                            <h3 className="text-white font-semibold mt-6 mb-2">2.2 AI-Powered Coaching Limitations</h3>
-                            <p>The AI-powered health coaching features provided through Rakta are:</p>
-                            <ul>
-                                <li>For informational and educational purposes only</li>
-                                <li>Based on general wellness guidelines and publicly available health information</li>
-                                <li>NOT personalized medical advice</li>
-                                <li>NOT a replacement for consultation with qualified healthcare professionals</li>
-                            </ul>
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-bold text-white uppercase tracking-wide">3. Service Description</h2>
+                            <p className="text-zinc-300 leading-7">
+                                Rakta is a blood donation readiness platform that provides tracking of physiological metrics, educational content, wellness coaching, and donation center information.
+                            </p>
+                        </div>
 
-                            <h3 className="text-white font-semibold mt-6 mb-2">2.3 Medical Consultation Advisory</h3>
-                            <p>You should ALWAYS consult with a qualified healthcare provider before making any significant lifestyle or dietary changes, beginning any new exercise regimen, if you have any concerns about your health or ability to donate blood, or for actual medical clearance to donate blood.</p>
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-bold text-white uppercase tracking-wide">4. User Accounts</h2>
+                            <p className="text-zinc-300 leading-7">
+                                To access certain features, you must create an account. You agree to provide accurate, current, and complete information and differ responsibility for all activities under your account.
+                            </p>
+                        </div>
 
-                            <h2>3. SERVICE DESCRIPTION</h2>
-                            <p>Rakta is a blood donation readiness platform that provides tracking of physiological metrics relevant to blood donation eligibility, educational content about maintaining donation readiness, general wellness coaching, and information about blood donation center locations.</p>
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-bold text-white uppercase tracking-wide">5. Privacy</h2>
+                            <p className="text-zinc-300 leading-7">
+                                Your privacy is critical. By using Rakta, you consent to our data practices as described in our Privacy Policy, including the collection of health metrics for donation eligibility.
+                            </p>
+                        </div>
 
-                            <h2>4. USER ACCOUNTS</h2>
-                            <p>To access certain features of Rakta, you must create an account. You agree to provide accurate, current, and complete information during registration and to maintain the security and confidentiality of your login credentials. You are responsible for all activities that occur under your account.</p>
-
-                            <h2>5. DATA COLLECTION AND PRIVACY</h2>
-                            <p>By using Rakta, you acknowledge that we collect and process sensitive personal data including basic demographic information, physical measurements, blood type, and health metrics. Our collection and use of your personal information is governed by our separate Privacy Policy detailed in the app.</p>
-
-                            <h2>6. PROHIBITED USES</h2>
-                            <p>You agree NOT to use the Service for any illegal or unauthorized purpose, provide false or misleading information, attempt to gain unauthorized access to our systems, or use the Service to harm others.</p>
-
-                            <h2>7. SERVICE AVAILABILITY</h2>
-                            <p>We do not guarantee that the Service will be available at all times, error-free, or uninterrupted. We reserve the right to modify or discontinue the Service at any time.</p>
-
-                            <h2>8. LIMITATION OF LIABILITY</h2>
-                            <p>THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. TO THE MAXIMUM EXTENT PERMITTED BY LAW, RAKTA SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING PERSONAL INJURY OR INABILITY TO DONATE BLOOD.</p>
-
-                            <h2>9. TERMINATION</h2>
-                            <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason, including but not limited to breach of these Terms or providing false information.</p>
-
-                            <h2>10. GOVERNING LAW</h2>
-                            <p>These Terms shall be governed by and construed in accordance with the laws of Thailand, without regard to its conflict of law provisions.</p>
-
-                            <hr className="my-8 border-white/10" />
-
-                            <p className="text-sm text-zinc-500">
-                                <strong>Remember:</strong> Rakta is a wellness tracking tool designed to help you prepare for blood donation. It is not a substitute for professional medical advice. Always consult with healthcare professionals regarding your health and eligibility to donate blood.
+                        <div className="my-4 p-4 rounded-lg bg-white/5 border border-white/10">
+                            <p className="text-sm text-zinc-400 text-center">
+                                End of Terms • Rakta Inc.
                             </p>
                         </div>
                     </div>
                 </ScrollArea>
 
                 {/* Fixed Footer */}
-                <div className="border-t border-white/10 bg-[#18181B] p-6 pb-8">
-                    <div className="flex items-start space-x-3 mb-6">
+                <div className="border-t border-white/10 bg-[#141417] p-6 lg:p-8 shrink-0">
+                    <div className="flex items-start space-x-3 mb-8 bg-zinc-900/50 p-4 rounded-lg border border-white/5">
                         <Checkbox
                             id="terms-agree"
                             checked={hasAgreed}
@@ -107,21 +118,21 @@ export default function TermsPage() {
                                 I have read and agree to the Terms of Service
                             </label>
                             <p className="text-xs text-zinc-500">
-                                You must agree to continue using the application.
+                                Confirming allows you to proceed with setting up your account.
                             </p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="flex gap-4">
                         <Button
-                            variant="outline"
-                            className="h-12 border-zinc-700 bg-transparent text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            variant="ghost"
+                            className="flex-1 h-12 text-zinc-400 hover:text-white hover:bg-white/5"
                             onClick={() => router.back()}
                         >
                             Decline
                         </Button>
                         <Button
-                            className="h-12 bg-[#DC2626] text-white hover:bg-[#B91C1C] disabled:opacity-50 font-semibold shadow-lg shadow-red-900/20"
+                            className="flex-[2] h-12 bg-primary text-white hover:bg-red-700 font-semibold shadow-lg shadow-red-900/20 transition-all"
                             disabled={!hasAgreed}
                             onClick={handleAgree}
                         >
