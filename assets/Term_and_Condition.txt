@@ -1,0 +1,186 @@
+# TERMS AND CONDITIONS
+
+**Last Updated: December 13, 2025**
+
+## **RAKTA - TERMS OF SERVICE AGREEMENT**
+
+These Terms and Conditions ("Terms", "Terms of Service") govern your use of the Rakta web application ("Service", "Platform", "Application"). By accessing or using Rakta, you agree to be bound by these Terms. If you do not agree to these Terms, you must not use our Service.
+
+---
+
+## **1. ACCEPTANCE OF TERMS**
+
+By creating an account, accessing, or using Rakta in any manner, you acknowledge that you have read, understood, and agree to be bound by these Terms and all applicable laws and regulations. You represent that you are at least 17 years of age (or the minimum age required for blood donation in your jurisdiction) and have the legal capacity to enter into this agreement.
+
+## **2. MEDICAL DISCLAIMER AND HEALTH INFORMATION**
+
+### **2.1 Not a Medical Device or Service**
+**IMPORTANT NOTICE:** Rakta is NOT a medical device, does NOT provide medical advice, diagnosis, or treatment, and should NOT be used as a substitute for professional medical consultation. The Application is designed solely for informational and educational purposes to help users track their general wellness metrics related to blood donation readiness.
+
+### **2.2 AI-Powered Coaching Limitations**
+The AI-powered health coaching features provided through Rakta are:
+- For informational and educational purposes only
+- Based on general wellness guidelines and publicly available health information
+- NOT personalized medical advice
+- NOT a replacement for consultation with qualified healthcare professionals
+
+### **2.3 Medical Consultation Advisory**
+You should ALWAYS consult with a qualified healthcare provider:
+- Before making any significant lifestyle or dietary changes
+- Before beginning any new exercise regimen
+- If you have any concerns about your health or ability to donate blood
+- For actual medical clearance to donate blood
+
+### **2.4 Blood Donation Center Information**
+While we strive to provide accurate information about blood donation centers, we do not guarantee the accuracy, completeness, or current status of such information. Users should independently verify all information with the donation centers directly.
+
+## **3. SERVICE DESCRIPTION**
+
+Rakta is a blood donation readiness platform that provides:
+- Tracking of physiological metrics relevant to blood donation eligibility
+- Educational content about maintaining donation readiness
+- General wellness coaching to help improve donor eligibility
+- Information about blood donation center locations
+- Reminders and scheduling assistance for donation appointments
+
+## **4. USER ACCOUNTS**
+
+### **4.1 Account Creation**
+To access certain features of Rakta, you must create an account. You agree to:
+- Provide accurate, current, and complete information during registration
+- Maintain and promptly update your account information
+- Maintain the security and confidentiality of your login credentials
+- Accept responsibility for all activities that occur under your account
+- Immediately notify us of any unauthorized use of your account
+
+### **4.2 Accuracy of Health Information**
+You acknowledge that the effectiveness of Rakta's readiness tracking depends entirely on the accuracy of the information you provide. You agree to:
+- Provide truthful and accurate health-related information including but not limited to height, weight, date of birth, gender, and blood type
+- Promptly update any changes to your health information
+- Not misrepresent your health status or eligibility criteria
+
+### **4.3 Account Termination**
+We reserve the right to suspend or terminate your account if you violate these Terms or provide false information.
+
+## **5. DATA COLLECTION AND PRIVACY**
+
+### **5.1 Personal Information**
+By using Rakta, you acknowledge that we collect and process sensitive personal data including:
+- Basic demographic information (date of birth, gender)
+- Physical measurements (height, weight)
+- Blood type and donation history
+- Health metrics relevant to donation eligibility
+- Location data for donation center recommendations
+
+### **5.2 Privacy Policy**
+Our collection, use, storage, and protection of your personal information is governed by our separate Privacy Policy, which is incorporated into these Terms by reference. By using Rakta, you consent to our data practices as described in the Privacy Policy.
+
+## **6. PROHIBITED USES**
+
+You agree NOT to:
+- Use the Service for any illegal or unauthorized purpose
+- Provide false or misleading information
+- Attempt to gain unauthorized access to our systems or other users' accounts
+- Use the Service to harm, threaten, or harass others
+- Interfere with or disrupt the Service or servers
+- Circumvent any security features of the Service
+- Use automated systems or software to extract data from the Service
+- Impersonate another person or entity
+- Share your account credentials with others
+
+## **7. INTELLECTUAL PROPERTY**
+
+### **7.1 Ownership**
+The Service and its original content, features, and functionality are and will remain the exclusive property of RAKTA and its licensors. The Service is protected by copyright, trademark, and other intellectual property laws.
+
+### **7.2 User Content**
+You retain ownership of any content you submit to the Service but grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, and display such content as necessary to provide the Service.
+
+## **8. SERVICE AVAILABILITY AND MODIFICATIONS**
+
+### **8.1 No Guarantee of Availability**
+We do not guarantee that the Service will be available at all times, error-free, or uninterrupted. We may experience hardware, software, or other problems requiring maintenance, resulting in interruptions, delays, or errors.
+
+### **8.2 Service Modifications**
+We reserve the right to:
+- Modify or discontinue, temporarily or permanently, the Service (or any part thereof)
+- Make changes to these Terms at any time
+- Update features and functionality without notice
+
+### **8.3 Notice of Changes**
+We will provide notice of material changes to these Terms by updating the "Last Updated" date and, where appropriate, through in-app notifications or email.
+
+## **9. LIMITATION OF LIABILITY**
+
+### **9.1 Disclaimer of Warranties**
+THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+### **9.2 Limitation of Damages**
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL RAKTA, ITS OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION:
+- Personal injury or health complications
+- Inability to donate blood
+- Loss of data or profits
+- Decisions made based on information provided through the Service
+- Reliance on AI coaching recommendations
+- Errors in donation center information
+
+### **9.3 Maximum Liability**
+Our total liability to you for any damages shall not exceed the amount you have paid to us for the Service in the twelve (12) months prior to the claim, or one hundred dollars ($100), whichever is greater.
+
+## **10. INDEMNIFICATION**
+
+You agree to defend, indemnify, and hold harmless RAKTA and its affiliates, officers, directors, employees, and agents from and against any claims, damages, obligations, losses, liabilities, costs, or debt arising from:
+- Your use of and access to the Service
+- Your violation of these Terms
+- Your violation of any third-party rights
+- Any harm resulting from your reliance on information provided through the Service
+- False or inaccurate information you provide
+
+## **11. TERMINATION**
+
+### **11.1 Termination by You**
+You may terminate your account at any time through the account settings or by contacting our support team.
+
+### **11.2 Termination by Us**
+We may terminate or suspend your account immediately, without prior notice or liability, for any reason, including but not limited to:
+- Breach of these Terms
+- Providing false information
+- Abusive or harmful behavior toward other users or our staff
+- Suspected fraudulent activity
+- Extended period of inactivity
+
+### **11.3 Effect of Termination**
+Upon termination, your right to use the Service will immediately cease. We may retain certain information as required by law or for legitimate business purposes.
+
+## **12. GOVERNING LAW AND Dispute Resolution**
+
+### **12.1 Governing Law**
+These Terms shall be governed by and construed in accordance with the laws of Thailand, without regard to its conflict of law provisions.
+
+### **12.2 Dispute Resolution**
+Any dispute arising from or relating to these Terms or the Service shall first be attempted to be resolved through good faith negotiations. If resolution cannot be reached within 30 days, disputes shall be resolved through binding arbitration.
+
+## **13. GENERAL PROVISIONS**
+
+### **13.1 Entire Agreement**
+These Terms constitute the entire agreement between you and RAKTA regarding the use of the Service and supersede all prior agreements and understandings.
+
+### **13.2 Severability**
+If any provision of these Terms is held to be invalid or unenforceable, the remaining provisions shall continue in full force and effect.
+
+### **13.3 Waiver**
+No waiver of any term of these Terms shall be deemed a further or continuing waiver of such term or any other term.
+
+### **13.4 Assignment**
+You may not assign or transfer these Terms or your rights under them without our prior written consent. We may assign our rights under these Terms without restriction.
+
+## **14. CONTACT INFORMATION**
+
+If you have any questions about these Terms, please contact us at:
+
+**RAKTA Support**  
+Email: support@rakta.app  
+
+## **15. ACKNOWLEDGMENT**
+
+BY USING RAKTA, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS OF SERVICE, UNDERSTAND THEM, AND AGREE TO BE BOUND BY THEM. IF YOU DO NOT AGREE TO THESE TERMS, YOU MUST NOT USE OUR SERVICE.
