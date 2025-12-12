@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { apiRequest } from '@/lib/api';
+import { setAuthCookies } from '@/lib/auth';
 import styles from '../auth.module.css';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,32 +14,71 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { CalendarIcon, Loader2, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-// Removed unused form imports
+
+// Country codes for phone input
+const COUNTRY_CODES = [
+    { code: '+66', country: 'Thailand', flag: '🇹🇭' },
+    { code: '+886', country: 'Taiwan', flag: '🇹🇼' },
+    { code: '+1', country: 'USA/Canada', flag: '🇺🇸' },
+    { code: '+44', country: 'UK', flag: '🇬🇧' },
+    { code: '+81', country: 'Japan', flag: '🇯🇵' },
+    { code: '+82', country: 'South Korea', flag: '🇰🇷' },
+    { code: '+65', country: 'Singapore', flag: '🇸🇬' },
+    { code: '+60', country: 'Malaysia', flag: '🇲🇾' },
+    { code: '+62', country: 'Indonesia', flag: '🇮🇩' },
+    { code: '+63', country: 'Philippines', flag: '🇵🇭' },
+    { code: '+84', country: 'Vietnam', flag: '🇻🇳' },
+    { code: '+91', country: 'India', flag: '🇮🇳' },
+    { code: '+86', country: 'China', flag: '🇨🇳' },
+    { code: '+49', country: 'Germany', flag: '🇩🇪' },
+    { code: '+33', country: 'France', flag: '🇫🇷' },
+    { code: '+61', country: 'Australia', flag: '🇦🇺' },
+];
+
+// Blood type options
+const BLOOD_TYPES = [
+    { value: 'A_POSITIVE', label: 'A+' },
+    { value: 'A_NEGATIVE', label: 'A-' },
+    { value: 'B_POSITIVE', label: 'B+' },
+    { value: 'B_NEGATIVE', label: 'B-' },
+    { value: 'AB_POSITIVE', label: 'AB+' },
+    { value: 'AB_NEGATIVE', label: 'AB-' },
+    { value: 'O_POSITIVE', label: 'O+' },
+    { value: 'O_NEGATIVE', label: 'O-' },
+];
+
+// Gender options
+const GENDERS = [
+    { value: 'MALE', label: 'Male' },
+    { value: 'FEMALE', label: 'Female' },
+    { value: 'OTHER', label: 'Other' },
+];
 
 export default function RegisterPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [date, setDate] = useState<Date>();
+    const [dateOfBirth, setDateOfBirth] = useState<Date>();
 
+    // Form state matching backend DTO exactly
     const [formData, setFormData] = useState({
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
-        gender: '',
-        weight: '',
+        countryCode: '+66', // Default to Thailand
+        phoneNumber: '',
         city: '',
-        phone: '',
+        gender: '',
+        height: '',
+        weight: '',
         bloodType: '',
-        agreedToTerms: false
+        termsAccepted: false
     });
 
-    const handleChange = (field: string, value: any) => {
+    const handleChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
@@ -47,195 +87,308 @@ export default function RegisterPage() {
         setIsLoading(true);
 
         try {
-            if (!formData.agreedToTerms) throw new Error("You must agree to the terms.");
-            if (!date) throw new Error("Date of birth is required.");
+            // Validation
+            if (!formData.termsAccepted) {
+                throw new Error("You must accept the terms and conditions.");
+            }
+            if (!dateOfBirth) {
+                throw new Error("Date of birth is required.");
+            }
+            if (!formData.firstName.trim() || !formData.lastName.trim()) {
+                throw new Error("First name and last name are required.");
+            }
+            if (!formData.gender) {
+                throw new Error("Gender is required.");
+            }
+            if (!formData.city.trim()) {
+                throw new Error("City is required.");
+            }
+            if (!formData.phoneNumber.trim()) {
+                throw new Error("Phone number is required.");
+            }
 
+            // Build payload matching backend RegisterRequest DTO
             const payload = {
-                ...formData,
-                dateOfBirth: format(date, 'yyyy-MM-dd'),
+                firstName: formData.firstName.trim(),
+                lastName: formData.lastName.trim(),
+                email: formData.email.trim(),
+                password: formData.password,
+                phone: `${formData.countryCode}${formData.phoneNumber.replace(/\D/g, '')}`,
+                city: formData.city.trim(),
+                dateOfBirth: format(dateOfBirth, 'yyyy-MM-dd'),
+                gender: formData.gender,
+                height: formData.height ? parseFloat(formData.height) : null,
                 weight: formData.weight ? parseFloat(formData.weight) : null,
-                bloodType: formData.bloodType || null
+                bloodType: formData.bloodType || null,
+                termsAccepted: formData.termsAccepted
             };
 
-            const data = await apiRequest('/auth/register', 'POST', payload);
+            // Call API - backend now returns token immediately
+            const response = await apiRequest('/auth/register', 'POST', payload);
 
-            // Redirect to verify page instead of dashboard
-            toast.success("Account created! Please check your email for verification.");
-            router.push(`/verify?email=${encodeURIComponent(formData.email)}`);
-        } catch (err: any) {
-            toast.error(err.message || "Registration failed");
+            // Store auth data - new format with firstName, lastName, userId
+            setAuthCookies(response.token, {
+                userId: response.userId,
+                firstName: response.firstName,
+                lastName: response.lastName,
+                email: response.email
+            });
+
+            toast.success(`Welcome to Rakta, ${response.firstName}!`);
+
+            // Redirect to dashboard (no email verification needed)
+            router.push('/dashboard');
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : "Registration failed";
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className={styles.container} style={{ maxWidth: '600px' }}>
+        <div className={styles.container} style={{ maxWidth: '650px' }}>
             <h2 className={styles.title}>Join the Movement</h2>
-            <form onSubmit={handleSubmit} className="space-y-4 text-left">
+            <p className="text-zinc-400 text-sm mb-6 text-center">
+                Create your account and start your blood donation journey
+            </p>
 
+            <form onSubmit={handleSubmit} className="space-y-5 text-left">
+                {/* Name Fields - Side by Side */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label>Full Name</Label>
+                        <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
                         <Input
-                            value={formData.name}
-                            onChange={(e) => handleChange('name', e.target.value)}
+                            id="firstName"
+                            value={formData.firstName}
+                            onChange={(e) => handleChange('firstName', e.target.value)}
+                            placeholder="John"
                             required
                             className="bg-zinc-950 border-zinc-800"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label>Email</Label>
+                        <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
                         <Input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => handleChange('email', e.target.value)}
+                            id="lastName"
+                            value={formData.lastName}
+                            onChange={(e) => handleChange('lastName', e.target.value)}
+                            placeholder="Doe"
                             required
                             className="bg-zinc-950 border-zinc-800"
                         />
                     </div>
                 </div>
 
+                {/* Email and Password */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) => handleChange('email', e.target.value)}
+                            placeholder="john@example.com"
+                            required
+                            className="bg-zinc-950 border-zinc-800"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) => handleChange('password', e.target.value)}
+                            placeholder="Min 6 characters"
+                            required
+                            minLength={6}
+                            className="bg-zinc-950 border-zinc-800"
+                        />
+                    </div>
+                </div>
+
+                {/* Phone with Country Code */}
                 <div className="space-y-2">
-                    <Label>Password</Label>
+                    <Label htmlFor="phone">Phone Number <span className="text-red-500">*</span></Label>
+                    <div className="flex gap-2">
+                        <Select
+                            value={formData.countryCode}
+                            onValueChange={(val) => handleChange('countryCode', val)}
+                        >
+                            <SelectTrigger className="w-[140px] bg-zinc-950 border-zinc-800">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-[300px]">
+                                {COUNTRY_CODES.map((c) => (
+                                    <SelectItem key={c.code} value={c.code}>
+                                        <span className="flex items-center gap-2">
+                                            <span>{c.flag}</span>
+                                            <span>{c.code}</span>
+                                        </span>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Input
+                            id="phone"
+                            type="tel"
+                            value={formData.phoneNumber}
+                            onChange={(e) => handleChange('phoneNumber', e.target.value)}
+                            placeholder="812345678"
+                            required
+                            className="flex-1 bg-zinc-950 border-zinc-800"
+                        />
+                    </div>
+                </div>
+
+                {/* City */}
+                <div className="space-y-2">
+                    <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
                     <Input
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) => handleChange('password', e.target.value)}
+                        id="city"
+                        value={formData.city}
+                        onChange={(e) => handleChange('city', e.target.value)}
+                        placeholder="Bangkok"
                         required
-                        minLength={6}
                         className="bg-zinc-950 border-zinc-800"
                     />
                 </div>
 
+                {/* Date of Birth and Gender */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2 flex flex-col">
-                        <Label>Date of Birth</Label>
+                        <Label>Date of Birth <span className="text-red-500">*</span></Label>
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button
-                                    variant={"outline"}
+                                    variant="outline"
                                     className={cn(
                                         "w-full justify-start text-left font-normal bg-zinc-950 border-zinc-800",
-                                        !date && "text-muted-foreground"
+                                        !dateOfBirth && "text-muted-foreground"
                                     )}
                                 >
                                     <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                    {dateOfBirth ? format(dateOfBirth, "PPP") : <span>Select your birthday</span>}
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
                                 <Calendar
                                     mode="single"
-                                    selected={date}
-                                    onSelect={setDate}
-                                    initialFocus
+                                    selected={dateOfBirth}
+                                    onSelect={setDateOfBirth}
                                     captionLayout="dropdown"
-                                    fromYear={1900}
-                                    toYear={new Date().getFullYear()}
+                                    fromYear={1920}
+                                    toYear={new Date().getFullYear() - 16}
+                                    defaultMonth={new Date(2000, 0)}
                                 />
                             </PopoverContent>
                         </Popover>
                     </div>
 
                     <div className="space-y-2">
-                        <Label>Gender</Label>
-                        <Select onValueChange={(val) => handleChange('gender', val)}>
+                        <Label>Gender <span className="text-red-500">*</span></Label>
+                        <Select onValueChange={(val) => handleChange('gender', val)} required>
                             <SelectTrigger className="bg-zinc-950 border-zinc-800">
                                 <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="MALE">Male</SelectItem>
-                                <SelectItem value="FEMALE">Female</SelectItem>
-                                <SelectItem value="OTHER">Other</SelectItem>
+                                {GENDERS.map((g) => (
+                                    <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
                 </div>
 
+                {/* Physical: Height and Weight */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label>Weight (kg)</Label>
+                        <Label htmlFor="height">Height (cm)</Label>
                         <Input
+                            id="height"
                             type="number"
+                            step="0.1"
+                            min="50"
+                            max="300"
+                            value={formData.height}
+                            onChange={(e) => handleChange('height', e.target.value)}
+                            placeholder="170"
+                            className="bg-zinc-950 border-zinc-800"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="weight">Weight (kg)</Label>
+                        <Input
+                            id="weight"
+                            type="number"
+                            step="0.1"
+                            min="20"
+                            max="500"
                             value={formData.weight}
                             onChange={(e) => handleChange('weight', e.target.value)}
-                            className="bg-zinc-950 border-zinc-800"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label>Blood Type (Optional)</Label>
-                        <Select onValueChange={(val) => handleChange('bloodType', val)}>
-                            <SelectTrigger className="bg-zinc-950 border-zinc-800">
-                                <SelectValue placeholder="Unknown" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="A_POSITIVE">A+</SelectItem>
-                                <SelectItem value="A_NEGATIVE">A-</SelectItem>
-                                <SelectItem value="B_POSITIVE">B+</SelectItem>
-                                <SelectItem value="B_NEGATIVE">B-</SelectItem>
-                                <SelectItem value="AB_POSITIVE">AB+</SelectItem>
-                                <SelectItem value="AB_NEGATIVE">AB-</SelectItem>
-                                <SelectItem value="O_POSITIVE">O+</SelectItem>
-                                <SelectItem value="O_NEGATIVE">O-</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label>City</Label>
-                        <Input
-                            value={formData.city}
-                            onChange={(e) => handleChange('city', e.target.value)}
-                            className="bg-zinc-950 border-zinc-800"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label>Phone</Label>
-                        <Input
-                            type="tel"
-                            value={formData.phone}
-                            onChange={(e) => handleChange('phone', e.target.value)}
+                            placeholder="65"
                             className="bg-zinc-950 border-zinc-800"
                         />
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-2 pt-2">
+                {/* Blood Type */}
+                <div className="space-y-2">
+                    <Label>Blood Type <span className="text-zinc-500">(Optional)</span></Label>
+                    <Select onValueChange={(val) => handleChange('bloodType', val)}>
+                        <SelectTrigger className="bg-zinc-950 border-zinc-800">
+                            <SelectValue placeholder="Select if known" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {BLOOD_TYPES.map((bt) => (
+                                <SelectItem key={bt.value} value={bt.value}>{bt.label}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Terms Checkbox */}
+                <div className="flex items-start space-x-3 pt-2">
                     <Checkbox
                         id="terms"
-                        checked={formData.agreedToTerms}
-                        onCheckedChange={(checked) => handleChange('agreedToTerms', checked === true)}
+                        checked={formData.termsAccepted}
+                        onCheckedChange={(checked) => handleChange('termsAccepted', checked === true)}
+                        className="mt-0.5"
                     />
-                    <Label htmlFor="terms" className="text-sm font-normal text-zinc-400">
-                        I accept the <Link href="/terms" className="text-primary hover:underline">terms and conditions</Link>
+                    <Label htmlFor="terms" className="text-sm font-normal text-zinc-400 leading-relaxed">
+                        I accept the{' '}
+                        <Link href="/terms" className="text-primary hover:underline">
+                            terms and conditions
+                        </Link>{' '}
+                        and consent to blood donation eligibility tracking <span className="text-red-500">*</span>
                     </Label>
                 </div>
 
-                <Button type="submit" className="w-full mt-6" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Register
+                {/* Submit Button */}
+                <Button
+                    type="submit"
+                    className="w-full mt-6"
+                    disabled={isLoading || !formData.termsAccepted}
+                    size="lg"
+                >
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Creating Account...
+                        </>
+                    ) : (
+                        'Create Account'
+                    )}
                 </Button>
-
-                {/* Google Auth Placeholder */}
-                <div className="relative my-4">
-                    <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-zinc-800" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-[#18181B] px-2 text-zinc-500">Or continue with</span>
-                    </div>
-                </div>
-                <Button variant="outline" type="button" className="w-full bg-zinc-900 border-zinc-800 hover:bg-zinc-800" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}>
-                    <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
-                    Google
-                </Button>
-
             </form>
+
             <div className={styles.footer}>
-                Already have an account? <Link href="/login" className="text-primary hover:underline">Login here</Link>
+                Already have an account?{' '}
+                <Link href="/login" className="text-primary hover:underline">
+                    Login here
+                </Link>
             </div>
         </div>
     );

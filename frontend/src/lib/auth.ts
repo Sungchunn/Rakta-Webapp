@@ -10,10 +10,20 @@ const USER_COOKIE_NAME = 'user';
 const COOKIE_MAX_AGE = 60 * 60 * 24; // 1 day in seconds
 
 /**
+ * User type matching backend AuthResponse
+ */
+export interface AuthUser {
+    userId: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
+/**
  * Set authentication cookies after login/signup.
  * Called from client-side after successful API response.
  */
-export function setAuthCookies(token: string, user: { name: string; email: string }) {
+export function setAuthCookies(token: string, user: AuthUser) {
     // Set token cookie (accessible to middleware)
     document.cookie = `${TOKEN_COOKIE_NAME}=${token}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
 
@@ -42,6 +52,8 @@ export function clearAuthCookies() {
  * Get token from cookie (client-side).
  */
 export function getToken(): string | null {
+    if (typeof window === 'undefined') return null;
+
     // First check localStorage (backward compatibility)
     const localToken = localStorage.getItem('token');
     if (localToken) return localToken;
@@ -54,7 +66,9 @@ export function getToken(): string | null {
 /**
  * Get user from cookie (client-side).
  */
-export function getUser(): { name: string; email: string } | null {
+export function getUser(): AuthUser | null {
+    if (typeof window === 'undefined') return null;
+
     // First check localStorage
     const localUser = localStorage.getItem('user');
     if (localUser) {
@@ -79,8 +93,18 @@ export function getUser(): { name: string; email: string } | null {
 }
 
 /**
+ * Get the full name of the current user.
+ */
+export function getUserFullName(): string | null {
+    const user = getUser();
+    if (!user) return null;
+    return `${user.firstName} ${user.lastName}`;
+}
+
+/**
  * Check if user is authenticated (client-side).
  */
 export function isAuthenticated(): boolean {
     return !!getToken();
 }
+
