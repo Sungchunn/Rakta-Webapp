@@ -1,54 +1,99 @@
 package com.rakta.dto;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 public class AuthDto {
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class LoginRequest {
-        @NotBlank
-        @Email
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
         private String email;
 
-        @NotBlank
+        @NotBlank(message = "Password is required")
         private String password;
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RegisterRequest {
-        @NotBlank
-        private String name;
+        @NotBlank(message = "First name is required")
+        private String firstName;
 
-        @NotBlank
-        @Email
+        @NotBlank(message = "Last name is required")
+        private String lastName;
+
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
         private String email;
 
-        @NotBlank
+        @NotBlank(message = "Password is required")
         @Size(min = 6, message = "Password must be at least 6 characters")
         private String password;
 
-        private java.time.LocalDate dateOfBirth;
-        private String gender;
-        private Double weight;
-        private String bloodType;
-        private String city;
+        @NotBlank(message = "Phone is required")
         private String phone;
-        private boolean agreedToTerms;
+
+        @NotNull(message = "Date of birth is required")
+        private LocalDate dateOfBirth;
+
+        @NotBlank(message = "Gender is required")
+        private String gender;
+
+        private Double height;
+
+        private Double weight;
+
+        private String bloodType; // Optional
+
+        @NotBlank(message = "City is required")
+        private String city;
+
+        @AssertTrue(message = "You must accept the terms and conditions")
+        private boolean termsAccepted;
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AuthResponse {
         private String token;
-        private String name;
+        private Long userId;
+        private String firstName;
+        private String lastName;
         private String email;
+    }
 
-        public AuthResponse(String token, String name, String email) {
-            this.token = token;
-            this.name = name;
-            this.email = email;
-        }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ForgotPasswordRequest {
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
+        private String email;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResetPasswordRequest {
+        @NotBlank(message = "Token is required")
+        private String token;
+
+        @NotBlank(message = "New password is required")
+        @Size(min = 6, message = "Password must be at least 6 characters")
+        private String newPassword;
     }
 }

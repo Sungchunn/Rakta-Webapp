@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class VerificationToken {
 
     public enum TokenType {
-        EMAIL_VERIFICATION,
         PASSWORD_RESET
     }
 
@@ -21,24 +20,24 @@ public class VerificationToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String token;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TokenType type;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
     @Column(nullable = false)
     private LocalDateTime expiryDate;
 
-    public VerificationToken(User user, TokenType type, String token) {
+    public VerificationToken(User user, String token) {
         this.user = user;
-        this.type = type;
+        this.type = TokenType.PASSWORD_RESET;
         this.token = token;
-        this.expiryDate = LocalDateTime.now().plusMinutes(15); // 15 mins expiry
+        this.expiryDate = LocalDateTime.now().plusMinutes(30); // 30 mins expiry for password reset
     }
 }

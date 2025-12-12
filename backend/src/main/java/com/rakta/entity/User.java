@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,8 +23,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    // Personal Information - Split name into firstName and lastName
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -31,33 +36,38 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    // Contact Information
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "city")
+    private String city;
+
     // Physiological Data
-    private java.time.LocalDate dateOfBirth; // Replaces 'age'
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Column(name = "gender")
     private String gender;
+
+    @Column(name = "height")
+    private Double height;
+
+    @Column(name = "weight")
     private Double weight;
 
+    // Blood type is optional
     @Column(name = "blood_type")
     private String bloodType;
 
-    // Contact & Legal
-    private String city;
-    private String phone;
+    // Legal - Required to be true on signup
+    @Column(name = "terms_accepted", nullable = false)
+    private boolean termsAccepted;
 
-    @Column(name = "agreed_to_terms", nullable = false)
-    private boolean agreedToTerms;
-
-    // Authentication Flags
-    @Column(name = "enabled")
-    private boolean enabled; // False until email verified
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "auth_provider")
-    private AuthProvider authProvider;
-
-    public enum AuthProvider {
-        LOCAL,
-        GOOGLE
-    }
+    // Account Status - Defaults to true (no email verification required)
+    @Column(name = "enabled", nullable = false)
+    @Builder.Default
+    private boolean enabled = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -66,4 +76,9 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // Convenience method to get full name
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }
