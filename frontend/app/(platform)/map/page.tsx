@@ -39,7 +39,15 @@ export default function MapPage() {
                 const data = await apiRequest('/locations');
 
                 // Transform data
-                const mapped = data.map((d: any) => {
+                // Backend now returns: { location: {...}, todayCount: N, weekCount: N }
+                const mapped = data.map((item: any) => {
+                    // Check if item is wrapped in DTO or flat (fallback for mock)
+                    const d = item.location || item;
+                    const stats = {
+                        today: item.todayCount || 0,
+                        week: item.weekCount || 0
+                    };
+
                     let distDisplay = "N/A";
                     if (d.latitude && d.longitude && userLat && userLon) {
                         const distKm = calculateDistance(userLat, userLon, d.latitude, d.longitude);
@@ -51,7 +59,8 @@ export default function MapPage() {
                         lat: d.latitude,
                         lng: d.longitude,
                         distance: distDisplay,
-                        hours: d.openingHours || "09:00 - 17:00"
+                        hours: d.openingHours || "09:00 - 17:00",
+                        stats: stats
                     };
                 });
 
@@ -60,13 +69,13 @@ export default function MapPage() {
                 } else {
                     // Fallback
                     const mockData = [
-                        { id: 1, name: "National Blood Centre", type: "HQ", hours: "07:30 - 19:30", distance: "2.4km", latitude: 13.7375, longitude: 100.5311, lat: 13.7375, lng: 100.5311 },
-                        { id: 2, name: "Emporium Donation Room", type: "STATION", hours: "10:00 - 19:00", distance: "5.1km", latitude: 13.7297, longitude: 100.5693, lat: 13.7297, lng: 100.5693 },
-                        { id: 3, name: "The Mall Bangkapi", type: "MALL", hours: "12:00 - 18:00", distance: "12km", latitude: 13.7661, longitude: 100.6429, lat: 13.7661, lng: 100.6429 },
-                        { id: 4, name: "Red Cross Station 11", type: "STATION", hours: "08:30 - 16:30", distance: "8km", latitude: 13.8853, longitude: 100.5905, lat: 13.8853, lng: 100.5905 },
-                        { id: 5, name: "Central World Mobile Unit", type: "MOBILE", hours: "11:00 - 15:00", distance: "3.2km", latitude: 13.7469, longitude: 100.5398, lat: 13.7469, lng: 100.5398 },
+                        { id: 1, name: "National Blood Centre", type: "HQ", hours: "07:30 - 19:30", distance: "2.4km", latitude: 13.7375, longitude: 100.5311, lat: 13.7375, lng: 100.5311, stats: { today: 12, week: 85 } },
+                        { id: 2, name: "Emporium Donation Room", type: "STATION", hours: "10:00 - 19:00", distance: "5.1km", latitude: 13.7297, longitude: 100.5693, lat: 13.7297, lng: 100.5693, stats: { today: 5, week: 32 } },
+                        { id: 3, name: "The Mall Bangkapi", type: "MALL", hours: "12:00 - 18:00", distance: "12km", latitude: 13.7661, longitude: 100.6429, lat: 13.7661, lng: 100.6429, stats: { today: 8, week: 45 } },
+                        { id: 4, name: "Red Cross Station 11", type: "STATION", hours: "08:30 - 16:30", distance: "8km", latitude: 13.8853, longitude: 100.5905, lat: 13.8853, lng: 100.5905, stats: { today: 3, week: 21 } },
+                        { id: 5, name: "Central World Mobile Unit", type: "MOBILE", hours: "11:00 - 15:00", distance: "3.2km", latitude: 13.7469, longitude: 100.5398, lat: 13.7469, lng: 100.5398, stats: { today: 15, week: 67 } },
                         // Event
-                        { id: 99, name: "Red Cross Fair 2025", type: "EVENT", hours: "11:00 - 22:00", distance: "1.5km", latitude: 13.7314, longitude: 100.5414, lat: 13.7314, lng: 100.5414 },
+                        { id: 99, name: "Red Cross Fair 2025", type: "EVENT", hours: "11:00 - 22:00", distance: "1.5km", latitude: 13.7314, longitude: 100.5414, lat: 13.7314, lng: 100.5414, stats: { today: 42, week: 156 } },
                     ];
                     setLocations(mockData);
                 }
@@ -124,7 +133,7 @@ export default function MapPage() {
     return (
         <div className="flex h-full w-full bg-background overflow-hidden relative">
             {/* Left Column: List */}
-            <div className="w-[400px] flex-shrink-0 border-r border-border flex flex-col bg-card z-10">
+            <div className="w-[400px] flex-shrink-0 border-r border-border flex flex-col bg-card z-10 transition-all">
                 <div className="p-4 border-b border-border flex justify-between items-center">
                     <div>
                         <h1 className="text-2xl font-black font-heading text-white tracking-tight">LOCATOR</h1>
@@ -173,15 +182,26 @@ export default function MapPage() {
                                 <div className="flex items-center gap-1"><Clock className="w-3 h-3" /> {loc.hours}</div>
                                 <div className="flex items-center gap-1"><Navigation className="w-3 h-3" /> {loc.distance}</div>
                             </div>
-                            <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
+
+                            {/* Stats Indicator */}
+                            {loc.stats && (
+                                <div className="flex gap-3 mt-2 pt-2 border-t border-white/5">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                        <span className="text-[10px] text-zinc-400">
+                                            <span className="text-white font-bold">{loc.stats.today}</span> donors today
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden mt-3">
                                 <div className={cn("h-full bg-primary transition-all duration-500", hoveredId === loc.id ? "w-full" : "w-0")} />
                             </div>
                         </div>
                     ))}
 
-                    <div className="mt-8 pt-6 border-t border-border">
-                        <DonationSiteReviewForm />
-                    </div>
+                    {/* Removed Review Form */}
                 </div>
             </div>
 

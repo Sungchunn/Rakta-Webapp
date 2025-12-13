@@ -9,4 +9,7 @@ import java.util.List;
 @Repository
 public interface DonationRepository extends JpaRepository<Donation, Long> {
     List<Donation> findByUserIdOrderByDonationDateDesc(Long userId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT d.donationLocation.id, COUNT(d) FROM Donation d WHERE d.donationDate >= :startDate GROUP BY d.donationLocation.id")
+    List<Object[]> countDonationsSince(java.time.LocalDate startDate);
 }
