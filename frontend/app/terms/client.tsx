@@ -1,9 +1,18 @@
 "use client";
 
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { TermsCard } from "@/components/auth/terms-card";
-import GradientBackground from "@/components/GradientBackground";
 import { Toaster } from "sonner";
+
+// Dynamic imports with SSR disabled for components using framer-motion
+const TermsCard = dynamic(
+    () => import("@/components/auth/terms-card").then(mod => mod.TermsCard),
+    { ssr: false }
+);
+const GradientBackground = dynamic(
+    () => import("@/components/GradientBackground"),
+    { ssr: false }
+);
 
 export function TermsPageClient({ content }: { content: string }) {
     const router = useRouter();
