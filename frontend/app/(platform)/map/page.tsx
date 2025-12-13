@@ -67,15 +67,15 @@ export default function MapPage() {
                 if (mapped.length > 0) {
                     setLocations(mapped);
                 } else {
-                    // Fallback
+                    // Fallback locations only (stats will be 0 since no real data)
                     const mockData = [
-                        { id: 1, name: "National Blood Centre", type: "HQ", hours: "07:30 - 19:30", distance: "2.4km", latitude: 13.7375, longitude: 100.5311, lat: 13.7375, lng: 100.5311, stats: { today: 12, week: 85 } },
-                        { id: 2, name: "Emporium Donation Room", type: "STATION", hours: "10:00 - 19:00", distance: "5.1km", latitude: 13.7297, longitude: 100.5693, lat: 13.7297, lng: 100.5693, stats: { today: 5, week: 32 } },
-                        { id: 3, name: "The Mall Bangkapi", type: "MALL", hours: "12:00 - 18:00", distance: "12km", latitude: 13.7661, longitude: 100.6429, lat: 13.7661, lng: 100.6429, stats: { today: 8, week: 45 } },
-                        { id: 4, name: "Red Cross Station 11", type: "STATION", hours: "08:30 - 16:30", distance: "8km", latitude: 13.8853, longitude: 100.5905, lat: 13.8853, lng: 100.5905, stats: { today: 3, week: 21 } },
-                        { id: 5, name: "Central World Mobile Unit", type: "MOBILE", hours: "11:00 - 15:00", distance: "3.2km", latitude: 13.7469, longitude: 100.5398, lat: 13.7469, lng: 100.5398, stats: { today: 15, week: 67 } },
+                        { id: 1, name: "National Blood Centre", type: "HQ", hours: "07:30 - 19:30", distance: "2.4km", latitude: 13.7375, longitude: 100.5311, lat: 13.7375, lng: 100.5311, stats: { today: 0, week: 0 } },
+                        { id: 2, name: "Emporium Donation Room", type: "STATION", hours: "10:00 - 19:00", distance: "5.1km", latitude: 13.7297, longitude: 100.5693, lat: 13.7297, lng: 100.5693, stats: { today: 0, week: 0 } },
+                        { id: 3, name: "The Mall Bangkapi", type: "MALL", hours: "12:00 - 18:00", distance: "12km", latitude: 13.7661, longitude: 100.6429, lat: 13.7661, lng: 100.6429, stats: { today: 0, week: 0 } },
+                        { id: 4, name: "Red Cross Station 11", type: "STATION", hours: "08:30 - 16:30", distance: "8km", latitude: 13.8853, longitude: 100.5905, lat: 13.8853, lng: 100.5905, stats: { today: 0, week: 0 } },
+                        { id: 5, name: "Central World Mobile Unit", type: "MOBILE", hours: "11:00 - 15:00", distance: "3.2km", latitude: 13.7469, longitude: 100.5398, lat: 13.7469, lng: 100.5398, stats: { today: 0, week: 0 } },
                         // Event
-                        { id: 99, name: "Red Cross Fair 2025", type: "EVENT", hours: "11:00 - 22:00", distance: "1.5km", latitude: 13.7314, longitude: 100.5414, lat: 13.7314, lng: 100.5414, stats: { today: 42, week: 156 } },
+                        { id: 99, name: "Red Cross Fair 2025", type: "EVENT", hours: "11:00 - 22:00", distance: "1.5km", latitude: 13.7314, longitude: 100.5414, lat: 13.7314, lng: 100.5414, stats: { today: 0, week: 0 } },
                     ];
                     setLocations(mockData);
                 }
