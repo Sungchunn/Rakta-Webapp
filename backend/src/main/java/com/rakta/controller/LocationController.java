@@ -22,6 +22,6 @@ public class LocationController {
 
     @GetMapping
     public ResponseEntity<List<DonationLocation>> getLocations() {
-        return ResponseEntity.ok(locationRepository.findAll());
+        return ResponseEntity.ok(locationRepository.findActiveLocations());
     }
 }

@@ -25,16 +25,54 @@ export default function LocationsPage() {
     const [locations, setLocations] = useState<Location[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    // Haversine formula to calculate distance in km
+    const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+        const R = 6371; // Radius of the earth in km
+        const dLat = (lat2 - lat1) * (Math.PI / 180);
+        const dLon = (lon2 - lon1) * (Math.PI / 180);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in km
+    };
+
     useEffect(() => {
         const fetchLocations = async () => {
+            // Get user location first
+            let userLat: number | null = null;
+            let userLon: number | null = null;
+
+            try {
+                const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+                userLat = position.coords.latitude;
+                userLon = position.coords.longitude;
+            } catch (e) {
+                console.log("User denied location or error", e);
+                // Default to a central Bangkok location if permission denied
+                userLat = 13.7563;
+                userLon = 100.5018;
+            }
+
             try {
                 const data = await apiRequest('/locations');
-                // Transform data if necessary or just use it
-                const mapped = data.map((d: any) => ({
-                    ...d,
-                    distance: (Math.random() * 10).toFixed(1) + "km", // Mock distance for now
-                    hours: d.openingHours || "09:00 - 17:00"
-                }));
+                // Transform data using REAL distance
+                const mapped = data.map((d: any) => {
+                    let distDisplay = "N/A";
+                    if (d.latitude && d.longitude && userLat && userLon) {
+                        const distKm = calculateDistance(userLat, userLon, d.latitude, d.longitude);
+                        distDisplay = distKm.toFixed(1) + "km";
+                    }
+
+                    return {
+                        ...d,
+                        distance: distDisplay,
+                        hours: d.openingHours || "09:00 - 17:00"
+                    };
+                });
 
                 // Use robust fallback if API returns empty list or fails
                 if (mapped.length > 0) {
@@ -51,6 +89,14 @@ export default function LocationsPage() {
                         // Event
                         { id: 99, name: "Red Cross Fair 2025", type: "EVENT", openingHours: "11:00 - 22:00", contactInfo: "Red Cross Society", distance: "1.5km", latitude: 13.7314, longitude: 100.5414 },
                     ];
+                    // Recalculate mock distances too if we have user loc
+                    if (userLat && userLon) {
+                        mockData.forEach(d => {
+                            if (d.latitude && d.longitude) {
+                                d.distance = calculateDistance(userLat!, userLon!, d.latitude, d.longitude).toFixed(1) + "km";
+                            }
+                        });
+                    }
                     setLocations(mockData);
                 }
             } catch (error) {
