@@ -6,11 +6,21 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, CalendarIcon } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format, parseISO, differenceInYears } from "date-fns";
+import { cn } from "@/lib/utils";
+
+// Calculate age from date of birth
+const calculateAge = (dob: Date | undefined): number | null => {
+    if (!dob) return null;
+    return differenceInYears(new Date(), dob);
+};
 
 interface UserProfile {
     id: number;
@@ -24,7 +34,6 @@ interface UserProfile {
     height?: number;
     weight?: number;
     bloodType?: string;
-    age?: number;
 }
 
 const BLOOD_TYPES = [
@@ -50,6 +59,7 @@ export default function ProfileForm() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>();
 
     // Form state
     const [formData, setFormData] = useState({
@@ -84,6 +94,9 @@ export default function ProfileForm() {
                 bloodType: data.bloodType || '',
                 gender: data.gender || '',
             });
+            if (data.dateOfBirth) {
+                setDateOfBirth(parseISO(data.dateOfBirth));
+            }
         } catch (err) {
             console.error('Failed to fetch profile', err);
             toast.error('Failed to load profile');
@@ -105,6 +118,7 @@ export default function ProfileForm() {
                 lastName: formData.lastName,
                 phone: formData.phone,
                 city: formData.city,
+                dateOfBirth: dateOfBirth ? format(dateOfBirth, 'yyyy-MM-dd') : null,
                 height: formData.height ? parseFloat(formData.height) : null,
                 weight: formData.weight ? parseFloat(formData.weight) : null,
                 bloodType: formData.bloodType || null,
@@ -138,6 +152,9 @@ export default function ProfileForm() {
                 bloodType: profile.bloodType || '',
                 gender: profile.gender || '',
             });
+            if (profile.dateOfBirth) {
+                setDateOfBirth(parseISO(profile.dateOfBirth));
+            }
         }
         setIsEditing(false);
     };
@@ -225,12 +242,42 @@ export default function ProfileForm() {
                         </div>
                     </div>
 
-                    {/* Age & Gender */}
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Birthday, Age & Gender */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-muted-foreground">Date of Birth</Label>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        disabled={!isEditing}
+                                        className={cn(
+                                            "w-full justify-start text-left font-normal bg-background",
+                                            !dateOfBirth && "text-muted-foreground"
+                                        )}
+                                    >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {dateOfBirth ? format(dateOfBirth, "PP") : "Select"}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={dateOfBirth}
+                                        onSelect={setDateOfBirth}
+                                        disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                                        defaultMonth={dateOfBirth}
+                                        captionLayout="dropdown"
+                                        fromYear={1920}
+                                        toYear={new Date().getFullYear()}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                        </div>
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-muted-foreground">Age</Label>
                             <Input
-                                value={profile?.age?.toString() || 'N/A'}
+                                value={calculateAge(dateOfBirth)?.toString() || 'N/A'}
                                 disabled
                                 className="bg-background opacity-50"
                             />

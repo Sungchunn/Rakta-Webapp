@@ -63,6 +63,9 @@ public class UserController {
         if (updateRequest.getCity() != null) {
             user.setCity(updateRequest.getCity());
         }
+        if (updateRequest.getDateOfBirth() != null) {
+            user.setDateOfBirth(updateRequest.getDateOfBirth());
+        }
         if (updateRequest.getHeight() != null) {
             user.setHeight(updateRequest.getHeight());
         }
