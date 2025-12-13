@@ -35,6 +35,13 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    /**
+     * Optional username for social features (display name).
+     * If not set, firstName will be used in public displays.
+     */
+    @Column(unique = true)
+    private String username;
+
     @Column(nullable = false, unique = true)
     private String email;
 

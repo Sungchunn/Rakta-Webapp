@@ -47,11 +47,18 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/locations",
+                                "/api/locations/**",
+                                // Social feed - public read access
+                                "/api/v1/feed",
+                                "/api/v1/feed/user/**",
                                 // Swagger UI endpoints
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml")
+                        .permitAll()
+                        // Feed post detail - allow public but also accept auth for like status
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/feed/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
