@@ -13,7 +13,7 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="flex flex-col gap-6 max-w-xl mx-auto min-h-full py-4 px-4">
+        <div className="flex flex-col gap-6 max-w-4xl mx-auto min-h-full py-4 px-4">
             <h1 className="text-2xl font-bold font-heading text-white mb-2">Settings & Profile</h1>
 
             <ProfileForm />
