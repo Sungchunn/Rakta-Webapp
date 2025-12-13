@@ -1,3 +1,4 @@
+import { Toaster } from 'sonner';
 import SpecialEventModal from "@/components/SpecialEventModal";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -6,6 +7,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return (
         <>
             <SpecialEventModal />
+            <Toaster position="top-center" richColors theme="dark" />
             {children}
         </>
     );

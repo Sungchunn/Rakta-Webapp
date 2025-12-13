@@ -137,7 +137,7 @@ export default function FeedPage() {
     };
 
     const handlePublish = () => {
-        router.push("/feed/new");
+        router.push("/donations/new");
     };
 
     if (isLoading) {

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Clock, Navigation, Locate } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { DonationSiteReviewForm } from "@/components/map/DonationSiteReviewForm";
+
 
 const DonationMap = dynamic(() => import("@/components/DonationMap"), { ssr: false });
 

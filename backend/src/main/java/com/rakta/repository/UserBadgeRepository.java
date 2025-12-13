@@ -1,6 +1,7 @@
 package com.rakta.repository;
 
 import com.rakta.entity.UserBadge;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository for UserBadge entity.
+ */
 @Repository
 public interface UserBadgeRepository extends JpaRepository<UserBadge, Long> {
 
@@ -43,5 +47,6 @@ public interface UserBadgeRepository extends JpaRepository<UserBadge, Long> {
     /**
      * Get the 3 most recent badges for dashboard display
      */
+    @EntityGraph(attributePaths = "badge")
     List<UserBadge> findTop3ByUserIdOrderByEarnedAtDesc(Long userId);
 }

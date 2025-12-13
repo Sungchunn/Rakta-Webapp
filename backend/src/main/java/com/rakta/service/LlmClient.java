@@ -15,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.time.Duration;
 import java.util.List;
 
+import com.rakta.dto.DashboardStatsDTO;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -29,16 +31,68 @@ public class LlmClient {
     @Value("${openai.model:gpt-4o-mini}")
     private String model;
 
+    @Value("${openai.insight-model:gpt-4-turbo}")
+    private String insightModel;
+
     @Value("${openai.temperature:0.7}")
     private double temperature;
 
     @CircuitBreaker(name = LLM_SERVICE, fallbackMethod = "fallbackResponse")
     @Retry(name = LLM_SERVICE, fallbackMethod = "fallbackResponse")
     public String generateCoachReply(LlmCoachRequest request) {
+        // ... existing implementation ...
         log.debug("Sending request to OpenAI for session: {}", request.getSessionId());
 
         OpenAiChatRequest chatRequest = buildChatRequest(request);
 
+        return executeRequest(chatRequest);
+    }
+
+    @CircuitBreaker(name = LLM_SERVICE, fallbackMethod = "fallbackInsightResponse")
+    @Retry(name = LLM_SERVICE, fallbackMethod = "fallbackInsightResponse")
+    public String generateDailyInsight(DashboardStatsDTO stats) {
+        log.debug("Generating daily insight for user with stats");
+
+        String systemPrompt = """
+                You are Dr. Sloth, an expert Medical Data Analyst for the Rakta blood donation app.
+                Your goal is to analyze the user's dashboard data and provide A SINGLE, HIGH-IMPACT daily insight or recommendation.
+
+                ROLE:
+                - You are a specialized medical AI agent.
+                - Tone: Professional, encouraging, data-driven, yet accessible.
+                - Format: Markdown. Use bolding for key metrics.
+
+                DATA:
+                %s
+
+                INSTRUCTIONS:
+                1. Analyze the 'Readiness' score, Hemoglobin trends, and Donation history.
+                2. Identify the #1 most important thing the user should know today.
+                3. If eligible to donate: Encourage it based on streaks/impact.
+                4. If not eligible: Focus on recovery (Iron, Sleep, Hydration) based on low metrics.
+                5. Keep it under 150 words.
+                6. Do NOT be generic. Cite specific numbers from the data (e.g., "Your hemoglobin is 13.5").
+                """;
+
+        // Convert stats to JSON string for prompt context
+        String statsJson = convertStatsToJson(stats);
+        String finalPrompt = systemPrompt.formatted(statsJson);
+
+        List<OpenAiMessage> messages = List.of(
+                new OpenAiMessage("system", finalPrompt),
+                new OpenAiMessage("user", "Give me my daily analysis."));
+
+        OpenAiChatRequest chatRequest = OpenAiChatRequest.builder()
+                .model(insightModel != null ? insightModel : "gpt-4-turbo")
+                .temperature(0.7)
+                .max_tokens(400)
+                .messages(messages)
+                .build();
+
+        return executeRequest(chatRequest);
+    }
+
+    private String executeRequest(OpenAiChatRequest chatRequest) {
         OpenAiChatResponse response = openAiWebClient.post()
                 .uri("/chat/completions")
                 .bodyValue(chatRequest)
@@ -55,12 +109,26 @@ public class LlmClient {
                 .block();
 
         if (response != null && !response.getChoices().isEmpty()) {
-            log.debug("Received successful response from OpenAI");
             return response.getChoices().get(0).getMessage().getContent();
         }
-
-        log.warn("OpenAI returned empty response");
         return FALLBACK_RESPONSE;
+    }
+
+    private String convertStatsToJson(Object stats) {
+        try {
+            return new com.fasterxml.jackson.databind.ObjectMapper()
+                    .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
+                    .writeValueAsString(stats);
+        } catch (Exception e) {
+            log.error("Failed to serialize stats", e);
+            return "Data unavailable";
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private String fallbackInsightResponse(DashboardStatsDTO stats, Throwable t) {
+        log.error("Failed to generate insight: {}", t.getMessage());
+        return "I'm analyzing your data but hit a snag. Focus on good hydration and sleep today!";
     }
 
     /**

@@ -14,6 +14,7 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import { Activity, Zap, CalendarClock, PlusCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import InsightCard from "@/components/dashboard/InsightCard";
 
 export default function DashboardPage() {
     const { data: stats, loading, error } = useDashboardData();
@@ -249,28 +250,10 @@ export default function DashboardPage() {
                     </CardBody>
                 </CardContainer>
 
-                {/* Zone 9: AI Insight */}
-                <CardContainer className="inter-var w-full h-full md:col-span-3" containerClassName="h-full">
-                    <CardBody className={`${cardClass} border-primary/30 bg-primary/5`}>
-                        <CardItem translateZ="50" className="mb-4 flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                            <span className="text-[10px] uppercase font-bold text-primary">AI Coach Active</span>
-                            <HelpTooltip content="AI-generated insights based on your donation history, health metrics, and recovery patterns" />
-                        </CardItem>
-                        <CardItem translateZ="80" className="text-lg text-white italic font-medium leading-relaxed">
-                            {dashboardData.isEligible && dashboardData.totalDonations === 0 ? (
-                                `"Welcome! You're ready to make your first donation. Every donation can save up to 3 lives!"`
-                            ) : dashboardData.isEligible ? (
-                                `"Great news! You're eligible to donate again. Your ${dashboardData.totalDonations} donation${dashboardData.totalDonations !== 1 ? 's' : ''} ha${dashboardData.totalDonations !== 1 ? 've' : 's'} made a real difference."`
-                            ) : (
-                                `"${dashboardData.daysUntilEligible} days until your next donation window. Keep maintaining your healthy habits!"`
-                            )}
-                        </CardItem>
-                        <CardItem translateZ="20" className="absolute bottom-6 right-6 opacity-20">
-                            <Activity className="w-24 h-24" />
-                        </CardItem>
-                    </CardBody>
-                </CardContainer>
+                {/* Zone 9: Daily AI Expert Insight */}
+                <div className="md:col-span-3 h-full min-h-[200px]">
+                    <InsightCard />
+                </div>
 
             </div>
         </div>
