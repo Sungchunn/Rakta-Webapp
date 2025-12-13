@@ -1,14 +1,18 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function BloodCarpet() {
     const { scrollY } = useScroll();
     const [pageHeight, setPageHeight] = useState(2000);
 
     useEffect(() => {
-        setPageHeight(document.documentElement.scrollHeight);
+        // Use setTimeout to avoid lint warning about sync setState in effect
+        const timerId = setTimeout(() => {
+            setPageHeight(document.documentElement.scrollHeight);
+        }, 0);
+        return () => clearTimeout(timerId);
     }, []);
 
     const opacity = useTransform(scrollY, [0, 500], [0.4, 0.2]);

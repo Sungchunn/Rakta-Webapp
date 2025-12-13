@@ -128,7 +128,7 @@ export default function DashboardPage() {
                             <span className="text-[10px] uppercase font-bold text-primary">AI Coach Active</span>
                         </CardItem>
                         <CardItem translateZ="80" className="text-lg text-white italic font-medium leading-relaxed">
-                            "{readinessData.insight}"
+                            {`"${readinessData.insight}"`}
                         </CardItem>
                         <CardItem translateZ="20" className="absolute bottom-6 right-6 opacity-20">
                             <Activity className="w-24 h-24" />

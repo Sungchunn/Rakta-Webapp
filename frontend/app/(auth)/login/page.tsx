@@ -95,7 +95,7 @@ export default function LoginPage() {
             </form>
 
             <div className={styles.footer}>
-                <span>Don't have an account? </span>
+                <span>Don&apos;t have an account? </span>
                 <Link href="/signup" className="text-primary hover:underline">
                     Register here
                 </Link>

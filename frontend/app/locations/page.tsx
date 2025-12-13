@@ -4,8 +4,17 @@ import { useEffect, useState } from 'react';
 import { apiRequest } from '@/lib/api';
 import styles from './locations.module.css';
 
+interface Location {
+    id: number;
+    name: string;
+    type: string;
+    address?: string;
+    openingHours?: string;
+    contactInfo?: string;
+}
+
 export default function LocationsPage() {
-    const [locations, setLocations] = useState<any[]>([]);
+    const [locations, setLocations] = useState<Location[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -21,7 +30,7 @@ export default function LocationsPage() {
                 // I will update SecurityConfig to allow GET /api/locations.
                 // For now, let's assume user is logged in or we handle the error.
 
-                let token = localStorage.getItem('token');
+                const token = localStorage.getItem('token');
                 const data = await apiRequest('/locations', 'GET', null, token || undefined);
                 setLocations(data);
             } catch (err) {

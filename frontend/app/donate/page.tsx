@@ -5,12 +5,18 @@ import { useRouter } from 'next/navigation';
 import { apiRequest } from '@/lib/api';
 import styles from './donate.module.css';
 
+interface Location {
+    id: number;
+    name: string;
+    type: string;
+}
+
 export default function DonatePage() {
     const [date, setDate] = useState('');
     const [type, setType] = useState('WHOLE_BLOOD');
     const [locationId, setLocationId] = useState('');
     const [notes, setNotes] = useState('');
-    const [locations, setLocations] = useState<any[]>([]);
+    const [locations, setLocations] = useState<Location[]>([]);
     const [error, setError] = useState('');
     const router = useRouter();
 
@@ -44,8 +50,9 @@ export default function DonatePage() {
                 notes
             }, token!);
             router.push('/dashboard');
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Failed to save donation";
+            setError(message);
         }
     };
 

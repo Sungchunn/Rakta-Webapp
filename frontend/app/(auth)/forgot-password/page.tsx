@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
-import { toast } from "sonner";
+
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
             {!isSubmitted ? (
                 <>
                     <p className="text-zinc-400 text-sm mb-6 text-center">
-                        Enter your email address and we'll send you a link to reset your password.
+                        Enter your email address and we&apos;ll send you a link to reset your password.
                     </p>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
                             you will receive a password reset link shortly.
                         </p>
                         <p className="text-zinc-500 text-xs mt-4">
-                            Didn't receive it? Check your spam folder or try again.
+                            Didn&apos;t receive it? Check your spam folder or try again.
                         </p>
                     </div>
                     <Button

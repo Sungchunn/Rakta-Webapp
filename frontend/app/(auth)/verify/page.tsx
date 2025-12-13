@@ -36,8 +36,9 @@ function VerifyContent() {
 
             toast.success("Email verified! You can now login.");
             router.push('/auth/login');
-        } catch (err: any) {
-            toast.error(err.message || "Verification failed");
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Verification failed";
+            toast.error(message);
         } finally {
             setIsLoading(false);
         }
