@@ -73,26 +73,12 @@ export default function LocationsPage() {
         <div className="flex h-screen w-full bg-background text-foreground overflow-hidden relative">
             {/* Left Sidebar: Locations List */}
             <div className="w-[400px] flex-shrink-0 flex flex-col bg-card/95 backdrop-blur border-r border-border z-10 shadow-2xl">
-                {/* Header */}
                 <div className="p-6 border-b border-border bg-gradient-to-b from-card to-background">
                     <div className="flex items-center gap-2 mb-2">
                         <div className="p-2 bg-primary/10 rounded-full">
                             <MapPin className="w-5 h-5 text-primary" />
                         </div>
                         <h1 className="text-2xl font-bold font-heading tracking-tight">Active Centers</h1>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-4">
-                        Find the nearest donation point and save a life today.
-                    </p>
-
-                    {/* Search Bar */}
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <input
-                            type="text"
-                            placeholder="Search area or center name..."
-                            className="w-full bg-secondary/50 border border-input rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                        />
                     </div>
                 </div>
 
@@ -172,7 +158,7 @@ export default function LocationsPage() {
 
             {/* Right Map Area */}
             <div className="flex-1 h-full relative z-0">
-                <DonationMap hoveredId={hoveredId} />
+                <DonationMap hoveredId={hoveredId} locations={locations} />
 
                 {/* Visual Gradient Overlay for seamless blend */}
                 <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent pointer-events-none z-[400]" />
