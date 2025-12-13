@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Rakta - Give Blood, Feel Alive",
-  description: "Your personal AI coach for blood donation readiness.",
+  description: "Track your blood donation readiness with science-backed metrics and health data integration.",
 };
 
 export default function RootLayout({

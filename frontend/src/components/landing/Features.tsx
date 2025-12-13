@@ -16,12 +16,6 @@ const features = [
         gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
     },
     {
-        title: 'AI Health Coach',
-        description: 'Dr. Sloth analyzes your stats and provides personalized recovery insights.',
-        icon: '🤖',
-        gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
-    },
-    {
         title: 'Donation History',
         description: 'Track all donations with detailed health metrics. Export to CSV anytime.',
         icon: '📈',
@@ -38,6 +32,12 @@ const features = [
         description: 'Automatic countdown to your next eligible donation date based on type.',
         icon: '🎯',
         gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
+    },
+    {
+        title: 'Interactive Maps',
+        description: 'Find nearby donation centers and track your donation locations over time.',
+        icon: '🗺️',
+        gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
     }
 ];
 

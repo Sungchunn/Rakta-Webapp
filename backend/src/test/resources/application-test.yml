@@ -33,27 +33,6 @@ calculator:
   tau-iron-days-female: 90
   baseline-sleep: 8.0
 
-openai:
-  api:
-    key: test-key
-  base-url: https://api.openai.com/v1
-  model: gpt-4o-mini
-  temperature: 0.7
-
-# Disable resilience4j for fast tests
-resilience4j:
-  circuitbreaker:
-    instances:
-      openai:
-        sliding-window-size: 2
-        failure-rate-threshold: 50
-        wait-duration-in-open-state: 1s
-  retry:
-    instances:
-      openai:
-        max-attempts: 1
-        wait-duration: 100ms
-
 logging:
   level:
     root: WARN

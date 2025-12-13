@@ -20,7 +20,6 @@ const DonationCalendarCard = dynamic(() => import("@/components/dashboard/Donati
 const AchievementsCard = dynamic(() => import("@/components/dashboard/AchievementsCard"), { ssr: false });
 const CommunityStatsCard = dynamic(() => import("@/components/dashboard/CommunityStatsCard"), { ssr: false });
 const HelpTooltip = dynamic(() => import("@/components/dashboard/HelpTooltip"), { ssr: false });
-const InsightCard = dynamic(() => import("@/components/dashboard/InsightCard"), { ssr: false });
 
 export default function DashboardPage() {
     const { data: stats, loading, error } = useDashboardData();
@@ -264,11 +263,6 @@ export default function DashboardPage() {
                         </CardItem>
                     </CardBody>
                 </CardContainer>
-
-                {/* Zone 9: Daily AI Expert Insight */}
-                <div className="md:col-span-3 h-full min-h-[200px]">
-                    <InsightCard />
-                </div>
 
             </div>
         </div>

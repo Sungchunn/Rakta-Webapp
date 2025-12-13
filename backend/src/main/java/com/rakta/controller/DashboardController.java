@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rakta.service.InsightService;
-
 /**
  * Controller for aggregated dashboard statistics.
  */
@@ -25,18 +23,11 @@ import com.rakta.service.InsightService;
 public class DashboardController {
 
     private final DashboardService dashboardService;
-    private final InsightService insightService;
 
     @GetMapping("/stats")
     @Operation(summary = "Get dashboard statistics", description = "Returns aggregated statistics for the authenticated user's dashboard including donation metrics, health history, activity streaks, and community stats")
     public ResponseEntity<DashboardStatsDTO> getDashboardStats(Authentication authentication) {
         DashboardStatsDTO stats = dashboardService.getDashboardStats(authentication.getName());
         return ResponseEntity.ok(stats);
-    }
-
-    @GetMapping("/insight")
-    @Operation(summary = "Get daily AI insight", description = "Returns a personalized AI-generated insight for the user. Generated max once per day.")
-    public ResponseEntity<com.rakta.entity.DailyInsight> getDailyInsight(Authentication authentication) {
-        return ResponseEntity.ok(insightService.getDailyInsight(authentication.getName()));
     }
 }

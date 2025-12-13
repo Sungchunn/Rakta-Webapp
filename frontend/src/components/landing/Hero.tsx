@@ -70,8 +70,8 @@ export default function Hero() {
                             </div>
                             <div className={styles.trustDivider} />
                             <div className={styles.trustItem}>
-                                <span className={styles.trustNumber}>AI</span>
-                                <span className={styles.trustLabel}>Health Coach</span>
+                                <span className={styles.trustNumber}>24/7</span>
+                                <span className={styles.trustLabel}>Health Tracking</span>
                             </div>
                         </div>
                     </motion.div>

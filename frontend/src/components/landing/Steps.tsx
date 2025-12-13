@@ -18,7 +18,7 @@ const steps = [
     {
         number: '02',
         title: 'Monitor Readiness',
-        description: 'Get your daily Readiness Score (0-100) based on RBC recovery, iron levels, and lifestyle factors with AI insights from Dr. Sloth.',
+        description: 'Get your daily Readiness Score (0-100) based on RBC recovery, iron levels, and lifestyle factors to optimize your donation timing.',
         icon: (
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 12h-4l-3 9L9 3l-3 9H2" />

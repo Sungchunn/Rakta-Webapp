@@ -7,8 +7,8 @@ const footerLinks = {
     services: [
         { label: 'Blood Donation', href: '/donate' },
         { label: 'Health Tracking', href: '/dashboard' },
-        { label: 'AI Coach', href: '/coach' },
-        { label: 'Find Centers', href: '/donate' },
+        { label: 'Find Centers', href: '/locations' },
+        { label: 'Community Feed', href: '/feed' },
     ],
     about: [
         { label: 'Our Mission', href: '/about' },
