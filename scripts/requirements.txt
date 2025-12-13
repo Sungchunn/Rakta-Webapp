@@ -1,0 +1,2 @@
+# Requirements for load testing scripts
+aiohttp>=3.9.0
