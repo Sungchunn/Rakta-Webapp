@@ -1,134 +1,154 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
-// Fix Leaflet's default icon path issues in Next.js
-// @ts-ignore
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
 
 interface DonationMapProps {
     hoveredId: number | null;
-    locations?: any[]; // Adjust type as needed
+    locations?: any[];
 }
 
 export default function DonationMap({ hoveredId, locations = [] }: DonationMapProps) {
-    const mapRef = useRef<L.Map | null>(null);
     const mapContainerRef = useRef<HTMLDivElement>(null);
-    const markersRef = useRef<L.Marker[]>([]);
+    const mapInstanceRef = useRef<any>(null);
+    const markersRef = useRef<any[]>([]);
+    const leafletRef = useRef<any>(null);
 
-    // Marker Icon Creation
-    const createBeaconIcon = (type: string, isHovered: boolean, stats?: { today: number }) => {
-        let color = '#ef4444'; // Default Red
-        if (type === 'HQ') color = '#ef4444';
-        else if (type === 'MOBILE') color = '#3b82f6';
-        else if (type === 'EVENT') color = '#eab308';
-        else color = '#10b981';
-
-        const size = isHovered ? 48 : 32;
-        const glowSize = isHovered ? 25 : 15;
-
-        // Stats Badge
-        const badgeHtml = stats && stats.today > 0
-            ? `<div style="
-                position: absolute; 
-                top: -5px; 
-                right: -5px; 
-                background: ${color}; 
-                color: white; 
-                font-size: 10px; 
-                font-weight: bold; 
-                border-radius: 50%; 
-                width: 16px; 
-                height: 16px; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center;
-                border: 2px solid #18181b;
-                box-shadow: 0 0 10px ${color};
-               ">${stats.today}</div>`
-            : '';
-
-        return L.divIcon({
-            className: 'custom-beacon-icon',
-            html: `
-                <div style="position: relative; width: ${size}px; height: ${size}px; display: flex; align-items: center; justify-content: center;">
-                    <div style="
-                        position: absolute;
-                        width: ${size}px;
-                        height: ${size}px;
-                        background: ${color};
-                        border-radius: 50%;
-                        opacity: 0.2;
-                        animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-                    "></div>
-                    <div style="
-                        position: relative;
-                        width: ${isHovered ? 16 : 12}px;
-                        height: ${isHovered ? 16 : 12}px;
-                        background: ${color};
-                        border-radius: 50%;
-                        box-shadow: 0 0 ${glowSize}px ${color};
-                        border: 2px solid white;
-                        transition: all 0.3s ease;
-                    "></div>
-                    ${badgeHtml}
-                </div>
-            `,
-            iconSize: [size, size],
-            iconAnchor: [size / 2, size / 2],
-            popupAnchor: [0, -10]
-        });
-    };
-
-    // Initialize Map
+    // Initialize Map - Leaflet is dynamically imported here to prevent SSR issues
     useEffect(() => {
-        if (!mapContainerRef.current || typeof window === 'undefined') return;
-        if (mapRef.current) return; // Prevent double init
+        if (!mapContainerRef.current) return;
+        if (mapInstanceRef.current) return; // Prevent double init
 
-        const map = L.map(mapContainerRef.current, {
-            center: [13.7563, 100.5018],
-            zoom: 12,
-            zoomControl: false,
-            attributionControl: false,
-            fadeAnimation: true,
-            zoomAnimation: true,
+        // Dynamic import of Leaflet (CSS is imported at module level, safe since ssr: false)
+        import('leaflet').then((L) => {
+            leafletRef.current = L.default || L;
+            const leaflet = leafletRef.current;
+
+            // Fix Leaflet's default icon path issues in Next.js
+            // @ts-ignore
+            delete leaflet.Icon.Default.prototype._getIconUrl;
+            leaflet.Icon.Default.mergeOptions({
+                iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+                iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+            });
+
+            const map = leaflet.map(mapContainerRef.current!, {
+                center: [13.7563, 100.5018],
+                zoom: 12,
+                zoomControl: false,
+                attributionControl: false,
+                fadeAnimation: true,
+                zoomAnimation: true,
+            });
+
+            // Use CartoDB Positron for light minimal look
+            leaflet.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19
+            }).addTo(map);
+
+            // Add zoom control to top-left
+            leaflet.control.zoom({
+                position: 'topleft'
+            }).addTo(map);
+
+            mapInstanceRef.current = map;
+
+            // Resize Observer to handle container resizing
+            const resizeObserver = new ResizeObserver(() => {
+                map.invalidateSize();
+            });
+            if (mapContainerRef.current) {
+                resizeObserver.observe(mapContainerRef.current);
+            }
+
+            // Cleanup function
+            return () => {
+                resizeObserver.disconnect();
+                map.remove();
+                mapInstanceRef.current = null;
+            };
         });
 
-        // Use CartoDB Positron for light minimal look
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19
-        }).addTo(map);
-
-        // Add zoom control to top-left
-        L.control.zoom({
-            position: 'topleft'
-        }).addTo(map);
-
-        mapRef.current = map;
-
-        // Resize Observer to handle container resizing (e.g., sidebar toggle)
-        const resizeObserver = new ResizeObserver(() => {
-            map.invalidateSize();
-        });
-        resizeObserver.observe(mapContainerRef.current);
-
+        // Cleanup on unmount
         return () => {
-            resizeObserver.disconnect();
-            map.remove();
-            mapRef.current = null;
+            if (mapInstanceRef.current) {
+                mapInstanceRef.current.remove();
+                mapInstanceRef.current = null;
+            }
         };
     }, []);
 
-    // Update Markers
+    // Update Markers when locations or hoveredId changes
     useEffect(() => {
-        if (!mapRef.current) return;
+        if (!mapInstanceRef.current || !leafletRef.current) return;
+
+        const leaflet = leafletRef.current;
+        const map = mapInstanceRef.current;
+
+        // Helper function to create beacon icon
+        const createBeaconIcon = (type: string, isHovered: boolean, stats?: { today: number }) => {
+            let color = '#ef4444'; // Default Red
+            if (type === 'HQ') color = '#ef4444';
+            else if (type === 'MOBILE') color = '#3b82f6';
+            else if (type === 'EVENT') color = '#eab308';
+            else color = '#10b981';
+
+            const size = isHovered ? 48 : 32;
+            const glowSize = isHovered ? 25 : 15;
+
+            // Stats Badge
+            const badgeHtml = stats && stats.today > 0
+                ? `<div style="
+                    position: absolute; 
+                    top: -5px; 
+                    right: -5px; 
+                    background: ${color}; 
+                    color: white; 
+                    font-size: 10px; 
+                    font-weight: bold; 
+                    border-radius: 50%; 
+                    width: 16px; 
+                    height: 16px; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center;
+                    border: 2px solid #18181b;
+                    box-shadow: 0 0 10px ${color};
+                   ">${stats.today}</div>`
+                : '';
+
+            return leaflet.divIcon({
+                className: 'custom-beacon-icon',
+                html: `
+                    <div style="position: relative; width: ${size}px; height: ${size}px; display: flex; align-items: center; justify-content: center;">
+                        <div style="
+                            position: absolute;
+                            width: ${size}px;
+                            height: ${size}px;
+                            background: ${color};
+                            border-radius: 50%;
+                            opacity: 0.2;
+                            animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+                        "></div>
+                        <div style="
+                            position: relative;
+                            width: ${isHovered ? 16 : 12}px;
+                            height: ${isHovered ? 16 : 12}px;
+                            background: ${color};
+                            border-radius: 50%;
+                            box-shadow: 0 0 ${glowSize}px ${color};
+                            border: 2px solid white;
+                            transition: all 0.3s ease;
+                        "></div>
+                        ${badgeHtml}
+                    </div>
+                `,
+                iconSize: [size, size],
+                iconAnchor: [size / 2, size / 2],
+                popupAnchor: [0, -10]
+            });
+        };
 
         // Clear existing markers
         markersRef.current.forEach(marker => marker.remove());
@@ -137,11 +157,11 @@ export default function DonationMap({ hoveredId, locations = [] }: DonationMapPr
         locations.forEach(loc => {
             if (!loc.lat || !loc.lng) return;
 
-            const marker = L.marker([loc.lat, loc.lng], {
+            const marker = leaflet.marker([loc.lat, loc.lng], {
                 icon: createBeaconIcon(loc.type, hoveredId === loc.id, loc.stats),
                 zIndexOffset: hoveredId === loc.id ? 1000 : (loc.type === 'EVENT' ? 500 : 0)
             })
-                .addTo(mapRef.current!)
+                .addTo(map)
                 .bindPopup(`
                 <div class="p-2 min-w-[200px]">
                     <h3 class="font-bold text-sm mb-1">${loc.name}</h3>

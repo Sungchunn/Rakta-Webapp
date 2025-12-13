@@ -1,20 +1,26 @@
 "use client";
 
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
-import RadialSeparator from "@/components/dashboard/RadialSeparator";
-import RecoveryTrendChart from "@/components/dashboard/RecoveryTrendChart";
-import DailyCheckIn from "@/components/dashboard/DailyCheckIn";
-import DonationStatsCard from "@/components/dashboard/DonationStatsCard";
-import HealthMetricsCard from "@/components/dashboard/HealthMetricsCard";
-import DonationCalendarCard from "@/components/dashboard/DonationCalendarCard";
-import AchievementsCard from "@/components/dashboard/AchievementsCard";
-import CommunityStatsCard from "@/components/dashboard/CommunityStatsCard";
-import HelpTooltip from "@/components/dashboard/HelpTooltip";
+import dynamic from 'next/dynamic';
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { Activity, Zap, CalendarClock, PlusCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import InsightCard from "@/components/dashboard/InsightCard";
+
+// Dynamic imports with SSR disabled for heavy animation/chart components
+const CardContainer = dynamic(() => import("@/components/ui/3d-card").then(mod => mod.CardContainer), { ssr: false });
+const CardBody = dynamic(() => import("@/components/ui/3d-card").then(mod => mod.CardBody), { ssr: false });
+const CardItem = dynamic(() => import("@/components/ui/3d-card").then(mod => mod.CardItem), { ssr: false });
+
+const RadialSeparator = dynamic(() => import("@/components/dashboard/RadialSeparator"), { ssr: false });
+const RecoveryTrendChart = dynamic(() => import("@/components/dashboard/RecoveryTrendChart"), { ssr: false });
+const DailyCheckIn = dynamic(() => import("@/components/dashboard/DailyCheckIn"), { ssr: false });
+const DonationStatsCard = dynamic(() => import("@/components/dashboard/DonationStatsCard"), { ssr: false });
+const HealthMetricsCard = dynamic(() => import("@/components/dashboard/HealthMetricsCard"), { ssr: false });
+const DonationCalendarCard = dynamic(() => import("@/components/dashboard/DonationCalendarCard"), { ssr: false });
+const AchievementsCard = dynamic(() => import("@/components/dashboard/AchievementsCard"), { ssr: false });
+const CommunityStatsCard = dynamic(() => import("@/components/dashboard/CommunityStatsCard"), { ssr: false });
+const HelpTooltip = dynamic(() => import("@/components/dashboard/HelpTooltip"), { ssr: false });
+const InsightCard = dynamic(() => import("@/components/dashboard/InsightCard"), { ssr: false });
 
 export default function DashboardPage() {
     const { data: stats, loading, error } = useDashboardData();
