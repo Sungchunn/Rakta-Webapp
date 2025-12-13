@@ -1,0 +1,23 @@
+{
+    "dailies": [
+        {
+            "summaryId": "sum123",
+            "calendarDate": "2025-12-13",
+            "steps": 8500,
+            "restingHeartRateInBeatsPerMinute": 62,
+            "averageHeartRateInBeatsPerMinute": 75,
+            "maxHeartRateInBeatsPerMinute": 145,
+            "timeOffsetSleepRespiration": 3600
+        }
+    ],
+    "sleeps": [
+        {
+            "summaryId": "sleep123",
+            "calendarDate": "2025-12-13",
+            "deepSleepSeconds": 3600,
+            "lightSleepSeconds": 18000,
+            "remSleepSeconds": 5400,
+            "awakeSleepSeconds": 1200
+        }
+    ]
+}
