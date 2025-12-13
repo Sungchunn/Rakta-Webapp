@@ -101,8 +101,8 @@ export default function DonationMap({ hoveredId, locations = [] }: DonationMapPr
             zoomAnimation: true,
         });
 
-        // Use CartoDB Dark Matter for minimal look
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        // Use CartoDB Positron for light minimal look
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             maxZoom: 19
         }).addTo(map);
 
