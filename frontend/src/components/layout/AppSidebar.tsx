@@ -1,9 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Map, History, Settings, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { apiRequest } from "@/lib/api";
+import { clearAuthCookies, getToken } from "@/lib/auth";
 
 const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -12,8 +15,45 @@ const navItems = [
     { name: "Settings", href: "/profile", icon: Settings },
 ];
 
+interface UserProfile {
+    firstName: string;
+    lastName: string;
+    bloodType?: string;
+}
+
+const BLOOD_TYPE_LABELS: Record<string, string> = {
+    'A_POSITIVE': 'A+',
+    'A_NEGATIVE': 'A-',
+    'B_POSITIVE': 'B+',
+    'B_NEGATIVE': 'B-',
+    'AB_POSITIVE': 'AB+',
+    'AB_NEGATIVE': 'AB-',
+    'O_POSITIVE': 'O+',
+    'O_NEGATIVE': 'O-',
+};
+
 export default function AppSidebar() {
     const pathname = usePathname();
+    const [user, setUser] = useState<UserProfile | null>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const token = getToken();
+                if (!token) return;
+                const data = await apiRequest('/users/me', 'GET', null, token);
+                setUser(data);
+            } catch (err) {
+                console.error('Failed to fetch user profile', err);
+            }
+        };
+        fetchUser();
+    }, []);
+
+    const handleSignOut = () => {
+        clearAuthCookies();
+        window.location.href = '/';
+    };
 
     return (
         <aside className="w-[250px] flex-shrink-0 bg-card border-r border-border h-screen sticky top-0 flex flex-col z-40">
@@ -59,16 +99,16 @@ export default function AppSidebar() {
                         <User className="w-4 h-4 text-zinc-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">User Name</p>
-                        <p className="text-xs text-muted-foreground truncate">O+ Positive</p>
+                        <p className="text-sm font-medium text-white truncate">
+                            {user ? `${user.firstName} ${user.lastName}` : 'Loading...'}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                            {user?.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] || user.bloodType : 'Blood type not set'}
+                        </p>
                     </div>
                     <LogOut
-                        className="w-4 h-4 text-muted-foreground hover:text-red-400 transition-colors"
-                        onClick={() => {
-                            localStorage.removeItem('token');
-                            localStorage.removeItem('user');
-                            window.location.href = '/auth/login';
-                        }}
+                        className="w-4 h-4 text-muted-foreground hover:text-red-400 transition-colors cursor-pointer"
+                        onClick={handleSignOut}
                     />
                 </div>
             </div>

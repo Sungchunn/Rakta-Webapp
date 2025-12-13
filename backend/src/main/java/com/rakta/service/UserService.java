@@ -171,4 +171,12 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    /**
+     * Save/update a user.
+     */
+    @Transactional
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
 }
