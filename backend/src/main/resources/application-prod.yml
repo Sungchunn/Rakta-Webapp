@@ -1,0 +1,126 @@
+# Production profile configuration for Rakta Backend
+# All sensitive values are loaded from environment variables
+# This file can be safely committed to version control
+
+spring:
+  # Disable lazy initialization in production for faster response times
+  main:
+    lazy-initialization: ${SPRING_LAZY_INIT:true}
+
+  # PostgreSQL database configuration (required for production)
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    driverClassName: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL_SIZE:5}
+      minimum-idle: ${HIKARI_MIN_IDLE:2}
+      idle-timeout: 30000
+      connection-timeout: 20000
+      max-lifetime: 1800000
+
+  # Disable H2 console in production
+  h2:
+    console:
+      enabled: false
+
+  # JPA/Hibernate configuration
+  jpa:
+    database-platform: ${JPA_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
+    hibernate:
+      ddl-auto: validate # Never auto-update schema in production
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  # Enable Flyway migrations for production
+  flyway:
+    enabled: ${SPRING_FLYWAY_ENABLED:true}
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+  # Email configuration
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # OAuth2 configuration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            scope:
+              - email
+              - profile
+
+  # CORS configuration
+  cors:
+    allowed-origins: ${API_ALLOWED_ORIGINS}
+
+# JWT configuration
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+
+# Calculator configuration
+calculator:
+  tau-rbc-days: 45
+  tau-iron-days-male: 60
+  tau-iron-days-female: 90
+  baseline-sleep: 8.0
+
+# Logging configuration for production
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:WARN}
+    org.springframework.web: ${LOG_LEVEL_SPRING:WARN}
+    org.springframework.security: ${LOG_LEVEL_SPRING:WARN}
+    org.hibernate.SQL: ${LOG_LEVEL_HIBERNATE:WARN}
+    reactor.netty.http.client: ${LOG_LEVEL_NETTY:WARN}
+    com.rakta: ${LOG_LEVEL_APP:INFO}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Server configuration
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+# Actuator endpoints for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: never
+  health:
+    db:
+      enabled: true

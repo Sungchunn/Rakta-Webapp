@@ -1,0 +1,87 @@
+# Docker Compose for LOCAL DEVELOPMENT
+# This skips Traefik and exposes services directly on localhost
+# Usage: docker compose -f docker-compose.local.yml up --build
+
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    container_name: rakta-postgres-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data-local:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rakta-backend-local
+    restart: unless-stopped
+    environment:
+      # Spring profiles
+      SPRING_PROFILES_ACTIVE: prod
+      # Database configuration
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      # JWT configuration
+      JWT_SECRET: ${JWT_SECRET}
+      # CORS configuration (allow localhost for local dev)
+      API_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      # Performance tuning
+      SPRING_LAZY_INIT: false
+      HIKARI_MAX_POOL_SIZE: 5
+      HIKARI_MIN_IDLE: 2
+      H2_CONSOLE_ENABLED: false
+      JPA_SHOW_SQL: false
+      JPA_FORMAT_SQL: false
+      # Logging
+      LOG_LEVEL_ROOT: INFO
+      LOG_LEVEL_SPRING: INFO
+      LOG_LEVEL_HIBERNATE: INFO
+      LOG_LEVEL_NETTY: INFO
+      LOG_LEVEL_APP: DEBUG
+      # JPA dialect
+      JPA_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      # Flyway
+      SPRING_FLYWAY_ENABLED: true
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Next.js frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8080
+    container_name: rakta-frontend-local
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data-local:

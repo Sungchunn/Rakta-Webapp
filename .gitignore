@@ -1,0 +1,50 @@
+# Environment files (secrets should never be committed)
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python virtual environments
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Database files
+data/
+*.db
+*.mv.db
+*.trace.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+restart
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Build artifacts (should be built fresh)
+target/
+build/
+dist/
+out/
+.next/
+node_modules/
+
+# Let's Encrypt certificates (will be generated on server)
+letsencrypt/
