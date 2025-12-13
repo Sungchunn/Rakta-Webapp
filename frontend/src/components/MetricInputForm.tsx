@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import styles from "./MetricInputForm.module.css";
+import { API_URL } from "@/lib/api";
 
 export default function MetricInputForm() {
     const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ export default function MetricInputForm() {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:8080/api/v1/health/daily/sync-from-device", {
+            const res = await fetch(`${API_URL}/v1/health/daily/sync-from-device`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

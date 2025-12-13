@@ -1,7 +1,7 @@
 import { getToken } from './auth';
 import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api').replace(/\/+$/, '');
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 

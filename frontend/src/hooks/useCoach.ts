@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_URL } from "@/lib/api";
 
 interface Message {
     id: string;
@@ -36,7 +37,7 @@ export function useCoach() {
     const fetchSessions = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:8080/api/v1/coach/sessions", {
+            const res = await fetch(`${API_URL}/v1/coach/sessions`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.ok) {
@@ -54,7 +55,7 @@ export function useCoach() {
     const createSession = async (title: string = "New Session") => {
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:8080/api/v1/coach/sessions", {
+            const res = await fetch(`${API_URL}/v1/coach/sessions`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,7 +77,7 @@ export function useCoach() {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`http://localhost:8080/api/v1/coach/sessions/${sessionId}/messages`, {
+            const res = await fetch(`${API_URL}/v1/coach/sessions/${sessionId}/messages`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.ok) {
@@ -113,7 +114,7 @@ export function useCoach() {
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`http://localhost:8080/api/v1/coach/sessions/${currentSessionId}/messages`, {
+            const res = await fetch(`${API_URL}/v1/coach/sessions/${currentSessionId}/messages`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

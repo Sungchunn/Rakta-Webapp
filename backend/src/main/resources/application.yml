@@ -2,14 +2,18 @@ spring:
   application:
     name: rakta-backend
   datasource:
-    # File-based H2 database - persists data across restarts
-    url: jdbc:h2:file:./data/raktadb;DB_CLOSE_DELAY=-1
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
+    # Database Configuration (H2 Default, override for Postgres)
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:file:./data/raktadb;DB_CLOSE_DELAY=-1}
+    driverClassName: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
   h2:
     console:
       enabled: true
+
+  # Custom App Properties
+  cors:
+    allowed-origins: ${API_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000,https://sungchunn.com}
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: false # DataSeeder.java handles seeding with duplicate checks

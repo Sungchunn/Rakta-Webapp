@@ -14,7 +14,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import DonationDetailDialog from "@/components/tracking/DonationDetailDialog";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, API_URL } from "@/lib/api";
 
 interface DonationDetail {
     id: number;
@@ -73,7 +73,7 @@ export default function HistoryPage() {
 
         setIsExporting(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'}/donations/export`, {
+            const response = await fetch(`${API_URL}/donations/export`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
