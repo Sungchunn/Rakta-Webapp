@@ -42,7 +42,9 @@ export default function NewPostPage() {
         const fetchLocations = async () => {
             try {
                 const data = await apiRequest("/locations", "GET");
-                setLocations(data || []);
+                // API returns [{location: {...}, todayCount, weekCount}] - extract the location objects
+                const extractedLocations = (data || []).map((item: { location: Location }) => item.location);
+                setLocations(extractedLocations);
             } catch (err) {
                 console.error("Failed to fetch locations:", err);
                 setError("Failed to load donation sites.");
@@ -97,7 +99,8 @@ export default function NewPostPage() {
         }
     };
 
-    const formatLocationType = (type: string) => {
+    const formatLocationType = (type: string | undefined | null) => {
+        if (!type) return "Donation Center";
         return type.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
     };
 
