@@ -1,8 +1,9 @@
 package com.rakta.controller;
 
+import com.rakta.dto.LocationWithStatsDto;
 import com.rakta.entity.DonationLocation;
 import com.rakta.repository.DonationLocationRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.rakta.repository.DonationRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,13 +23,11 @@ class LocationControllerTest {
     @Mock
     private DonationLocationRepository locationRepository;
 
+    @Mock
+    private DonationRepository donationRepository;
+
     @InjectMocks
     private LocationController locationController;
-
-    @BeforeEach
-    void setUp() {
-        // Setup done via @InjectMocks
-    }
 
     @Test
     void getLocations_ReturnsAllLocations() {
@@ -52,17 +52,18 @@ class LocationControllerTest {
                 .longitude(-74.0070)
                 .build();
 
-        when(locationRepository.findAll()).thenReturn(List.of(hospital, mobile));
+        when(locationRepository.findActiveLocations()).thenReturn(List.of(hospital, mobile));
+        when(donationRepository.countDonationsSince(any())).thenReturn(List.of());
 
         // When
-        ResponseEntity<List<DonationLocation>> response = locationController.getLocations();
+        ResponseEntity<List<LocationWithStatsDto>> response = locationController.getLocations();
 
         // Then
         assertEquals(200, response.getStatusCode().value());
         assertEquals(2, response.getBody().size());
 
         // Verify lat/lng for map visualization
-        DonationLocation firstLocation = response.getBody().get(0);
+        DonationLocation firstLocation = response.getBody().get(0).getLocation();
         assertNotNull(firstLocation.getLatitude());
         assertNotNull(firstLocation.getLongitude());
         assertEquals(40.7128, firstLocation.getLatitude());
@@ -72,10 +73,11 @@ class LocationControllerTest {
     @Test
     void getLocations_EmptyList() {
         // Given
-        when(locationRepository.findAll()).thenReturn(List.of());
+        when(locationRepository.findActiveLocations()).thenReturn(List.of());
+        when(donationRepository.countDonationsSince(any())).thenReturn(List.of());
 
         // When
-        ResponseEntity<List<DonationLocation>> response = locationController.getLocations();
+        ResponseEntity<List<LocationWithStatsDto>> response = locationController.getLocations();
 
         // Then
         assertEquals(200, response.getStatusCode().value());
@@ -92,14 +94,15 @@ class LocationControllerTest {
                 .address("Test Address")
                 .build();
 
-        when(locationRepository.findAll()).thenReturn(List.of(location));
+        when(locationRepository.findActiveLocations()).thenReturn(List.of(location));
+        when(donationRepository.countDonationsSince(any())).thenReturn(List.of());
 
         // When
-        ResponseEntity<List<DonationLocation>> response = locationController.getLocations();
+        ResponseEntity<List<LocationWithStatsDto>> response = locationController.getLocations();
 
         // Then
         assertEquals(1, response.getBody().size());
-        assertEquals("Test Blood Bank", response.getBody().get(0).getName());
-        assertEquals("HOSPITAL", response.getBody().get(0).getType());
+        assertEquals("Test Blood Bank", response.getBody().get(0).getLocation().getName());
+        assertEquals("HOSPITAL", response.getBody().get(0).getLocation().getType());
     }
 }

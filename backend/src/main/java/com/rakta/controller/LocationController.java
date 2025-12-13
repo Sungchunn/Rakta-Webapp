@@ -1,7 +1,6 @@
 package com.rakta.controller;
 
 import com.rakta.entity.DonationLocation;
-import com.rakta.repository.DonationLocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
