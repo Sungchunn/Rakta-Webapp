@@ -221,3 +221,36 @@ input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* Custom Scrollbar for Country List & Calendar */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #3F3F46;
+  border-radius: 4px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background-color: #52525B;
+}
+
+/* React Day Picker Dropdowns (Native Selects) */
+.rdp-dropdown {
+  background-color: #18181B;
+  color: white;
+  border: 1px solid #27272A;
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.rdp-caption_dropdowns {
+  display: flex;
+  gap: 0.5rem;
+}

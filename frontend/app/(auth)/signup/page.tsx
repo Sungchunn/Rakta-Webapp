@@ -242,7 +242,7 @@ export default function RegisterPage() {
                                         className="h-9 bg-zinc-950 border-zinc-800"
                                     />
                                 </div>
-                                <div className="max-h-[300px] overflow-y-auto p-1">
+                                <div className="max-h-[300px] overflow-y-auto p-1 scrollbar-custom">
                                     {COUNTRY_CODES.filter((c) =>
                                         c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
                                         c.code.includes(countrySearch)
