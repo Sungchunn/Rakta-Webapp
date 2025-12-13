@@ -135,14 +135,15 @@ export default function HistoryPage() {
     }
 
     return (
-        <div className="p-8 max-w-6xl mx-auto">
-            {/* Simplified Header */}
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-black font-heading text-white tracking-tight">
+        <div className="flex flex-col h-full">
+            {/* Fixed Header - Aligned with sidebar headers */}
+            <div className="h-16 flex items-center justify-between px-8 border-b border-border flex-shrink-0">
+                <h1 className="text-xl font-black font-heading text-white tracking-tight">
                     MY HISTORY
                 </h1>
                 <Button
                     variant="outline"
+                    size="sm"
                     className="gap-2"
                     onClick={handleExportCSV}
                     disabled={isExporting || donations.length === 0}
@@ -156,129 +157,134 @@ export default function HistoryPage() {
                 </Button>
             </div>
 
-            {error && (
-                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400">
-                    {error}
-                </div>
-            )}
-
-            {donations.length === 0 && !error ? (
-                <div className="text-center py-16 text-muted-foreground">
-                    <p className="text-lg mb-2">No donation records yet</p>
-                    <p className="text-sm">Your donation history will appear here after your first donation.</p>
-                </div>
-            ) : (
-                <>
-                    <div className="rounded-xl border border-border bg-card overflow-hidden">
-                        <Table>
-                            <TableHeader className="bg-zinc-900/50">
-                                <TableRow className="hover:bg-transparent border-border">
-                                    <TableHead className="w-[80px] font-mono">ID</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Type</TableHead>
-                                    <TableHead>Location</TableHead>
-                                    <TableHead>Volume</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Action</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {paginatedDonations.map((donation) => (
-                                    <TableRow key={donation.id} className="border-border hover:bg-zinc-800/50 transition-colors group">
-                                        <TableCell className="font-mono text-xs text-muted-foreground">
-                                            #{donation.id}
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            {new Date(donation.donationDate).toLocaleDateString()}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className="border-primary/20 text-primary bg-primary/5">
-                                                {formatDonationType(donation.donationType)}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-muted-foreground">
-                                            {donation.locationName || '—'}
-                                        </TableCell>
-                                        <TableCell className="font-mono text-xs">
-                                            {donation.volumeDonated ? `${donation.volumeDonated}ml` : '—'}
-                                        </TableCell>
-                                        <TableCell>
-                                            {getStatusBadge(donation.status)}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="group-hover:text-white text-muted-foreground"
-                                                onClick={() => handleViewDetails(donation)}
-                                            >
-                                                <FileText className="w-4 h-4" />
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-
-                    {/* Dynamic Pagination - Only show if more than one page */}
-                    {totalPages > 1 && (
-                        <div className="mt-8">
-                            <Pagination>
-                                <PaginationContent>
-                                    <PaginationItem>
-                                        <PaginationPrevious
-                                            href="#"
-                                            className="text-white hover:text-primary hover:bg-zinc-800"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setCurrentPage(p => Math.max(1, p - 1));
-                                            }}
-                                        />
-                                    </PaginationItem>
-
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                        <PaginationItem key={page}>
-                                            <PaginationLink
-                                                href="#"
-                                                isActive={page === currentPage}
-                                                className={page === currentPage
-                                                    ? "bg-primary hover:bg-red-600 text-white border-primary"
-                                                    : "text-muted-foreground hover:text-white hover:bg-zinc-800"
-                                                }
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setCurrentPage(page);
-                                                }}
-                                            >
-                                                {page}
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                    ))}
-
-                                    <PaginationItem>
-                                        <PaginationNext
-                                            href="#"
-                                            className="text-white hover:text-primary hover:bg-zinc-800"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setCurrentPage(p => Math.min(totalPages, p + 1));
-                                            }}
-                                        />
-                                    </PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
+            {/* Scrollable Content Area */}
+            <div className="flex-1 overflow-y-auto p-8">
+                <div className="max-w-5xl mx-auto">
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400">
+                            {error}
                         </div>
                     )}
-                </>
-            )}
 
-            {/* Detail Dialog */}
-            <DonationDetailDialog
-                donation={selectedDonation}
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-            />
+                    {donations.length === 0 && !error ? (
+                        <div className="text-center py-16 text-muted-foreground">
+                            <p className="text-lg mb-2">No donation records yet</p>
+                            <p className="text-sm">Your donation history will appear here after your first donation.</p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="rounded-xl border border-border bg-card overflow-hidden">
+                                <Table>
+                                    <TableHeader className="bg-zinc-900/50">
+                                        <TableRow className="hover:bg-transparent border-border">
+                                            <TableHead className="w-[80px] font-mono">ID</TableHead>
+                                            <TableHead>Date</TableHead>
+                                            <TableHead>Type</TableHead>
+                                            <TableHead>Location</TableHead>
+                                            <TableHead>Volume</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead className="text-right">Action</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {paginatedDonations.map((donation) => (
+                                            <TableRow key={donation.id} className="border-border hover:bg-zinc-800/50 transition-colors group">
+                                                <TableCell className="font-mono text-xs text-muted-foreground">
+                                                    #{donation.id}
+                                                </TableCell>
+                                                <TableCell className="font-medium text-white">
+                                                    {new Date(donation.donationDate).toLocaleDateString()}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge variant="outline" className="border-primary/20 text-primary bg-primary/5">
+                                                        {formatDonationType(donation.donationType)}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="text-muted-foreground">
+                                                    {donation.locationName || '—'}
+                                                </TableCell>
+                                                <TableCell className="font-mono text-xs">
+                                                    {donation.volumeDonated ? `${donation.volumeDonated}ml` : '—'}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {getStatusBadge(donation.status)}
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="group-hover:text-white text-muted-foreground"
+                                                        onClick={() => handleViewDetails(donation)}
+                                                    >
+                                                        <FileText className="w-4 h-4" />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+
+                            {/* Dynamic Pagination - Only show if more than one page */}
+                            {totalPages > 1 && (
+                                <div className="mt-8">
+                                    <Pagination>
+                                        <PaginationContent>
+                                            <PaginationItem>
+                                                <PaginationPrevious
+                                                    href="#"
+                                                    className="text-white hover:text-primary hover:bg-zinc-800"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setCurrentPage(p => Math.max(1, p - 1));
+                                                    }}
+                                                />
+                                            </PaginationItem>
+
+                                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                                <PaginationItem key={page}>
+                                                    <PaginationLink
+                                                        href="#"
+                                                        isActive={page === currentPage}
+                                                        className={page === currentPage
+                                                            ? "bg-primary hover:bg-red-600 text-white border-primary"
+                                                            : "text-muted-foreground hover:text-white hover:bg-zinc-800"
+                                                        }
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setCurrentPage(page);
+                                                        }}
+                                                    >
+                                                        {page}
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                            ))}
+
+                                            <PaginationItem>
+                                                <PaginationNext
+                                                    href="#"
+                                                    className="text-white hover:text-primary hover:bg-zinc-800"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setCurrentPage(p => Math.min(totalPages, p + 1));
+                                                    }}
+                                                />
+                                            </PaginationItem>
+                                        </PaginationContent>
+                                    </Pagination>
+                                </div>
+                            )}
+                        </>
+                    )}
+
+                    {/* Detail Dialog */}
+                    <DonationDetailDialog
+                        donation={selectedDonation}
+                        open={dialogOpen}
+                        onOpenChange={setDialogOpen}
+                    />
+                </div>
+            </div>
         </div>
     );
 }

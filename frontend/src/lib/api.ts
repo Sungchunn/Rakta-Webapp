@@ -24,6 +24,11 @@ export async function apiRequest(endpoint: string, method: string = 'GET', body?
         throw new Error(errorData.message || 'Something went wrong');
     }
 
-    return response.json();
+    // Handle empty responses gracefully
+    const text = await response.text();
+    if (!text) {
+        return null;
+    }
+    return JSON.parse(text);
 }
 
