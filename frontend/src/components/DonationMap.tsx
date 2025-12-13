@@ -77,9 +77,9 @@ export default function DonationMap({ hoveredId }: DonationMapProps) {
         const isHovered = hoveredId === id;
         return L.divIcon({
             className: 'custom-beacon',
-            html: `<div class="beacon-pin ${isHovered ? 'scale-150 shadow-[0_0_20px_#EF4444]' : ''}"></div>`,
-            iconSize: isHovered ? [24, 24] : [16, 16],
-            iconAnchor: isHovered ? [12, 12] : [8, 8],
+            html: `<div class="beacon-pin ${isHovered ? 'scale-150 shadow-[0_0_20px_#ef4444]' : 'shadow-[0_0_10px_#ef4444]'} bg-red-500 rounded-full border-2 border-white box-border transition-all duration-300"></div>`,
+            iconSize: isHovered ? [20, 20] : [14, 14],
+            iconAnchor: isHovered ? [10, 10] : [7, 7],
             popupAnchor: [0, -10]
         });
     };
@@ -94,8 +94,8 @@ export default function DonationMap({ hoveredId }: DonationMapProps) {
                 style={{ background: '#27272A' }}
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                 />
 
                 {locations.map((loc) => (
