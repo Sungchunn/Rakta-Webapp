@@ -46,8 +46,11 @@ export async function apiRequest(endpoint: string, method: string = 'GET', body?
             if (response.status === 401) {
                 if (typeof window !== 'undefined') {
                     localStorage.removeItem('token');
+                    // Redirect to login instead of throwing (prevents app crash)
+                    window.location.href = '/login';
+                    // Return never-resolving promise to halt execution during redirect
+                    return new Promise(() => { });
                 }
-                throw new Error('Session expired. Please log in again.');
             }
             if (response.status === 403) {
                 throw new Error('Access denied.');
