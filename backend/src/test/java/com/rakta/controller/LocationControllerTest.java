@@ -37,8 +37,6 @@ class LocationControllerTest {
                 .name("City General Hospital")
                 .type("HOSPITAL")
                 .address("123 Main St")
-                .latitude(40.7128)
-                .longitude(-74.0060)
                 .contactInfo("555-0101")
                 .openingHours("Mon-Fri 8am-5pm")
                 .build();
@@ -48,8 +46,6 @@ class LocationControllerTest {
                 .name("Community Center Drive")
                 .type("MOBILE_VAN")
                 .address("456 Park Ave")
-                .latitude(40.7138)
-                .longitude(-74.0070)
                 .build();
 
         when(locationRepository.findActiveLocations()).thenReturn(List.of(hospital, mobile));
@@ -62,12 +58,10 @@ class LocationControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(2, response.getBody().size());
 
-        // Verify lat/lng for map visualization
+        // Verify location details
         DonationLocation firstLocation = response.getBody().get(0).getLocation();
-        assertNotNull(firstLocation.getLatitude());
-        assertNotNull(firstLocation.getLongitude());
-        assertEquals(40.7128, firstLocation.getLatitude());
-        assertEquals(-74.0060, firstLocation.getLongitude());
+        assertNotNull(firstLocation.getName());
+        assertNotNull(firstLocation.getAddress());
     }
 
     @Test
