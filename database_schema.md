@@ -10,20 +10,47 @@ erDiagram
     USER ||--o{ CHAT_SESSION : "starts"
     USER ||--o{ USER_INTEGRATION : "has"
     USER ||--o{ VERIFICATION_TOKEN : "has"
+    USER ||--o{ DAILY_INSIGHT : "has"
+    USER ||--o{ DONATION_POST : "creates"
+    USER ||--o{ POST_LIKE : "likes"
 
     DONATION ||--|{ DONATION_LOCATION : "at"
+    DONATION_POST ||--o{ DONATION : "links_to"
+    DONATION_POST ||--|| DONATION_LOCATION : "at"
+    DONATION_POST ||--o{ POST_LIKE : "has"
+
+    USER {
+        Long id PK
+        String firstName
+        String lastName
+        String username
+        String email
+        String password
+        String phone
+        String city
+        LocalDate dateOfBirth
+        String gender
+        Double height
+        Double weight
+        String bloodType
+        boolean termsAccepted
+        boolean enabled
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
+    }
+
     DONATION {
         Long id PK
         LocalDate donationDate
         DonationType donationType
-        DonationStatus status
+        String notes
         Double hemoglobinLevel
         Integer systolicBp
         Integer diastolicBp
         Integer pulseRate
         Double donorWeight
         Integer volumeDonated
-        String notes
+        DonationStatus status
         LocalDateTime createdAt
     }
 
@@ -38,6 +65,26 @@ erDiagram
         String openingHours
         LocalDate startDate
         LocalDate endDate
+    }
+
+    DONATION_POST {
+        Long id PK
+        LocalDate donationDate
+        String reviewText
+        Integer likeCount
+        LocalDateTime createdAt
+    }
+
+    POST_LIKE {
+        Long id PK
+        LocalDateTime likedAt
+    }
+
+    DAILY_INSIGHT {
+        UUID id PK
+        LocalDate date
+        String content
+        LocalDateTime createdAt
     }
 
     USER_BADGE }o--|| BADGE : "is_of_type"
@@ -134,23 +181,4 @@ erDiagram
         String token
         TokenType type
         LocalDateTime expiryDate
-    }
-
-    USER {
-        Long id PK
-        String firstName
-        String lastName
-        String email
-        String password
-        String phone
-        String city
-        LocalDate dateOfBirth
-        String gender
-        Double height
-        Double weight
-        String bloodType
-        boolean termsAccepted
-        boolean enabled
-        LocalDateTime createdAt
-        LocalDateTime updatedAt
     }

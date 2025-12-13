@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.Duration;
 import java.util.List;
@@ -36,17 +35,6 @@ public class LlmClient {
 
     @Value("${openai.temperature:0.7}")
     private double temperature;
-
-    @CircuitBreaker(name = LLM_SERVICE, fallbackMethod = "fallbackResponse")
-    @Retry(name = LLM_SERVICE, fallbackMethod = "fallbackResponse")
-    public String generateCoachReply(LlmCoachRequest request) {
-        // ... existing implementation ...
-        log.debug("Sending request to OpenAI for session: {}", request.getSessionId());
-
-        OpenAiChatRequest chatRequest = buildChatRequest(request);
-
-        return executeRequest(chatRequest);
-    }
 
     @CircuitBreaker(name = LLM_SERVICE, fallbackMethod = "fallbackInsightResponse")
     @Retry(name = LLM_SERVICE, fallbackMethod = "fallbackInsightResponse")
@@ -97,11 +85,22 @@ public class LlmClient {
                 .uri("/chat/completions")
                 .bodyValue(chatRequest)
                 .retrieve()
-    });
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                    if (clientResponse.statusCode().value() == 429) {
+                        log.warn("OpenAI rate limit hit (429). Will retry with backoff.");
+                        return clientResponse.createException();
+                    }
+                    return clientResponse.createException();
+                })
+                .bodyToMono(OpenAiChatResponse.class)
+                .timeout(TIMEOUT)
+                .block();
 
-    }).bodyToMono(OpenAiChatResponse.class).timeout(TIMEOUT).block();
-
-    if(response!=null&&!response.getChoices().isEmpty()){return response.getChoices().get(0).getMessage().getContent();}return FALLBACK_RESPONSE;}
+        if (response != null && !response.getChoices().isEmpty()) {
+            return response.getChoices().get(0).getMessage().getContent();
+        }
+        return FALLBACK_RESPONSE;
+    }
 
     private String convertStatsToJson(Object stats) {
         try {

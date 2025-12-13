@@ -17,7 +17,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,11 +71,9 @@ class LlmClientTest {
     private DashboardStatsDTO createTestStats() {
         return DashboardStatsDTO.builder()
                 .currentStreak(3)
-                .readinessScore(85)
-                .daysToNextDonation(0)
+                .daysUntilEligible(0)
+                .isEligible(true)
                 .totalDonations(5)
-                // Add other necessary fields if needed by simple mapping, mostly for JSON
-                // serialization
                 .build();
     }
 
