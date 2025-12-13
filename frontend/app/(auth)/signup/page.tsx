@@ -233,7 +233,7 @@ export default function RegisterPage() {
                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[200px] p-0">
+                            <PopoverContent className="w-[300px] p-0">
                                 <div className="p-2">
                                     <Input
                                         placeholder="Search country..."
@@ -242,37 +242,37 @@ export default function RegisterPage() {
                                         className="h-9 bg-zinc-950 border-zinc-800"
                                     />
                                 </div>
-                                <ScrollArea className="h-[200px]">
-                                    <div className="p-1">
-                                        {COUNTRY_CODES.filter((c) =>
-                                            c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
-                                            c.code.includes(countrySearch)
-                                        ).map((c) => (
-                                            <button
-                                                key={c.code}
-                                                onClick={() => {
-                                                    handleChange('countryCode', c.code);
-                                                    setCountryCodeOpen(false);
-                                                    setCountrySearch('');
-                                                }}
-                                                className={cn(
-                                                    "w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer",
-                                                    formData.countryCode === c.code && "bg-accent"
-                                                )}
-                                            >
-                                                <Check
-                                                    className={cn(
-                                                        "h-4 w-4",
-                                                        formData.countryCode === c.code ? "opacity-100" : "opacity-0"
-                                                    )}
-                                                />
-                                                <span>{c.flag}</span>
-                                                <span>{c.code}</span>
-                                                <span className="text-xs text-zinc-500">{c.country}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </ScrollArea>
+                                <div className="max-h-[300px] overflow-y-auto p-1">
+                                    {COUNTRY_CODES.filter((c) =>
+                                        c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
+                                        c.code.includes(countrySearch)
+                                    ).map((c) => (
+                                        <button
+                                            key={c.code}
+                                            onClick={() => {
+                                                handleChange('countryCode', c.code);
+                                                setCountryCodeOpen(false);
+                                                setCountrySearch('');
+                                            }}
+                                            className={cn(
+                                                "w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors",
+                                                formData.countryCode === c.code && "bg-accent"
+                                            )}
+                                        >
+                                            <span className="shrink-0">{c.flag}</span>
+                                            <span className="font-mono text-zinc-400 w-12 text-right shrink-0">{c.code}</span>
+                                            <span className="truncate text-zinc-300">{c.country}</span>
+                                            {formData.countryCode === c.code && (
+                                                <Check className="ml-auto h-4 w-4 shrink-0 opacity-100" />
+                                            )}
+                                        </button>
+                                    ))}
+                                    {COUNTRY_CODES.filter(c => c.country.toLowerCase().includes(countrySearch.toLowerCase()) || c.code.includes(countrySearch)).length === 0 && (
+                                        <div className="p-4 text-center text-sm text-zinc-500">
+                                            No country found
+                                        </div>
+                                    )}
+                                </div>
                             </PopoverContent>
                         </Popover>
                         <Input
