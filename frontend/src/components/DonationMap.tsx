@@ -13,14 +13,23 @@ export default function DonationMap({ hoveredId, locations = [] }: DonationMapPr
     const mapInstanceRef = useRef<any>(null);
     const markersRef = useRef<any[]>([]);
     const leafletRef = useRef<any>(null);
+    const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
     // Initialize Map - Leaflet is dynamically imported here to prevent SSR issues
     useEffect(() => {
         if (!mapContainerRef.current) return;
         if (mapInstanceRef.current) return; // Prevent double init
 
+        // Check if container already has a Leaflet map
+        const container = mapContainerRef.current as any;
+        if (container._leaflet_id) {
+            return;
+        }
+
         // Dynamic import of Leaflet (CSS is imported at module level, safe since ssr: false)
         import('leaflet').then((L) => {
+            if (mapInstanceRef.current) return; // Double-check after async load
+
             leafletRef.current = L.default || L;
             const leaflet = leafletRef.current;
 
@@ -33,7 +42,9 @@ export default function DonationMap({ hoveredId, locations = [] }: DonationMapPr
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
             });
 
-            const map = leaflet.map(mapContainerRef.current!, {
+            if (!mapContainerRef.current) return;
+
+            const map = leaflet.map(mapContainerRef.current, {
                 center: [13.7563, 100.5018],
                 zoom: 12,
                 zoomControl: false,
@@ -55,23 +66,22 @@ export default function DonationMap({ hoveredId, locations = [] }: DonationMapPr
             mapInstanceRef.current = map;
 
             // Resize Observer to handle container resizing
-            const resizeObserver = new ResizeObserver(() => {
-                map.invalidateSize();
+            resizeObserverRef.current = new ResizeObserver(() => {
+                if (mapInstanceRef.current) {
+                    mapInstanceRef.current.invalidateSize();
+                }
             });
             if (mapContainerRef.current) {
-                resizeObserver.observe(mapContainerRef.current);
+                resizeObserverRef.current.observe(mapContainerRef.current);
             }
-
-            // Cleanup function
-            return () => {
-                resizeObserver.disconnect();
-                map.remove();
-                mapInstanceRef.current = null;
-            };
         });
 
         // Cleanup on unmount
         return () => {
+            if (resizeObserverRef.current) {
+                resizeObserverRef.current.disconnect();
+                resizeObserverRef.current = null;
+            }
             if (mapInstanceRef.current) {
                 mapInstanceRef.current.remove();
                 mapInstanceRef.current = null;
