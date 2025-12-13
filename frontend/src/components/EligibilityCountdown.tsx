@@ -4,8 +4,14 @@ import { useEffect, useState } from 'react';
 import { apiRequest } from '@/lib/api';
 import styles from './EligibilityCountdown.module.css';
 
+interface EligibilityData {
+    isEligible: boolean;
+    daysRemaining?: number;
+    nextEligibleDate?: string;
+}
+
 export default function EligibilityCountdown() {
-    const [eligibility, setEligibility] = useState<any>(null);
+    const [eligibility, setEligibility] = useState<EligibilityData | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

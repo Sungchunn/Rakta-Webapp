@@ -2,7 +2,7 @@ import { getToken } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 
-export async function apiRequest(endpoint: string, method: string = 'GET', body?: any, token?: string) {
+export async function apiRequest(endpoint: string, method: string = 'GET', body?: unknown, token?: string) {
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
     };

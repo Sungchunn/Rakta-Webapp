@@ -36,7 +36,7 @@ export default function CoachChat() {
                 {messages.length === 0 && (
                     <div className={styles.emptyState}>
                         <div className={styles.avatarLarge}>🤖</div>
-                        <h3>I'm your AI Coach</h3>
+                        <h3>I&apos;m your AI Coach</h3>
                         <p>Ask me about your readiness, recovery, or donation eligibility.</p>
                     </div>
                 )}

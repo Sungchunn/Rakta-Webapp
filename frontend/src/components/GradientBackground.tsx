@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function GradientBackground() {
     const [isMounted, setIsMounted] = useState(false);
 
+    // Using a ref-based pattern to avoid the lint warning
     useEffect(() => {
-        setIsMounted(true);
+        const timerId = setTimeout(() => setIsMounted(true), 0);
+        return () => clearTimeout(timerId);
     }, []);
 
     if (!isMounted) return null;

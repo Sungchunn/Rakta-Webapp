@@ -8,11 +8,6 @@ interface EligibilityCountdownProps {
 }
 
 export default function EligibilityCountdown({ daysRemaining }: EligibilityCountdownProps) {
-    const formatLabel = () => {
-        if (daysRemaining <= 0) return "You are eligible!";
-        return `${daysRemaining} Days to Go`;
-    };
-
     const isEligible = daysRemaining <= 0;
     const progress = Math.max(0, Math.min(100, ((56 - daysRemaining) / 56) * 100)); // Assuming 56 days cycle
 

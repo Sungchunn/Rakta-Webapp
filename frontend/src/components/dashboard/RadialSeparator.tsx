@@ -24,10 +24,7 @@ export default function RadialSeparator({ score, status }: RadialSeparatorProps)
 
     // Segmented calculations
     const radius = 120;
-    const circumference = 2 * Math.PI * radius;
     const totalSegments = 40;
-    const gapPercent = 0.2; // 20% gap
-    const segmentLength = (circumference / totalSegments) * (1 - gapPercent);
     const filledSegments = Math.round((score / 100) * totalSegments);
 
     return (

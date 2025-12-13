@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet"; // Import L to fix UMD error
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/api";
 
 // Dynamically import Leaflet components to avoid SSR issues

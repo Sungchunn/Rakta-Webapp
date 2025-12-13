@@ -23,7 +23,7 @@ export default function Hero() {
                     >
                         <h1 className={styles.headline}>
                             Your Blood,{' '}
-                            <span className={styles.gradientText}>Someone's Tomorrow</span>
+                            <span className={styles.gradientText}>Someone&apos;s Tomorrow</span>
                         </h1>
 
                         <p className={styles.subheadline}>

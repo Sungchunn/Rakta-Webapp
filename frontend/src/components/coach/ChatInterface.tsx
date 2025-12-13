@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
@@ -84,8 +84,8 @@ export default function ChatInterface() {
                             >
                                 <div
                                     className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-md ${msg.role === "user"
-                                            ? "bg-primary text-primary-foreground rounded-tr-none"
-                                            : "bg-card border border-border text-foreground rounded-tl-none"
+                                        ? "bg-primary text-primary-foreground rounded-tr-none"
+                                        : "bg-card border border-border text-foreground rounded-tl-none"
                                         }`}
                                 >
                                     <p>{msg.content}</p>

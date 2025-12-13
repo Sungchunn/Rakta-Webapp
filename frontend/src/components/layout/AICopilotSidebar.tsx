@@ -8,7 +8,7 @@ import { apiRequest } from "@/lib/api";
 
 export default function AICopilotSidebar() {
     const [isOpen, setIsOpen] = useState(true);
-    const [messages, setMessages] = useState<any[]>([
+    const [messages, setMessages] = useState<{ role: string; content: string }[]>([
         { role: "assistant", content: "Hello. I am your physiological recovery coach. How can I assist you today?" }
     ]);
     const [input, setInput] = useState("");

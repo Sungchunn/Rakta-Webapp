@@ -1,6 +1,4 @@
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
@@ -54,7 +52,7 @@ FieldDescription.displayName = "FieldDescription"
 
 const FieldError = React.forwardRef<
     HTMLParagraphElement,
-    React.HTMLAttributes<HTMLParagraphElement> & { errors?: any[] }
+    React.HTMLAttributes<HTMLParagraphElement> & { errors?: ({ message?: string } | undefined)[] }
 >(({ className, errors, ...props }, ref) => {
     if (!errors || errors.length === 0) return null
     return (

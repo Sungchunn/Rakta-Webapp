@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, Watch, Smartphone } from "lucide-react";
+import { Activity, Watch } from "lucide-react";
 
 export default function WearableSync() {
     return (

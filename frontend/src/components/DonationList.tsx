@@ -4,8 +4,15 @@ import { useEffect, useState } from 'react';
 import { apiRequest } from '@/lib/api';
 import styles from './DonationList.module.css';
 
+interface Donation {
+    id: string;
+    donationDate: string;
+    donationType: string;
+    location?: { name: string };
+}
+
 export default function DonationList() {
-    const [donations, setDonations] = useState<any[]>([]);
+    const [donations, setDonations] = useState<Donation[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

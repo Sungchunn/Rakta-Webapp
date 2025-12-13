@@ -23,7 +23,7 @@ export default function DonationHistory() {
             <h3 className="text-sm font-bold uppercase text-muted-foreground mb-3 tracking-wider">Donation History</h3>
             <ScrollArea className="h-[300px] w-full pr-4">
                 <div className="space-y-4">
-                    {history.map((record, index) => (
+                    {history.map((record) => (
                         <div key={record.id} className="relative pl-6 border-l border-border/50 pb-4 last:pb-0">
                             {/* Dot */}
                             <div className="absolute left-[-5px] top-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background" />
