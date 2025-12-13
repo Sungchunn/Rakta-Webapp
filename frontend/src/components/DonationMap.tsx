@@ -73,13 +73,23 @@ export default function DonationMap({ hoveredId }: DonationMapProps) {
     }
 
     // Custom Beacon Icon with Dynamic sizing based on Hover
-    const createBeaconIcon = (id: number) => {
+    const createBeaconIcon = (id: number, type: string) => {
         const isHovered = hoveredId === id;
+        const isEvent = type === 'EVENT';
+
+        let colorClass = 'bg-red-500 shadow-[0_0_10px_#ef4444]';
+        let hoverShadow = 'shadow-[0_0_20px_#ef4444]';
+
+        if (isEvent) {
+            colorClass = 'bg-yellow-500 shadow-[0_0_15px_#eab308] border-yellow-200';
+            hoverShadow = 'shadow-[0_0_25px_#eab308]';
+        }
+
         return L.divIcon({
             className: 'custom-beacon',
-            html: `<div class="beacon-pin ${isHovered ? 'scale-150 shadow-[0_0_20px_#ef4444]' : 'shadow-[0_0_10px_#ef4444]'} bg-red-500 rounded-full border-2 border-white box-border transition-all duration-300"></div>`,
-            iconSize: isHovered ? [20, 20] : [14, 14],
-            iconAnchor: isHovered ? [10, 10] : [7, 7],
+            html: `<div class="beacon-pin ${isHovered ? `scale-150 ${hoverShadow}` : colorClass} ${!isEvent ? 'bg-red-500' : 'bg-yellow-500'} rounded-full border-2 border-white box-border transition-all duration-300"></div>`,
+            iconSize: isHovered ? [24, 24] : [16, 16], // Events slightly larger?
+            iconAnchor: isHovered ? [12, 12] : [8, 8],
             popupAnchor: [0, -10]
         });
     };
@@ -102,8 +112,8 @@ export default function DonationMap({ hoveredId }: DonationMapProps) {
                     <Marker
                         key={loc.id}
                         position={[loc.latitude, loc.longitude]}
-                        icon={createBeaconIcon(loc.id)}
-                        zIndexOffset={hoveredId === loc.id ? 1000 : 0}
+                        icon={createBeaconIcon(loc.id, loc.type)}
+                        zIndexOffset={hoveredId === loc.id ? 1000 : (loc.type === 'EVENT' ? 500 : 0)}
                     >
                         <Popup>
                             <div className="p-1">

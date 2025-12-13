@@ -110,9 +110,10 @@ export default function LocationsPage() {
                                 </h3>
                                 <span className={cn(
                                     "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider",
-                                    site.type === 'HQ' ? "bg-red-500/20 text-red-400" :
-                                        site.type === 'MOBILE' ? "bg-blue-500/20 text-blue-400" :
-                                            "bg-zinc-700/50 text-zinc-400"
+                                    site.type === 'HQ' ? "bg-red-500/20 text-red-500 dark:text-red-400" :
+                                        site.type === 'MOBILE' ? "bg-blue-500/20 text-blue-500 dark:text-blue-400" :
+                                            site.type === 'EVENT' ? "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20" :
+                                                "bg-zinc-200 dark:bg-zinc-700/50 text-zinc-600 dark:text-zinc-400"
                                 )}>
                                     {site.type}
                                 </span>

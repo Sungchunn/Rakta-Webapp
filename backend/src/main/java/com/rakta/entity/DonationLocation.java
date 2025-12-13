@@ -33,4 +33,7 @@ public class DonationLocation {
     private String contactInfo;
 
     private String openingHours;
+
+    private java.time.LocalDate startDate;
+    private java.time.LocalDate endDate;
 }
