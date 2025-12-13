@@ -20,8 +20,20 @@ export async function apiRequest(endpoint: string, method: string = 'GET', body?
     });
 
     if (!response.ok) {
+        // Handle specific HTTP status codes
+        if (response.status === 401) {
+            // Clear potentially stale auth token
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('token');
+            }
+            throw new Error('Session expired. Please log in again.');
+        }
+        if (response.status === 403) {
+            throw new Error('Access denied.');
+        }
+
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Something went wrong');
+        throw new Error(errorData.message || `Request failed (${response.status})`);
     }
 
     // Handle empty responses gracefully
