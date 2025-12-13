@@ -36,6 +36,15 @@ export default function LocationsPage() {
                 setLocations(mapped);
             } catch (error) {
                 console.error("Failed to load locations", error);
+                // Fallback mock data if API fails or backend not running
+                const mockData: Location[] = [
+                    { id: 1, name: "National Blood Centre", type: "HQ", openingHours: "07:30 - 19:30", contactInfo: "02-256-4300", distance: "2.4km" },
+                    { id: 2, name: "Emporium Donation Room", type: "STATION", openingHours: "10:00 - 19:00", contactInfo: "02-269-1000", distance: "5.1km" },
+                    { id: 3, name: "The Mall Bangkapi", type: "MALL", openingHours: "12:00 - 18:00", contactInfo: "02-173-1000", distance: "12km" },
+                    { id: 4, name: "Red Cross Station 11", type: "STATION", openingHours: "08:30 - 16:30", contactInfo: "02-552-1000", distance: "8km" },
+                    { id: 5, name: "Central World Mobile Unit", type: "MOBILE", openingHours: "11:00 - 15:00", contactInfo: "02-640-7000", distance: "3.2km" },
+                ];
+                setLocations(mockData);
             } finally {
                 setIsLoading(false);
             }
