@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.util.*;
 
 /**
@@ -53,7 +53,8 @@ public class DataSeeder implements CommandLineRunner {
     // User segment distribution
     private static final double ATHLETE_RATIO = 0.30; // 30%
     private static final double AVERAGE_RATIO = 0.50; // 50%
-    private static final double STRESSED_RATIO = 0.20; // 20%
+    // STRESSED_RATIO = 0.20 (20%) - implicitly the remainder after ATHLETE +
+    // AVERAGE
 
     // Social simulation
     private static final double POST_CREATION_RATIO = 0.20; // 20% of users create posts
