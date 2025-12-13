@@ -6,6 +6,7 @@ import com.rakta.service.ReadinessCalculatorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,12 @@ import java.util.*;
  * - Social interactions: Donation posts, likes, follows
  * 
  * Only seeds if UserRepository count is 0.
+ * 
+ * NOTE: Disabled in production via @Profile("!prod"). Run with
+ * -Dspring.profiles.active=prod to skip seeding.
  */
 @Component
+@Profile("!prod")
 @Slf4j
 @RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {

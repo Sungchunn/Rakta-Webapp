@@ -16,40 +16,40 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
+        @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins}")
+        private String[] allowedOrigins;
 
-        // Allowed origins - add production URL when deployed
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000", // Next.js development
-                "http://127.0.0.1:3000" // Alternative localhost
-        ));
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allowed HTTP methods
-        configuration.setAllowedMethods(Arrays.asList(
-                "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                // Allowed origins - add production URL when deployed
+                configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
 
-        // Allowed headers
-        configuration.setAllowedHeaders(Arrays.asList(
-                "Authorization",
-                "Content-Type",
-                "X-Requested-With",
-                "X-Idempotency-Key"));
+                // Allowed HTTP methods
+                configuration.setAllowedMethods(Arrays.asList(
+                                "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 
-        // Expose headers to frontend
-        configuration.setExposedHeaders(List.of(
-                "Authorization"));
+                // Allowed headers
+                configuration.setAllowedHeaders(Arrays.asList(
+                                "Authorization",
+                                "Content-Type",
+                                "X-Requested-With",
+                                "X-Idempotency-Key"));
 
-        // Allow credentials (cookies, auth headers)
-        configuration.setAllowCredentials(true);
+                // Expose headers to frontend
+                configuration.setExposedHeaders(List.of(
+                                "Authorization"));
 
-        // Cache preflight response for 1 hour
-        configuration.setMaxAge(3600L);
+                // Allow credentials (cookies, auth headers)
+                configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+                // Cache preflight response for 1 hour
+                configuration.setMaxAge(3600L);
 
-        return source;
-    }
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+
+                return source;
+        }
 }

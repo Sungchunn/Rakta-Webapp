@@ -1,6 +1,7 @@
 "use client";
 
 import { Heart, MapPin } from "lucide-react";
+import Link from "next/link";
 import styles from "./Feed.module.css";
 
 export interface FeedPost {
@@ -49,6 +50,10 @@ export default function PostCard({
         }
     };
 
+    const handleUserClick = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent triggering the parent card click
+    };
+
     const formatDate = (dateStr: string) => {
         const date = new Date(dateStr);
         const now = new Date();
@@ -84,16 +89,24 @@ export default function PostCard({
             {/* Header */}
             <div className={styles.postHeader}>
                 <div className={styles.postUserRow}>
-                    <div className={styles.postAvatar}>{initials}</div>
+                    <Link href={`/users/${post.userId}`} onClick={handleUserClick}>
+                        <div className={styles.postAvatar}>{initials}</div>
+                    </Link>
                     <div className={styles.postMeta}>
                         <div className={styles.postHeadline}>
                             {post.username ? (
                                 <>
-                                    {post.username} <span>({post.firstName})</span> just donated @ <span>{post.locationName}</span>
+                                    <Link href={`/users/${post.userId}`} onClick={handleUserClick} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                        {post.username}
+                                    </Link>{" "}
+                                    <span>({post.firstName})</span> just donated @ <span>{post.locationName}</span>
                                 </>
                             ) : (
                                 <>
-                                    {post.firstName} just donated @ <span>{post.locationName}</span>
+                                    <Link href={`/users/${post.userId}`} onClick={handleUserClick} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                        {post.firstName}
+                                    </Link>{" "}
+                                    just donated @ <span>{post.locationName}</span>
                                 </>
                             )}
                         </div>

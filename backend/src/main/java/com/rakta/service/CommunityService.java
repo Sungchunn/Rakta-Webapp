@@ -60,4 +60,25 @@ public class CommunityService {
                 .map(UserFollow::getFollower)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Check if a user is following another user.
+     */
+    public boolean isFollowing(Long followerId, Long followingId) {
+        return userFollowRepository.existsByFollowerIdAndFollowingId(followerId, followingId);
+    }
+
+    /**
+     * Get follower count for a user.
+     */
+    public int getFollowerCount(Long userId) {
+        return userFollowRepository.countByFollowingId(userId);
+    }
+
+    /**
+     * Get following count for a user.
+     */
+    public int getFollowingCount(Long userId) {
+        return userFollowRepository.countByFollowerId(userId);
+    }
 }

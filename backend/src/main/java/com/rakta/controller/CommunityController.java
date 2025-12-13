@@ -53,6 +53,28 @@ public class CommunityController {
         return ResponseEntity.ok(followers);
     }
 
+    /**
+     * Get followers of a specific user (public endpoint).
+     */
+    @GetMapping("/users/{userId}/followers")
+    public ResponseEntity<List<UserDto>> getUserFollowers(@PathVariable Long userId) {
+        List<UserDto> followers = communityService.getFollowers(userId).stream()
+                .map(u -> new UserDto(u.getId(), u.getFullName(), u.getCity()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(followers);
+    }
+
+    /**
+     * Get users a specific user is following (public endpoint).
+     */
+    @GetMapping("/users/{userId}/following")
+    public ResponseEntity<List<UserDto>> getUserFollowing(@PathVariable Long userId) {
+        List<UserDto> following = communityService.getFollowing(userId).stream()
+                .map(u -> new UserDto(u.getId(), u.getFullName(), u.getCity()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(following);
+    }
+
     private User getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
