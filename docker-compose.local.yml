@@ -2,8 +2,6 @@
 # This skips Traefik and exposes services directly on localhost
 # Usage: docker compose -f docker-compose.local.yml up --build
 
-version: '3.8'
-
 services:
   # PostgreSQL database
   postgres:
@@ -15,7 +13,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres-data-local:/var/lib/postgresql/data
     healthcheck:
@@ -58,8 +56,13 @@ services:
       LOG_LEVEL_APP: DEBUG
       # JPA dialect
       JPA_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      # Flyway
-      SPRING_FLYWAY_ENABLED: true
+      # Flyway - disabled for local testing due to migration ordering issues
+      SPRING_FLYWAY_ENABLED: false
+      # Use Hibernate auto-update for local testing
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      # OAuth2 placeholders (required even if not using)
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-placeholder-client-id}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-placeholder-secret}
     ports:
       - "8080:8080"
     depends_on:

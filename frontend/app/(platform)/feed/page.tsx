@@ -191,7 +191,6 @@ export default function FeedPage() {
                                 onLike={handleLike}
                                 onUnlike={handleUnlike}
                                 onClick={() => handlePostClick(post.id)}
-                                showMapPreview={true}
                                 truncateReview={true}
                             />
                         ))}

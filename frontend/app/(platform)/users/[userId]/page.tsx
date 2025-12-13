@@ -368,7 +368,6 @@ export default function UserProfilePage() {
                                         onLike={handleLike}
                                         onUnlike={handleUnlike}
                                         onClick={() => handlePostClick(post.id)}
-                                        showMapPreview={true}
                                         truncateReview={true}
                                     />
                                 ))
