@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Map, History, Settings, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { apiRequest } from "@/lib/api";
-import { clearAuthCookies, getToken } from "@/lib/auth";
+import { clearAuthCookies } from "@/lib/auth";
+import { useUser } from "@/contexts/UserContext";
 
 const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -14,12 +13,6 @@ const navItems = [
     { name: "My History", href: "/history", icon: History },
     { name: "Settings", href: "/profile", icon: Settings },
 ];
-
-interface UserProfile {
-    firstName: string;
-    lastName: string;
-    bloodType?: string;
-}
 
 const BLOOD_TYPE_LABELS: Record<string, string> = {
     'A_POSITIVE': 'A+',
@@ -34,21 +27,7 @@ const BLOOD_TYPE_LABELS: Record<string, string> = {
 
 export default function AppSidebar() {
     const pathname = usePathname();
-    const [user, setUser] = useState<UserProfile | null>(null);
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const token = getToken();
-                if (!token) return;
-                const data = await apiRequest('/users/me', 'GET', null, token);
-                setUser(data);
-            } catch (err) {
-                console.error('Failed to fetch user profile', err);
-            }
-        };
-        fetchUser();
-    }, []);
+    const { user, loading } = useUser();
 
     const handleSignOut = () => {
         clearAuthCookies();
@@ -100,7 +79,7 @@ export default function AppSidebar() {
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-white truncate">
-                            {user ? `${user.firstName} ${user.lastName}` : 'Loading...'}
+                            {loading ? 'Loading...' : (user?.firstName || 'User')}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
                             {user?.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] || user.bloodType : 'Blood type not set'}

@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import { toast } from "sonner";
+import { useUser } from "@/contexts/UserContext";
 
 interface UserProfile {
     id: number;
@@ -44,6 +45,7 @@ const GENDERS = [
 ];
 
 export default function ProfileForm() {
+    const { refreshUser } = useUser();
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -112,6 +114,8 @@ export default function ProfileForm() {
             const updated = await apiRequest('/users/me', 'PUT', payload, token);
             setProfile(updated);
             setIsEditing(false);
+            // Refresh the shared user context so sidebar updates
+            await refreshUser();
             toast.success('Profile updated successfully');
         } catch (err) {
             console.error('Failed to update profile', err);
