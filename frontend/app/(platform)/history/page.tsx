@@ -53,7 +53,7 @@ export default function HistoryPage() {
         }
 
         try {
-            const data = await apiRequest('/api/donations', 'GET', undefined, token);
+            const data = await apiRequest('/donations', 'GET', undefined, token);
             setDonations(data || []);
         } catch (err) {
             console.error("Failed to fetch donations:", err);
@@ -73,7 +73,7 @@ export default function HistoryPage() {
 
         setIsExporting(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/donations/export`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'}/donations/export`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
