@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 /**
  * DTO for user profile data.
+ * Used for both profile data retrieval and updates.
  */
 @Data
 @Builder

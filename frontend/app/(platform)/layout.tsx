@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import AppSidebar from "@/components/layout/AppSidebar";
 import AICopilotSidebar from "@/components/layout/AICopilotSidebar";
 import { UserProvider } from "@/contexts/UserContext";
@@ -9,6 +10,13 @@ export default function PlatformLayout({
 }: {
     children: React.ReactNode;
 }) {
+    const pathname = usePathname();
+
+    // Show AI Coach on specific pages only (history, map, coach)
+    const showAICoach = ['/history', '/map', '/coach'].some(
+        (path) => pathname.startsWith(path)
+    );
+
     return (
         <UserProvider>
             <div className="flex h-screen bg-zinc-950 text-white overflow-hidden">
@@ -20,10 +28,9 @@ export default function PlatformLayout({
                     {children}
                 </main>
 
-                {/* Persistent AI Copilot (Right) */}
-                <AICopilotSidebar />
+                {/* Contextual AI Copilot (Right) - Only on certain pages */}
+                {showAICoach && <AICopilotSidebar />}
             </div>
         </UserProvider>
     );
 }
-

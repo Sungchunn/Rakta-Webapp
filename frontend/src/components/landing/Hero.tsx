@@ -33,7 +33,7 @@ export default function Hero() {
 
                         {/* CTAs */}
                         <div className={styles.ctaGroup}>
-                            <Link href="/donate">
+                            <Link href="/locations">
                                 <motion.button
                                     className={styles.primaryCta}
                                     whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(220, 38, 38, 0.5)' }}
