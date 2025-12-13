@@ -1,31 +1,31 @@
 package com.rakta.config;
 
-import com.rakta.entity.DailyMetric;
-import com.rakta.entity.DonationLocation;
-import com.rakta.entity.User;
-import com.rakta.repository.DailyMetricRepository;
-import com.rakta.repository.DonationLocationRepository;
-import com.rakta.repository.UserRepository;
+import com.rakta.entity.*;
+import com.rakta.repository.*;
 import com.rakta.service.ReadinessCalculatorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Data seeder that populates the database with realistic test data on
- * application startup.
- * Seeds donation locations (always) and test user with 30 days of metrics (if
- * no users exist).
+ * application startup for volume and load testing.
+ * 
+ * Generates:
+ * - 1,000 users with varied demographics (Athletes, Average, Stressed)
+ * - 30 days of health metrics per user
+ * - Social interactions: Donation posts, likes, follows
+ * 
+ * Only seeds if UserRepository count is 0.
  */
 @Component
 @Slf4j
@@ -35,15 +35,76 @@ public class DataSeeder implements CommandLineRunner {
     private final DonationLocationRepository locationRepository;
     private final UserRepository userRepository;
     private final DailyMetricRepository dailyMetricRepository;
+    private final DonationPostRepository donationPostRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final UserFollowRepository userFollowRepository;
     private final PasswordEncoder passwordEncoder;
     private final ReadinessCalculatorService readinessCalculatorService;
 
+    // Volume Configuration
+    private static final int USER_COUNT = 1000;
+    private static final int DAYS_OF_METRICS = 30;
+    private static final int USER_BATCH_SIZE = 100;
+    private static final int METRIC_BATCH_SIZE = 500;
+    private static final int POST_BATCH_SIZE = 100;
+    private static final int LIKE_BATCH_SIZE = 500;
+    private static final int FOLLOW_BATCH_SIZE = 500;
+
+    // User segment distribution
+    private static final double ATHLETE_RATIO = 0.30; // 30%
+    private static final double AVERAGE_RATIO = 0.50; // 50%
+    private static final double STRESSED_RATIO = 0.20; // 20%
+
+    // Social simulation
+    private static final double POST_CREATION_RATIO = 0.20; // 20% of users create posts
+    private static final int MAX_LIKES_PER_POST = 50;
+    private static final int MIN_FOLLOWS_PER_USER = 5;
+    private static final int MAX_FOLLOWS_PER_USER = 10;
+
     private static final Random RANDOM = new Random(42); // Fixed seed for reproducibility
+
+    private static final String[] FIRST_NAMES = {
+            "Emma", "Liam", "Olivia", "Noah", "Ava", "William", "Sophia", "James",
+            "Isabella", "Oliver", "Mia", "Benjamin", "Charlotte", "Elijah", "Amelia",
+            "Lucas", "Harper", "Mason", "Evelyn", "Logan", "Abigail", "Alexander",
+            "Emily", "Ethan", "Elizabeth", "Jacob", "Sofia", "Michael", "Avery", "Daniel"
+    };
+
+    private static final String[] LAST_NAMES = {
+            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller",
+            "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez",
+            "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin"
+    };
+
+    private static final String[] GENDERS = { "Male", "Female", "Other" };
+    private static final String[] BLOOD_TYPES = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
+
+    private static final String[] REVIEW_TEMPLATES = {
+            "Great experience at this location! Staff was very friendly.",
+            "Quick and efficient. Will definitely come back!",
+            "My first time donating here. Everything went smoothly.",
+            "Amazing staff. Made me feel comfortable throughout.",
+            "Highly recommend this place for blood donation.",
+            "Clean facility and professional service.",
+            "Easy to find parking. Process was straightforward.",
+            "Gave back to the community today! 🩸",
+            "Donation #%d complete! Feeling good about helping others.",
+            "Saved lives today. Join me next time!",
+            "The nurses here are so kind and patient.",
+            "Fast process, was in and out in 30 minutes.",
+            "Every drop counts! Regular donor here.",
+            null, // Some posts have no review text
+            null
+    };
+
+    private enum UserSegment {
+        ATHLETE, AVERAGE, STRESSED
+    }
 
     @Override
     public void run(String... args) throws Exception {
         seedDonationLocations();
-        seedTestUserWithMetrics();
+        seedVolumeData();
     }
 
     /**
@@ -101,135 +162,421 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     /**
-     * Seeds a test user with 30 days of realistic health metrics.
-     * Only runs if no users exist in the database.
+     * Main volume seeding method. Creates 1,000 users with health data and social
+     * interactions.
      */
-    private void seedTestUserWithMetrics() {
+    private void seedVolumeData() {
         if (userRepository.count() > 0) {
-            log.info("⏭️ Users already exist. Skipping test user seeding.");
+            log.info("⏭️ Users already exist. Skipping volume data seeding.");
             return;
         }
 
-        log.info("👤 Creating Test User...");
+        log.info("🚀 Starting Volume Data Seeding...");
+        log.info("   📊 Target: {} users, {} days of metrics each", USER_COUNT, DAYS_OF_METRICS);
+        long startTime = System.currentTimeMillis();
 
-        // Create Test User
-        User testUser = User.builder()
-                .email("test@rakta.app")
-                .password(passwordEncoder.encode("password123"))
-                .firstName("Test")
-                .lastName("User")
-                .gender("Male")
-                .dateOfBirth(LocalDate.of(1995, 1, 1))
-                .height(175.0)
-                .weight(70.0)
-                .termsAccepted(true)
-                .enabled(true)
-                .build();
+        // Phase 1: Create Users
+        List<User> allUsers = createUsers();
 
-        testUser = userRepository.save(testUser);
-        log.info("✅ Test User Created: {} (ID: {})", testUser.getEmail(), testUser.getId());
+        // Phase 2: Generate Health Metrics
+        generateHealthMetrics(allUsers);
 
-        // Generate 30 days of realistic metrics
-        log.info("📊 Generating 30 days of realistic health metrics...");
-        List<DailyMetric> metrics = generateRealisticMetrics(testUser, 30);
-        dailyMetricRepository.saveAll(metrics);
-        log.info("✅ Saved {} daily metrics.", metrics.size());
+        // Phase 3: Create Social Interactions
+        List<DonationLocation> locations = locationRepository.findAll();
+        createSocialInteractions(allUsers, locations);
 
-        // Calculate Readiness Snapshots for each day
-        log.info("🧮 Calculating Readiness Snapshots...");
-        for (DailyMetric metric : metrics) {
-            try {
-                readinessCalculatorService.processDailyMetric(metric);
-            } catch (Exception e) {
-                log.warn("Failed to calculate readiness for date {}: {}", metric.getDate(), e.getMessage());
-            }
-        }
-        log.info("✅ Readiness calculation complete.");
-
-        log.info("🎉 Synthetic data seeding complete! Dashboard should now display 30 days of trending data.");
+        long elapsed = (System.currentTimeMillis() - startTime) / 1000;
+        log.info("🎉 Volume Data Seeding Complete!");
+        log.info("   ✅ {} users created", allUsers.size());
+        log.info("   ✅ {} daily metrics generated", dailyMetricRepository.count());
+        log.info("   ✅ {} donation posts created", donationPostRepository.count());
+        log.info("   ✅ {} likes generated", postLikeRepository.count());
+        log.info("   ✅ {} follow relationships created", userFollowRepository.count());
+        log.info("   ⏱️ Total time: {} seconds", elapsed);
     }
 
     /**
-     * Generates realistic health metrics for the past N days using sine wave +
-     * random walk algorithms.
-     * This creates natural-looking fluctuations instead of pure random noise.
-     *
-     * @param user The user to generate metrics for
-     * @param days Number of days to generate
-     * @return List of DailyMetric entities
+     * Creates users in batches with varied demographics.
      */
-    private List<DailyMetric> generateRealisticMetrics(User user, int days) {
+    @Transactional
+    private List<User> createUsers() {
+        log.info("👤 Creating {} users in batches of {}...", USER_COUNT, USER_BATCH_SIZE);
+        List<User> allUsers = new ArrayList<>();
+        List<User> batch = new ArrayList<>();
+        String encodedPassword = passwordEncoder.encode("password123");
+
+        for (int i = 1; i <= USER_COUNT; i++) {
+            User user = createRandomUser(i, encodedPassword);
+            batch.add(user);
+
+            if (batch.size() >= USER_BATCH_SIZE) {
+                List<User> saved = userRepository.saveAll(batch);
+                allUsers.addAll(saved);
+                log.info("   📦 Saved batch: {} / {} users", allUsers.size(), USER_COUNT);
+                batch.clear();
+            }
+        }
+
+        // Save remaining users
+        if (!batch.isEmpty()) {
+            List<User> saved = userRepository.saveAll(batch);
+            allUsers.addAll(saved);
+            log.info("   📦 Saved final batch: {} users total", allUsers.size());
+        }
+
+        return allUsers;
+    }
+
+    /**
+     * Creates a single user with randomized demographics.
+     */
+    private User createRandomUser(int index, String encodedPassword) {
+        String firstName = FIRST_NAMES[RANDOM.nextInt(FIRST_NAMES.length)];
+        String lastName = LAST_NAMES[RANDOM.nextInt(LAST_NAMES.length)];
+        String gender = GENDERS[RANDOM.nextInt(GENDERS.length)];
+        String bloodType = BLOOD_TYPES[RANDOM.nextInt(BLOOD_TYPES.length)];
+
+        // Age between 18-60
+        int age = 18 + RANDOM.nextInt(43);
+        LocalDate dob = LocalDate.now().minusYears(age).minusDays(RANDOM.nextInt(365));
+
+        // Height 150-200cm, Weight 50-100kg
+        double height = 150 + RANDOM.nextDouble() * 50;
+        double weight = 50 + RANDOM.nextDouble() * 50;
+
+        return User.builder()
+                .email("user" + index + "@rakta.app")
+                .password(encodedPassword)
+                .firstName(firstName)
+                .lastName(lastName)
+                .username("user" + index)
+                .gender(gender)
+                .bloodType(bloodType)
+                .dateOfBirth(dob)
+                .height(Math.round(height * 10) / 10.0)
+                .weight(Math.round(weight * 10) / 10.0)
+                .termsAccepted(true)
+                .enabled(true)
+                .build();
+    }
+
+    /**
+     * Generates health metrics for all users based on their segment.
+     */
+    private void generateHealthMetrics(List<User> users) {
+        log.info("📊 Generating {} days of health metrics for {} users...", DAYS_OF_METRICS, users.size());
+        List<DailyMetric> metricBatch = new ArrayList<>();
+        int totalMetrics = 0;
+
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            UserSegment segment = determineSegment(i, users.size());
+            List<DailyMetric> userMetrics = generateMetricsForUser(user, segment);
+            metricBatch.addAll(userMetrics);
+
+            if (metricBatch.size() >= METRIC_BATCH_SIZE) {
+                List<DailyMetric> saved = dailyMetricRepository.saveAll(metricBatch);
+                totalMetrics += saved.size();
+
+                // Process readiness for saved metrics (sampling for performance)
+                processReadinessSampled(saved);
+
+                log.info("   📈 Saved {} metrics... (Total: {})", saved.size(), totalMetrics);
+                metricBatch.clear();
+            }
+        }
+
+        // Save remaining metrics
+        if (!metricBatch.isEmpty()) {
+            List<DailyMetric> saved = dailyMetricRepository.saveAll(metricBatch);
+            totalMetrics += saved.size();
+            processReadinessSampled(saved);
+            log.info("   📈 Saved final batch: {} metrics (Total: {})", saved.size(), totalMetrics);
+        }
+    }
+
+    /**
+     * Determines user segment based on distribution ratios.
+     */
+    private UserSegment determineSegment(int index, int totalUsers) {
+        double ratio = (double) index / totalUsers;
+        if (ratio < ATHLETE_RATIO) {
+            return UserSegment.ATHLETE;
+        } else if (ratio < ATHLETE_RATIO + AVERAGE_RATIO) {
+            return UserSegment.AVERAGE;
+        } else {
+            return UserSegment.STRESSED;
+        }
+    }
+
+    /**
+     * Generates metrics for a single user based on their segment.
+     */
+    private List<DailyMetric> generateMetricsForUser(User user, UserSegment segment) {
         List<DailyMetric> metrics = new ArrayList<>();
         LocalDate today = LocalDate.now();
 
-        // Initialize random walk values
-        double sleepWalk = 7.5; // Starting value for sleep (midpoint of 6.0-9.0)
-        double rhrWalk = 65.0; // Starting value for RHR (midpoint of 55-75)
+        // Initial values based on segment
+        double sleepWalk, rhrWalk;
+        int hrvBase;
 
-        for (int i = days; i >= 0; i--) {
+        switch (segment) {
+            case ATHLETE:
+                sleepWalk = 8.0; // High sleep
+                rhrWalk = 52.0; // Low RHR
+                hrvBase = 70; // High HRV
+                break;
+            case STRESSED:
+                sleepWalk = 5.5; // Low sleep
+                rhrWalk = 85.0; // High RHR
+                hrvBase = 35; // Low HRV
+                break;
+            case AVERAGE:
+            default:
+                sleepWalk = 7.0; // Average sleep
+                rhrWalk = 70.0; // Average RHR
+                hrvBase = 50; // Average HRV
+                break;
+        }
+
+        for (int i = DAYS_OF_METRICS; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
-            int dayIndex = days - i; // 0 to 30
-
-            // --- Sleep Hours: Sine wave + Random Walk ---
-            // Base sine wave for weekly patterns (people sleep more on weekends)
-            double sleepSine = Math.sin(dayIndex * 2 * Math.PI / 7) * 0.5; // ±0.5h weekly cycle
-
-            // Random walk for day-to-day variation
-            sleepWalk += (RANDOM.nextDouble() - 0.5) * 0.6; // Step size ±0.3h
-            sleepWalk = clamp(sleepWalk, 6.0, 9.0);
-
-            double sleepHours = clamp(sleepWalk + sleepSine, 6.0, 9.0);
-
-            // --- Resting Heart Rate: Random Walk with mean reversion ---
-            rhrWalk += (RANDOM.nextDouble() - 0.5) * 4.0; // Step size ±2 BPM
-            // Mean reversion: pull towards 65 BPM
-            rhrWalk += (65 - rhrWalk) * 0.1;
-            rhrWalk = clamp(rhrWalk, 55, 75);
-            int restingHeartRate = (int) Math.round(rhrWalk);
-
-            // --- HRV: Inversely correlated with RHR ---
-            // Higher RHR = lower HRV, range 30-80ms
-            // Linear inverse: when RHR=55, HRV≈80; when RHR=75, HRV≈30
-            double hrvBase = 80 - ((restingHeartRate - 55) * 2.5);
-            // Add some noise
-            int hrvMs = (int) Math.round(clamp(hrvBase + (RANDOM.nextDouble() - 0.5) * 10, 30, 80));
-
-            // --- Iron Intake: Weighted random towards 3 ---
-            int ironIntakeScore = generateWeightedIronScore();
-
-            // --- Training Load: Random 1-10 with slight trends ---
-            int trainingLoadAcute = RANDOM.nextInt(10) + 1;
-
-            // --- Energy Level: Correlated with sleep ---
-            int energyLevel = (int) Math.round(clamp((sleepHours - 4) * 2 + (RANDOM.nextDouble() - 0.5) * 2, 1, 10));
-
-            // --- Hydration: Random 1.5-3.5L ---
-            double hydrationLiters = 1.5 + RANDOM.nextDouble() * 2.0;
-
-            DailyMetric metric = DailyMetric.builder()
-                    .user(user)
-                    .date(date)
-                    .sleepHours(BigDecimal.valueOf(sleepHours).setScale(2, RoundingMode.HALF_UP))
-                    .sleepEfficiency((int) Math.round(75 + RANDOM.nextDouble() * 20)) // 75-95%
-                    .restingHeartRate(restingHeartRate)
-                    .hrvMs(hrvMs)
-                    .ironIntakeScore(ironIntakeScore)
-                    .trainingLoadAcute(trainingLoadAcute)
-                    .energyLevel(energyLevel)
-                    .hydrationLiters(BigDecimal.valueOf(hydrationLiters).setScale(1, RoundingMode.HALF_UP))
-                    .source("SYNTHETIC_SEED")
-                    .build();
-
+            DailyMetric metric = generateSingleDayMetric(user, date, segment, sleepWalk, rhrWalk, hrvBase);
             metrics.add(metric);
+
+            // Random walk for next day
+            sleepWalk += (RANDOM.nextDouble() - 0.5) * 0.4;
+            sleepWalk = clamp(sleepWalk, segment == UserSegment.ATHLETE ? 7.0 : 4.0,
+                    segment == UserSegment.STRESSED ? 7.0 : 9.5);
+
+            rhrWalk += (RANDOM.nextDouble() - 0.5) * 3.0;
+            rhrWalk = clamp(rhrWalk, segment == UserSegment.ATHLETE ? 45 : 50,
+                    segment == UserSegment.STRESSED ? 95 : 80);
         }
 
         return metrics;
     }
 
     /**
+     * Generates a single day's metrics.
+     */
+    private DailyMetric generateSingleDayMetric(User user, LocalDate date, UserSegment segment,
+            double sleepWalk, double rhrWalk, int hrvBase) {
+        // Add daily noise
+        double sleepHours = clamp(sleepWalk + (RANDOM.nextDouble() - 0.5) * 0.6, 4.0, 10.0);
+        int restingHeartRate = (int) Math.round(clamp(rhrWalk + (RANDOM.nextDouble() - 0.5) * 4, 40, 100));
+        int hrvMs = (int) Math.round(clamp(hrvBase + (RANDOM.nextDouble() - 0.5) * 15, 20, 90));
+        int ironIntakeScore = segment == UserSegment.STRESSED ? 1 + RANDOM.nextInt(2) : // Low iron for stressed
+                generateWeightedIronScore();
+        int trainingLoadAcute = segment == UserSegment.ATHLETE ? 5 + RANDOM.nextInt(6) : // Higher for athletes
+                RANDOM.nextInt(8) + 1;
+        int energyLevel = (int) Math.round(clamp((sleepHours - 4) * 1.5 + (RANDOM.nextDouble() - 0.5) * 2, 1, 10));
+        double hydrationLiters = 1.0 + RANDOM.nextDouble() * 2.5;
+
+        return DailyMetric.builder()
+                .user(user)
+                .date(date)
+                .sleepHours(BigDecimal.valueOf(sleepHours).setScale(2, RoundingMode.HALF_UP))
+                .sleepEfficiency((int) Math.round(60 + RANDOM.nextDouble() * 35))
+                .restingHeartRate(restingHeartRate)
+                .hrvMs(hrvMs)
+                .ironIntakeScore(ironIntakeScore)
+                .trainingLoadAcute(trainingLoadAcute)
+                .energyLevel(energyLevel)
+                .hydrationLiters(BigDecimal.valueOf(hydrationLiters).setScale(1, RoundingMode.HALF_UP))
+                .source("SYNTHETIC_SEED")
+                .build();
+    }
+
+    /**
+     * Process readiness snapshots for a sample of metrics (every 10th for
+     * performance).
+     */
+    private void processReadinessSampled(List<DailyMetric> metrics) {
+        for (int i = 0; i < metrics.size(); i += 10) {
+            try {
+                readinessCalculatorService.processDailyMetric(metrics.get(i));
+            } catch (Exception e) {
+                // Silent fail for sampling
+            }
+        }
+    }
+
+    /**
+     * Creates social interactions: donation posts, likes, and follows.
+     */
+    private void createSocialInteractions(List<User> users, List<DonationLocation> locations) {
+        if (locations.isEmpty()) {
+            log.warn("⚠️ No locations available for posts. Skipping social interactions.");
+            return;
+        }
+
+        log.info("🌐 Creating social interactions...");
+
+        // Phase 3a: Create Donation Posts
+        List<DonationPost> posts = createDonationPosts(users, locations);
+
+        // Phase 3b: Create Likes on Posts
+        createPostLikes(posts, users);
+
+        // Phase 3c: Create Follow Relationships
+        createFollowRelationships(users);
+    }
+
+    /**
+     * Creates donation posts for a subset of users.
+     */
+    @Transactional
+    private List<DonationPost> createDonationPosts(List<User> users, List<DonationLocation> locations) {
+        int postCreators = (int) (users.size() * POST_CREATION_RATIO);
+        log.info("   📝 Creating posts for {} users (~{} posts)...", postCreators, postCreators);
+
+        List<DonationPost> allPosts = new ArrayList<>();
+        List<DonationPost> batch = new ArrayList<>();
+        int donationCount = 0;
+
+        for (int i = 0; i < postCreators; i++) {
+            User user = users.get(RANDOM.nextInt(users.size()));
+            DonationLocation location = locations.get(RANDOM.nextInt(locations.size()));
+            LocalDate donationDate = LocalDate.now().minusDays(RANDOM.nextInt(DAYS_OF_METRICS));
+
+            donationCount++;
+            String reviewTemplate = REVIEW_TEMPLATES[RANDOM.nextInt(REVIEW_TEMPLATES.length)];
+            String reviewText = reviewTemplate != null && reviewTemplate.contains("%d")
+                    ? String.format(reviewTemplate, donationCount)
+                    : reviewTemplate;
+
+            DonationPost post = DonationPost.builder()
+                    .user(user)
+                    .location(location)
+                    .donationDate(donationDate)
+                    .reviewText(reviewText)
+                    .likeCount(0)
+                    .build();
+
+            batch.add(post);
+
+            if (batch.size() >= POST_BATCH_SIZE) {
+                List<DonationPost> saved = donationPostRepository.saveAll(batch);
+                allPosts.addAll(saved);
+                log.info("      📦 Saved {} posts... (Total: {})", saved.size(), allPosts.size());
+                batch.clear();
+            }
+        }
+
+        if (!batch.isEmpty()) {
+            List<DonationPost> saved = donationPostRepository.saveAll(batch);
+            allPosts.addAll(saved);
+        }
+
+        log.info("   ✅ Created {} donation posts", allPosts.size());
+        return allPosts;
+    }
+
+    /**
+     * Creates random likes on posts from various users.
+     */
+    @Transactional
+    private void createPostLikes(List<DonationPost> posts, List<User> users) {
+        if (posts.isEmpty())
+            return;
+
+        log.info("   ❤️ Creating likes on {} posts...", posts.size());
+        List<PostLike> batch = new ArrayList<>();
+        Set<String> existingLikes = new HashSet<>(); // Track user-post pairs to avoid duplicates
+        int totalLikes = 0;
+
+        for (DonationPost post : posts) {
+            int likeCount = RANDOM.nextInt(MAX_LIKES_PER_POST + 1);
+            int actualLikes = 0;
+
+            for (int i = 0; i < likeCount && i < users.size(); i++) {
+                User liker = users.get(RANDOM.nextInt(users.size()));
+
+                // Skip if user is post author or already liked
+                String key = liker.getId() + "-" + post.getId();
+                if (liker.getId().equals(post.getUser().getId()) || existingLikes.contains(key)) {
+                    continue;
+                }
+                existingLikes.add(key);
+
+                PostLike like = PostLike.builder()
+                        .user(liker)
+                        .post(post)
+                        .build();
+                batch.add(like);
+                actualLikes++;
+
+                if (batch.size() >= LIKE_BATCH_SIZE) {
+                    postLikeRepository.saveAll(batch);
+                    totalLikes += batch.size();
+                    batch.clear();
+                }
+            }
+
+            // Update post like count
+            post.setLikeCount(actualLikes);
+        }
+
+        if (!batch.isEmpty()) {
+            postLikeRepository.saveAll(batch);
+            totalLikes += batch.size();
+        }
+
+        // Update posts with final like counts
+        donationPostRepository.saveAll(posts);
+
+        log.info("   ✅ Created {} likes", totalLikes);
+    }
+
+    /**
+     * Creates follow relationships between users.
+     */
+    @Transactional
+    private void createFollowRelationships(List<User> users) {
+        log.info("   👥 Creating follow relationships...");
+        List<UserFollow> batch = new ArrayList<>();
+        Set<String> existingFollows = new HashSet<>();
+        int totalFollows = 0;
+
+        for (User follower : users) {
+            int followCount = MIN_FOLLOWS_PER_USER + RANDOM.nextInt(MAX_FOLLOWS_PER_USER - MIN_FOLLOWS_PER_USER + 1);
+
+            for (int i = 0; i < followCount; i++) {
+                User following = users.get(RANDOM.nextInt(users.size()));
+
+                // Skip self-follows and duplicates
+                String key = follower.getId() + "-" + following.getId();
+                if (follower.getId().equals(following.getId()) || existingFollows.contains(key)) {
+                    continue;
+                }
+                existingFollows.add(key);
+
+                UserFollow follow = UserFollow.builder()
+                        .follower(follower)
+                        .following(following)
+                        .build();
+                batch.add(follow);
+
+                if (batch.size() >= FOLLOW_BATCH_SIZE) {
+                    userFollowRepository.saveAll(batch);
+                    totalFollows += batch.size();
+                    log.info("      📦 Saved {} follows... (Total: {})", batch.size(), totalFollows);
+                    batch.clear();
+                }
+            }
+        }
+
+        if (!batch.isEmpty()) {
+            userFollowRepository.saveAll(batch);
+            totalFollows += batch.size();
+        }
+
+        log.info("   ✅ Created {} follow relationships", totalFollows);
+    }
+
+    /**
      * Generates a weighted iron intake score.
-     * Distribution centered around 3, with lower probability at extremes.
-     * Weights: 1→5%, 2→20%, 3→50%, 4→20%, 5→5%
      */
     private int generateWeightedIronScore() {
         double roll = RANDOM.nextDouble();
