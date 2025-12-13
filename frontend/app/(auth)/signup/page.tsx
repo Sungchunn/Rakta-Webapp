@@ -14,8 +14,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PasswordInput } from "@/components/ui/password-input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { CalendarIcon, Loader2, Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -62,6 +63,8 @@ export default function RegisterPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [dateOfBirth, setDateOfBirth] = useState<Date>();
+    const [countryCodeOpen, setCountryCodeOpen] = useState(false);
+    const [countrySearch, setCountrySearch] = useState('');
 
     // Form state matching backend DTO exactly
     const [formData, setFormData] = useState({
@@ -155,7 +158,7 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className={styles.container} style={{ maxWidth: '650px' }}>
+        <div className={styles.container} style={{ maxWidth: '750px' }}>
             <h2 className={styles.title}>Join the Movement</h2>
             <p className="text-zinc-400 text-sm mb-6 text-center">
                 Create your account and start your blood donation journey
@@ -234,24 +237,62 @@ export default function RegisterPage() {
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number <span className="text-red-500">*</span></Label>
                     <div className="flex gap-2">
-                        <Select
-                            value={formData.countryCode}
-                            onValueChange={(val) => handleChange('countryCode', val)}
-                        >
-                            <SelectTrigger className="w-[140px] bg-zinc-950 border-zinc-800">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="max-h-[300px]">
-                                {COUNTRY_CODES.map((c) => (
-                                    <SelectItem key={c.code} value={c.code}>
-                                        <span className="flex items-center gap-2">
-                                            <span>{c.flag}</span>
-                                            <span>{c.code}</span>
-                                        </span>
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Popover open={countryCodeOpen} onOpenChange={setCountryCodeOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={countryCodeOpen}
+                                    className="w-[140px] justify-between bg-zinc-950 border-zinc-800"
+                                >
+                                    {formData.countryCode
+                                        ? COUNTRY_CODES.find((c) => c.code === formData.countryCode)?.flag + ' ' + formData.countryCode
+                                        : "Select..."}
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-0">
+                                <div className="p-2">
+                                    <Input
+                                        placeholder="Search country..."
+                                        value={countrySearch}
+                                        onChange={(e) => setCountrySearch(e.target.value)}
+                                        className="h-9 bg-zinc-950 border-zinc-800"
+                                    />
+                                </div>
+                                <ScrollArea className="h-[200px]">
+                                    <div className="p-1">
+                                        {COUNTRY_CODES.filter((c) =>
+                                            c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
+                                            c.code.includes(countrySearch)
+                                        ).map((c) => (
+                                            <button
+                                                key={c.code}
+                                                onClick={() => {
+                                                    handleChange('countryCode', c.code);
+                                                    setCountryCodeOpen(false);
+                                                    setCountrySearch('');
+                                                }}
+                                                className={cn(
+                                                    "w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer",
+                                                    formData.countryCode === c.code && "bg-accent"
+                                                )}
+                                            >
+                                                <Check
+                                                    className={cn(
+                                                        "h-4 w-4",
+                                                        formData.countryCode === c.code ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                                <span>{c.flag}</span>
+                                                <span>{c.code}</span>
+                                                <span className="text-xs text-zinc-500">{c.country}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </ScrollArea>
+                            </PopoverContent>
+                        </Popover>
                         <Input
                             id="phone"
                             type="tel"
@@ -326,7 +367,7 @@ export default function RegisterPage() {
                 {/* Physical: Height and Weight */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor="height">Height (cm)</Label>
+                        <Label htmlFor="height">Height (cm) <span className="text-zinc-500">(Optional)</span></Label>
                         <Input
                             id="height"
                             type="number"
@@ -340,7 +381,7 @@ export default function RegisterPage() {
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="weight">Weight (kg)</Label>
+                        <Label htmlFor="weight">Weight (kg) <span className="text-zinc-500">(Optional)</span></Label>
                         <Input
                             id="weight"
                             type="number"
@@ -376,9 +417,9 @@ export default function RegisterPage() {
                         id="terms"
                         checked={formData.termsAccepted}
                         onCheckedChange={(checked) => handleChange('termsAccepted', checked === true)}
-                        className="mt-0.5"
+                        className="mt-1"
                     />
-                    <Label htmlFor="terms" className="text-sm font-normal text-zinc-400 leading-relaxed">
+                    <Label htmlFor="terms" className="text-sm font-normal text-zinc-400 leading-relaxed cursor-pointer">
                         I accept the{' '}
                         <Link href="/terms" className="text-primary hover:underline">
                             terms and conditions

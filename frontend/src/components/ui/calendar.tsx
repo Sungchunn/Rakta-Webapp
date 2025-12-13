@@ -24,7 +24,8 @@ function Calendar({
                 months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
                 month: "space-y-4",
                 caption: "flex justify-center pt-1 relative items-center",
-                caption_label: "text-sm font-medium",
+                caption_label: "text-sm font-medium hidden",
+                caption_dropdowns: "flex gap-2 justify-center",
                 nav: "space-x-1 flex items-center",
                 nav_button: cn(
                     buttonVariants({ variant: "outline" }),
