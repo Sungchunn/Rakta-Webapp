@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { apiRequest } from '@/lib/api';
 import { setAuthCookies } from '@/lib/auth';
@@ -41,7 +41,7 @@ const GENDERS = [
     { value: 'OTHER', label: 'Other' },
 ];
 
-export default function RegisterPage() {
+function RegisterForm() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [dateOfBirth, setDateOfBirth] = useState<Date>();
@@ -64,6 +64,39 @@ export default function RegisterPage() {
         bloodType: '',
         termsAccepted: false
     });
+
+    const searchParams = useSearchParams();
+
+    // Load saved state on mount
+    useEffect(() => {
+        const savedForm = sessionStorage.getItem('signup_form');
+        const savedDob = sessionStorage.getItem('signup_dob');
+
+        if (savedForm) {
+            const parsedForm = JSON.parse(savedForm);
+            setFormData(prev => ({ ...prev, ...parsedForm }));
+        }
+        if (savedDob) {
+            setDateOfBirth(new Date(savedDob));
+        }
+
+        // Handle Terms Accept from URL
+        if (searchParams.get('termsAccepted') === 'true') {
+            setFormData(prev => ({ ...prev, termsAccepted: true }));
+        }
+    }, [searchParams]);
+
+    // Save state on change (excluding password)
+    useEffect(() => {
+        const { password, confirmPassword, ...toSave } = formData;
+        sessionStorage.setItem('signup_form', JSON.stringify(toSave));
+    }, [formData]);
+
+    useEffect(() => {
+        if (dateOfBirth) {
+            sessionStorage.setItem('signup_dob', dateOfBirth.toISOString());
+        }
+    }, [dateOfBirth]);
 
     const handleChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -242,7 +275,7 @@ export default function RegisterPage() {
                                         className="h-9 bg-zinc-950 border-zinc-800"
                                     />
                                 </div>
-                                <div className="max-h-[300px] overflow-y-auto p-1 scrollbar-custom">
+                                <div className="h-[300px] overflow-y-auto p-1 scrollbar-custom z-50 relative">
                                     {COUNTRY_CODES.filter((c) =>
                                         c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
                                         c.code.includes(countrySearch)
@@ -441,5 +474,13 @@ export default function RegisterPage() {
                 </Link>
             </div>
         </div>
+    );
+}
+
+export default function RegisterPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-zinc-500">Loading...</div>}>
+            <RegisterForm />
+        </Suspense>
     );
 }

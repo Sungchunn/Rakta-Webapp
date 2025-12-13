@@ -16,7 +16,7 @@ export function TermsPageClient({ content }: { content: string }) {
                 <TermsCard
                     className="w-full"
                     termsContent={content}
-                    onAgree={() => router.back()}
+                    onAgree={() => router.push('/signup?termsAccepted=true')}
                     onDecline={() => router.back()}
                     onClose={() => router.back()}
                 />
