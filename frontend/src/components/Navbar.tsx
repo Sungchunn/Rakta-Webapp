@@ -13,7 +13,7 @@ export default function Navbar() {
     const navLinks = [
         { href: '/', label: 'Home' },
         { href: '/about', label: 'About' },
-        { href: '/donate', label: 'Find Blood' },
+        { href: '/locations', label: 'Find a Center' },
     ];
 
     return (
