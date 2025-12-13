@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.util.List;
@@ -22,10 +23,11 @@ import com.rakta.dto.DashboardStatsDTO;
 public class LlmClient {
 
     private static final String LLM_SERVICE = "openai";
-    private static final Duration TIMEOUT = Duration.ofSeconds(30);
+    private static final Duration TIMEOUT = Duration.ofSeconds(8);
     private static final String FALLBACK_RESPONSE = "I'm having trouble connecting right now. Please try again in a moment.";
 
     private final WebClient openAiWebClient;
+    private final ObjectMapper objectMapper;
 
     @Value("${openai.model:gpt-4o-mini}")
     private String model;
@@ -104,9 +106,7 @@ public class LlmClient {
 
     private String convertStatsToJson(Object stats) {
         try {
-            return new com.fasterxml.jackson.databind.ObjectMapper()
-                    .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
-                    .writeValueAsString(stats);
+            return objectMapper.writeValueAsString(stats);
         } catch (Exception e) {
             log.error("Failed to serialize stats", e);
             return "Data unavailable";

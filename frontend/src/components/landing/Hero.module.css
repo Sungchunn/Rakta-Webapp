@@ -67,6 +67,7 @@
     line-height: 1.1;
     color: var(--bone-white);
     letter-spacing: -0.02em;
+    max-width: 600px;
 }
 
 .gradientText {

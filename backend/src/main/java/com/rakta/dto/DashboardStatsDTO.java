@@ -38,6 +38,7 @@ public class DashboardStatsDTO {
 
     // Health Trends (last 5 donations)
     private List<HealthDataPoint> healthHistory;
+    private List<DailyTrendPoint> dailyTrends;
 
     // Donation Activity (monthly counts for last 12 months)
     private Map<String, Integer> monthlyDonations; // "2025-01" -> 2
@@ -64,6 +65,17 @@ public class DashboardStatsDTO {
         private Integer systolicBp;
         private Integer diastolicBp;
         private Integer pulseRate;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DailyTrendPoint {
+        private LocalDate date;
+        private Double sleepHours;
+        private Integer readinessScore;
+        private Integer restingHeartRate;
     }
 
     @Data

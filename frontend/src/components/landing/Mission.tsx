@@ -6,7 +6,11 @@ export default function Mission() {
                     Our Mission
                 </h2>
                 <p style={{ color: '#666', lineHeight: '1.8', fontSize: '1.1rem' }}>
-                    To ensure every patient has access to safe blood when they need it, and to make donation a proud, seamless part of everyday life. We bridge the gap between donors and those in need through technology, community, and care.
+                    We're reframing blood donation as an integral part of a proactive and healthy lifestyle. 
+                    Rakta empowers athletes and health-conscious individuals to treat donation as a measurable 
+                    aspect of their fitness journey. Through data-driven insights into physiological recovery, 
+                    eligibility tracking, and wellness metrics, we're building a community that celebrates the 
+                    positive impact of strategic blood donation.
                 </p>
             </div>
         </section>

@@ -40,11 +40,17 @@ public class InsightService {
     private DailyInsight generateAndSaveInsight(User user, LocalDate date) {
         log.info("Generating new Daily Insight for user {} on {}", user.getId(), date);
 
-        // 2. Fetch Dashboard Stats
-        DashboardStatsDTO stats = dashboardService.getDashboardStats(user.getEmail());
+        String content;
+        try {
+            // 2. Fetch Dashboard Stats
+            DashboardStatsDTO stats = dashboardService.getDashboardStats(user.getEmail());
 
-        // 3. Generate Content via LLM
-        String content = llmClient.generateDailyInsight(stats);
+            // 3. Generate Content via LLM
+            content = llmClient.generateDailyInsight(stats);
+        } catch (Exception e) {
+            log.warn("LLM generation failed for user {}: {}. Using fallback.", user.getId(), e.getMessage());
+            content = "**Your daily analysis is currently unavailable.** Focus on hydration, rest, and iron-rich foods today!";
+        }
 
         // 4. Save to DB
         DailyInsight insight = DailyInsight.builder()

@@ -18,6 +18,13 @@ export interface BadgeSummary {
     earnedAt: string;
 }
 
+export interface DailyTrendPoint {
+    date: string;
+    sleepHours: number | null;
+    readinessScore: number | null;
+    restingHeartRate: number | null;
+}
+
 export interface DashboardStats {
     // Donation Summary
     totalDonations: number;
@@ -39,6 +46,7 @@ export interface DashboardStats {
 
     // Historical Data
     healthHistory: HealthDataPoint[];
+    dailyTrends: DailyTrendPoint[];
     monthlyDonations: Record<string, number>;
 
     // Streaks

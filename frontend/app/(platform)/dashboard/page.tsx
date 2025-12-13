@@ -53,6 +53,7 @@ export default function DashboardPage() {
         latestPulseRate: null,
         latestWeight: null,
         healthHistory: [],
+        dailyTrends: [],
         monthlyDonations: {},
         currentStreak: 0,
         longestStreak: 0,
@@ -208,19 +209,27 @@ export default function DashboardPage() {
                     </CardBody>
                 </CardContainer>
 
-                {/* Zone 6: Daily Log */}
+                {/* Zone 6: Daily Recovery & Log */}
                 <CardContainer className="inter-var w-full h-full" containerClassName="h-full">
                     <CardBody className={cardClass}>
-                        <div className="flex items-center gap-2 mb-4">
+                        <div className="flex items-center gap-2 mb-2">
                             <CardItem translateZ="40">
                                 <Zap className="w-4 h-4 text-yellow-500" />
                             </CardItem>
                             <CardItem translateZ="50" className="font-bold text-white text-lg">
-                                Daily Log
+                                Daily Recovery
                             </CardItem>
-                            <HelpTooltip content="Track your daily health metrics like sleep and energy to improve donation readiness" />
+                            <HelpTooltip content="Track your daily recovery score trend. Higher score means better readiness to donate." />
                         </div>
-                        <CardItem translateZ="60" className="w-full mt-8">
+
+                        {/* Trend Chart */}
+                        <div className="h-28 w-full mb-4">
+                            <CardItem translateZ="60" className="w-full h-full">
+                                <RecoveryTrendChart data={dashboardData.dailyTrends?.map(d => ({ date: new Date(d.date).toLocaleDateString('en-US', { day: 'numeric' }), score: d.readinessScore || 0 })) || []} />
+                            </CardItem>
+                        </div>
+
+                        <CardItem translateZ="80" className="w-full">
                             <DailyCheckIn />
                         </CardItem>
                     </CardBody>

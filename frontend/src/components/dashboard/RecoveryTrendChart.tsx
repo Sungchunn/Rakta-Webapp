@@ -2,24 +2,31 @@
 
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
-const data = [
-    { day: '1', score: 65 },
-    { day: '5', score: 72 },
-    { day: '10', score: 68 },
-    { day: '15', score: 85 },
-    { day: '20', score: 92 },
-    { day: '25', score: 88 },
-    { day: '30', score: 95 },
-];
+interface TrendDataPoint {
+    date: string;
+    score: number;
+}
 
-export default function RecoveryTrendChart() {
+interface RecoveryTrendChartProps {
+    data: TrendDataPoint[];
+}
+
+export default function RecoveryTrendChart({ data }: RecoveryTrendChartProps) {
+    if (!data || data.length === 0) {
+        return (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                No recovery data available
+            </div>
+        );
+    }
+
     return (
         <div className="w-full h-full min-h-[120px] pt-4">
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                     <XAxis
-                        dataKey="day"
+                        dataKey="date"
                         stroke="#9ca3af"
                         fontSize={10}
                         tickLine={false}

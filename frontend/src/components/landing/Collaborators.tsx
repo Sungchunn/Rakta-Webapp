@@ -1,17 +1,32 @@
 'use client';
 
 export default function Collaborators() {
-    const orgs = ['NCC', 'NSS', 'YMCA'];
+    const orgs = ['NCC', 'NSS', 'YMCA', 'Red Cross', 'Local Health'];
 
     return (
         <section style={{ padding: '4rem 2rem 8rem', background: 'transparent', position: 'relative', zIndex: 1 }}>
             <div className="container">
-                <h2 style={{ fontSize: '2rem', marginBottom: '3rem', fontFamily: 'var(--font-heading)' }}>
-                    Our Collaborators
+                <h2 style={{ 
+                    fontSize: '2rem', 
+                    marginBottom: '1rem', 
+                    fontFamily: 'var(--font-heading)',
+                    textAlign: 'center'
+                }}>
+                    Partner Network
                 </h2>
+                <p style={{
+                    textAlign: 'center',
+                    color: '#999',
+                    fontSize: '1rem',
+                    marginBottom: '3rem',
+                    maxWidth: '600px',
+                    margin: '0 auto 3rem'
+                }}>
+                    Working with 50+ donation centers and health organizations nationwide
+                </p>
 
                 <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                    {orgs.map(org => (
+                    {orgs.slice(0, 3).map(org => (
                         <div key={org} style={{
                             width: '300px',
                             height: '250px',
@@ -22,7 +37,7 @@ export default function Collaborators() {
                             justifyContent: 'center',
                             fontSize: '2rem',
                             fontWeight: 'bold',
-                            color: '#e5e5e5', // Light gray like in design
+                            color: '#e5e5e5',
                             background: 'white'
                         }}>
                             {org}

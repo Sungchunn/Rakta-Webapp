@@ -14,4 +14,6 @@ public interface ReadinessSnapshotRepository extends JpaRepository<ReadinessSnap
 
     // Get the most recent snapshot for a user
     Optional<ReadinessSnapshot> findFirstByUserIdOrderByDateDesc(Long userId);
+
+    java.util.List<ReadinessSnapshot> findTop14ByUserIdOrderByDateDesc(Long userId);
 }

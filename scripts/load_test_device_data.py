@@ -34,7 +34,7 @@ GARMIN_ENDPOINT = "/api/webhooks/garmin"
 APPLE_ENDPOINT = "/api/webhooks/apple"
 
 # Test user credentials (from DataSeeder)
-TEST_USER_EMAIL = "test@rakta.app"
+TEST_USER_EMAIL = "user1@rakta.app"
 TEST_USER_PASSWORD = "password123"
 
 # Load test parameters

@@ -27,6 +27,8 @@ public class DashboardService {
     private final UserRepository userRepository;
     private final UserBadgeRepository userBadgeRepository;
     private final UserFollowRepository userFollowRepository;
+    private final DailyMetricRepository dailyMetricRepository;
+    private final ReadinessSnapshotRepository readinessSnapshotRepository;
 
     private static final int VOLUME_PER_LIFE = 450; // ml needed to save one life
 
@@ -51,6 +53,7 @@ public class DashboardService {
                 .latestPulseRate(getLatestPulseRate(donations))
                 .latestWeight(getLatestWeight(donations))
                 .healthHistory(buildHealthHistory(donations))
+                .dailyTrends(buildDailyTrends(userId))
                 .monthlyDonations(buildMonthlyDonations(donations))
                 .currentStreak(calculateCurrentStreak(donations))
                 .longestStreak(calculateLongestStreak(donations))
@@ -59,6 +62,41 @@ public class DashboardService {
                 .totalBadges(countBadges(userId))
                 .recentBadges(getRecentBadges(userId))
                 .build();
+    }
+
+    private List<DashboardStatsDTO.DailyTrendPoint> buildDailyTrends(Long userId) {
+        List<DailyMetric> metrics = dailyMetricRepository.findTop14ByUserIdOrderByDateDesc(userId);
+        List<ReadinessSnapshot> snapshots = readinessSnapshotRepository.findTop14ByUserIdOrderByDateDesc(userId);
+
+        Map<LocalDate, DailyMetric> metricMap = metrics.stream()
+                .collect(Collectors.toMap(
+                        DailyMetric::getDate,
+                        java.util.function.Function.identity(),
+                        (existing, replacement) -> existing));
+        Map<LocalDate, ReadinessSnapshot> snapshotMap = snapshots.stream()
+                .collect(Collectors.toMap(
+                        ReadinessSnapshot::getDate,
+                        java.util.function.Function.identity(),
+                        (existing, replacement) -> existing));
+
+        Set<LocalDate> dates = new HashSet<>();
+        dates.addAll(metricMap.keySet());
+        dates.addAll(snapshotMap.keySet());
+
+        return dates.stream()
+                .sorted()
+                .limit(14)
+                .map(date -> {
+                    DailyMetric m = metricMap.get(date);
+                    ReadinessSnapshot s = snapshotMap.get(date);
+                    return DashboardStatsDTO.DailyTrendPoint.builder()
+                            .date(date)
+                            .sleepHours(m != null && m.getSleepHours() != null ? m.getSleepHours().doubleValue() : null)
+                            .readinessScore(s != null ? s.getTotalScore() : null)
+                            .restingHeartRate(m != null ? m.getRestingHeartRate() : null)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
     private int calculateTotalVolume(List<Donation> donations) {

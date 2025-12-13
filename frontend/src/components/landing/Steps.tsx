@@ -5,35 +5,36 @@ import { motion } from 'framer-motion';
 const steps = [
     {
         number: '01',
-        title: 'Register & Qualify',
-        description: 'Sign up in seconds. Our AI health coach checks your eligibility instantly.',
+        title: 'Connect & Track',
+        description: 'Sync your fitness tracker (Garmin, Apple Health, Oura) to monitor sleep, HRV, and training load automatically.',
         icon: (
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                <line x1="7" y1="12" x2="17" y2="12" />
             </svg>
         ),
     },
     {
         number: '02',
-        title: 'Locate & Book',
-        description: 'Find nearby donation centers or camps. Book a convenient slot in one tap.',
+        title: 'Monitor Readiness',
+        description: 'Get your daily Readiness Score (0-100) based on RBC recovery, iron levels, and lifestyle factors with AI insights from Dr. Sloth.',
         icon: (
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
             </svg>
         ),
     },
     {
         number: '03',
-        title: 'Donate & Track',
-        description: 'Give blood, earn badges, and track your health recovery in real-time.',
+        title: 'Donate & Share',
+        description: 'Log donations, track recovery, earn badges, and inspire others through the community feed. Export your history anytime.',
         icon: (
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <line x1="19" y1="8" x2="19" y2="14" />
+                <line x1="22" y1="11" x2="16" y2="11" />
             </svg>
         ),
     },
@@ -81,7 +82,7 @@ export default function Steps() {
                             marginBottom: '16px',
                         }}
                     >
-                        How It Works
+                        Your Health Journey
                     </h2>
                     <p
                         style={{
@@ -91,7 +92,7 @@ export default function Steps() {
                             margin: '0 auto',
                         }}
                     >
-                        Three simple steps to start saving lives
+                        Data-driven insights for strategic blood donation
                     </p>
                 </motion.div>
 

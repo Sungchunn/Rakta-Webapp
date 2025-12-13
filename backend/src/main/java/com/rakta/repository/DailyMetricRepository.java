@@ -15,4 +15,6 @@ public interface DailyMetricRepository extends JpaRepository<DailyMetric, UUID> 
 
     // Fetch last N days of metrics for a user, ordered by date descending
     List<DailyMetric> findByUserIdAndDateAfterOrderByDateDesc(Long userId, LocalDate date);
+
+    List<DailyMetric> findTop14ByUserIdOrderByDateDesc(Long userId);
 }

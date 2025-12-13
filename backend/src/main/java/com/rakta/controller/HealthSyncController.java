@@ -1,6 +1,6 @@
 package com.rakta.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import com.rakta.dto.DeviceSyncRequest;
 import com.rakta.entity.DailyMetric;
 import com.rakta.entity.User;
@@ -80,7 +80,7 @@ public class HealthSyncController {
 
             // Extract date
             if (firstDaily.has("calendarDate")) {
-                date = LocalDate.parse(firstDaily.get("calendarDate").asText(), DATE_FORMATTER);
+                date = LocalDate.parse(firstDaily.get("calendarDate").asString(), DATE_FORMATTER);
             }
 
             // Extract resting heart rate
@@ -145,7 +145,7 @@ public class HealthSyncController {
 
             if (metrics.isArray()) {
                 for (JsonNode metric : metrics) {
-                    String name = metric.has("name") ? metric.get("name").asText() : "";
+                    String name = metric.has("name") ? metric.get("name").asString() : "";
                     JsonNode dataArray = metric.get("data");
 
                     if (dataArray != null && dataArray.isArray() && dataArray.size() > 0) {
@@ -153,7 +153,7 @@ public class HealthSyncController {
 
                         // Extract date from the first entry if present
                         if (firstEntry.has("date") && date.equals(LocalDate.now())) {
-                            String dateStr = firstEntry.get("date").asText();
+                            String dateStr = firstEntry.get("date").asString();
                             // Parse "2025-12-13 07:00:00" format - take just the date part
                             if (dateStr.length() >= 10) {
                                 date = LocalDate.parse(dateStr.substring(0, 10), DATE_FORMATTER);

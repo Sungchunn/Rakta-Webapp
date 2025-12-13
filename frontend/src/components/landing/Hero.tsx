@@ -22,37 +22,37 @@ export default function Hero() {
                         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     >
                         <h1 className={styles.headline}>
-                            Your Blood,{' '}
-                            <span className={styles.gradientText}>Someone&apos;s Tomorrow</span>
+                            Track Your Recovery,{' '}
+                            <span className={styles.gradientText}>Optimize Your Impact</span>
                         </h1>
 
                         <p className={styles.subheadline}>
-                            Join thousands of heroes saving lives every day. Track your health,
-                            find donation centers, and become part of the lifeline.
+                            The smart health platform for blood donors. Monitor your readiness score, 
+                            sync fitness data, and join a community of athletes who donate strategically.
                         </p>
 
                         {/* CTAs */}
                         <div className={styles.ctaGroup}>
-                            <Link href="/locations">
+                            <Link href="/signup">
                                 <motion.button
                                     className={styles.primaryCta}
                                     whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(220, 38, 38, 0.5)' }}
                                     whileTap={{ scale: 0.98 }}
                                 >
-                                    Find a Center
+                                    Start Tracking Free
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M5 12h14M12 5l7 7-7 7" />
                                     </svg>
                                 </motion.button>
                             </Link>
 
-                            <Link href="/signup">
+                            <Link href="/locations">
                                 <motion.button
                                     className={styles.secondaryCta}
                                     whileHover={{ scale: 1.02, borderColor: 'var(--arterial-red)' }}
                                     whileTap={{ scale: 0.98 }}
                                 >
-                                    Check Eligibility
+                                    Find Donation Centers
                                 </motion.button>
                             </Link>
                         </div>
@@ -60,18 +60,18 @@ export default function Hero() {
                         {/* Trust Indicators */}
                         <div className={styles.trustRow}>
                             <div className={styles.trustItem}>
-                                <span className={styles.trustNumber}>1M+</span>
-                                <span className={styles.trustLabel}>Lives Saved</span>
+                                <span className={styles.trustNumber}>0-100</span>
+                                <span className={styles.trustLabel}>Readiness Score</span>
                             </div>
                             <div className={styles.trustDivider} />
                             <div className={styles.trustItem}>
                                 <span className={styles.trustNumber}>50+</span>
-                                <span className={styles.trustLabel}>Partners</span>
+                                <span className={styles.trustLabel}>Partner Centers</span>
                             </div>
                             <div className={styles.trustDivider} />
                             <div className={styles.trustItem}>
-                                <span className={styles.trustNumber}>24/7</span>
-                                <span className={styles.trustLabel}>Support</span>
+                                <span className={styles.trustNumber}>AI</span>
+                                <span className={styles.trustLabel}>Health Coach</span>
                             </div>
                         </div>
                     </motion.div>
@@ -102,7 +102,7 @@ export default function Hero() {
                                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                             />
 
-                            {/* Center Icon */}
+                            {/* Center Icon - Heart Rate/Health Symbol */}
                             <motion.svg
                                 width="120"
                                 height="120"
@@ -113,11 +113,14 @@ export default function Hero() {
                                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                             >
                                 <path
-                                    d="M12 21.5C16.1421 21.5 19.5 18.1421 19.5 14C19.5 10.5 12 2.5 12 2.5C12 2.5 4.5 10.5 4.5 14C4.5 18.1421 7.85786 21.5 12 21.5Z"
-                                    fill="url(#heroGradient)"
+                                    d="M22 12h-4l-3 9L9 3l-3 9H2"
+                                    stroke="url(#heroGradient)"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                 />
                                 <defs>
-                                    <linearGradient id="heroGradient" x1="12" y1="2.5" x2="12" y2="21.5" gradientUnits="userSpaceOnUse">
+                                    <linearGradient id="heroGradient" x1="0" y1="12" x2="24" y2="12" gradientUnits="userSpaceOnUse">
                                         <stop stopColor="#F97316" />
                                         <stop offset="1" stopColor="#DC2626" />
                                     </linearGradient>

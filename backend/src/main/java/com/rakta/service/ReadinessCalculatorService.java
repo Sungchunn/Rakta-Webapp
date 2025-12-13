@@ -82,7 +82,7 @@ public class ReadinessCalculatorService {
         // Apply Multiplier based on iron_intake_score (1-5)
         double avgIronScore = recentMetrics.stream()
                 .filter(m -> !m.getDate().isBefore(date.minusDays(7)))
-                .mapToInt(DailyMetric::getIronIntakeScore)
+                .mapToInt(m -> m.getIronIntakeScore() != null ? m.getIronIntakeScore() : 3)
                 .average()
                 .orElse(3.0); // Default to 3 (middle) if no data
 
@@ -95,6 +95,7 @@ public class ReadinessCalculatorService {
         // Avg sleep 7d
         double avgSleep7d = recentMetrics.stream()
                 .filter(m -> !m.getDate().isBefore(date.minusDays(7)))
+                .filter(m -> m.getSleepHours() != null)
                 .map(DailyMetric::getSleepHours)
                 .mapToDouble(BigDecimal::doubleValue)
                 .average()
@@ -103,12 +104,12 @@ public class ReadinessCalculatorService {
         // Acute Chronic Ratio (ACR)
         double avgLoad7d = recentMetrics.stream()
                 .filter(m -> !m.getDate().isBefore(date.minusDays(7)))
-                .mapToInt(DailyMetric::getTrainingLoadAcute)
+                .mapToInt(m -> m.getTrainingLoadAcute() != null ? m.getTrainingLoadAcute() : 0)
                 .average()
                 .orElse(0.0);
 
         double avgLoad28d = recentMetrics.stream()
-                .mapToInt(DailyMetric::getTrainingLoadAcute)
+                .mapToInt(m -> m.getTrainingLoadAcute() != null ? m.getTrainingLoadAcute() : 0)
                 .average()
                 .orElse(1.0); // Avoid division by zero
 
