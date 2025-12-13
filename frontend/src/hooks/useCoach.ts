@@ -23,6 +23,7 @@ export function useCoach() {
     // Fetch sessions on mount
     useEffect(() => {
         fetchSessions();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Fetch messages when session changes
@@ -66,7 +67,7 @@ export function useCoach() {
                 setSessions([newSession, ...sessions]);
                 setCurrentSessionId(newSession.id);
             }
-        } catch (err) {
+        } catch (_err) {
             setError("Failed to create session");
         }
     };
@@ -82,7 +83,7 @@ export function useCoach() {
                 const data = await res.json();
                 setMessages(data);
             }
-        } catch (err) {
+        } catch (_err) {
             setError("Failed to fetch messages");
         } finally {
             setLoading(false);
@@ -127,7 +128,7 @@ export function useCoach() {
             } else {
                 setError("Failed to send message");
             }
-        } catch (err) {
+        } catch (_err) {
             setError("Network error");
         } finally {
             setLoading(false);

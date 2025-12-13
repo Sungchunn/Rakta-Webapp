@@ -1,8 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
-import { MapPin, Clock, Navigation, Locate } from "lucide-react";
+import { useState } from "react";
+import { Clock, Navigation, Locate } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DonationSiteReviewForm } from "@/components/map/DonationSiteReviewForm";
@@ -23,7 +23,7 @@ const initialLocations = [
 export default function MapPage() {
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [locations, setLocations] = useState(initialLocations);
-    const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
+    const [_userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
     const [isLocating, setIsLocating] = useState(false);
 
     const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {

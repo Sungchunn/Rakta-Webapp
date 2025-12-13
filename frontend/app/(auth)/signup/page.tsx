@@ -14,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PasswordInput } from "@/components/ui/password-input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { format } from "date-fns";
 import { CalendarIcon, Loader2, Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -88,7 +88,7 @@ function RegisterForm() {
 
     // Save state on change (excluding password)
     useEffect(() => {
-        const { password, confirmPassword, ...toSave } = formData;
+        const { password: _password, confirmPassword: _confirmPassword, ...toSave } = formData;
         sessionStorage.setItem('signup_form', JSON.stringify(toSave));
     }, [formData]);
 

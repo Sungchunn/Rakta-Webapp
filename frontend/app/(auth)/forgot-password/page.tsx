@@ -24,7 +24,7 @@ export default function ForgotPasswordPage() {
             await apiRequest('/auth/forgot-password', 'POST', { email });
             setIsSubmitted(true);
             // Don't show specific message for security - same response whether email exists or not
-        } catch (err: unknown) {
+        } catch (_err: unknown) {
             // Still show success message for security (don't reveal if email exists)
             setIsSubmitted(true);
         } finally {

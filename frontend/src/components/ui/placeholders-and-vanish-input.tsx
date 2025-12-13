@@ -40,6 +40,7 @@ export function PlaceholdersAndVanishInput({
             }
             document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [placeholders]);
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -171,7 +172,7 @@ export function PlaceholdersAndVanishInput({
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         vanishAndSubmit();
-        onSubmit && onSubmit(e);
+        if (onSubmit) onSubmit(e);
     };
 
     return (
@@ -193,7 +194,7 @@ export function PlaceholdersAndVanishInput({
                 onChange={(e) => {
                     if (!animating) {
                         setValue(e.target.value);
-                        onChange && onChange(e);
+                        if (onChange) onChange(e);
                     }
                 }}
                 onKeyDown={handleKeyDown}

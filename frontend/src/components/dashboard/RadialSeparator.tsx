@@ -23,7 +23,7 @@ export default function RadialSeparator({ score, status }: RadialSeparatorProps)
     const isOptimal = score >= 80;
 
     // Segmented calculations
-    const radius = 120;
+    const _radius = 120;
     const totalSegments = 40;
     const filledSegments = Math.round((score / 100) * totalSegments);
 
