@@ -36,18 +36,27 @@ export default function LocationsPage() {
                     hours: d.openingHours || "09:00 - 17:00"
                 }));
 
-                if (mapped.length === 0) {
-                    throw new Error("No locations found");
+                // Use robust fallback if API returns empty list or fails
+                if (mapped.length > 0) {
+                    setLocations(mapped);
+                } else {
+                    // Fallback mock data directly
+                    console.log("API returned empty, using mock data");
+                    const mockData: Location[] = [
+                        { id: 1, name: "National Blood Centre", type: "HQ", openingHours: "07:30 - 19:30", contactInfo: "02-256-4300", distance: "2.4km", latitude: 13.7375, longitude: 100.5311 },
+                        { id: 2, name: "Emporium Donation Room", type: "STATION", openingHours: "10:00 - 19:00", contactInfo: "02-269-1000", distance: "5.1km", latitude: 13.7297, longitude: 100.5693 },
+                        { id: 3, name: "The Mall Bangkapi", type: "MALL", openingHours: "12:00 - 18:00", contactInfo: "02-173-1000", distance: "12km", latitude: 13.7661, longitude: 100.6429 },
+                        { id: 4, name: "Red Cross Station 11", type: "STATION", openingHours: "08:30 - 16:30", contactInfo: "02-552-1000", distance: "8km", latitude: 13.8853, longitude: 100.5905 },
+                        { id: 5, name: "Central World Mobile Unit", type: "MOBILE", openingHours: "11:00 - 15:00", contactInfo: "02-640-7000", distance: "3.2km", latitude: 13.7469, longitude: 100.5398 },
+                        // Event
+                        { id: 99, name: "Red Cross Fair 2025", type: "EVENT", openingHours: "11:00 - 22:00", contactInfo: "Red Cross Society", distance: "1.5km", latitude: 13.7314, longitude: 100.5414 },
+                    ];
+                    setLocations(mockData);
                 }
-                setLocations(mapped);
             } catch (error) {
-                console.error("Failed to load locations", error);
+                console.warn("Failed to load locations, using fallback", error);
                 // Fallback mock data if API fails or backend not running
                 const mockData: Location[] = [
-                    { id: 1, name: "National Blood Centre", type: "HQ", openingHours: "07:30 - 19:30", contactInfo: "02-256-4300", distance: "2.4km" },
-                    { id: 2, name: "Emporium Donation Room", type: "STATION", openingHours: "10:00 - 19:00", contactInfo: "02-269-1000", distance: "5.1km" },
-                    { id: 3, name: "The Mall Bangkapi", type: "MALL", openingHours: "12:00 - 18:00", contactInfo: "02-173-1000", distance: "12km" },
-                    { id: 4, name: "Red Cross Station 11", type: "STATION", openingHours: "08:30 - 16:30", contactInfo: "02-552-1000", distance: "8km" },
                     { id: 5, name: "Central World Mobile Unit", type: "MOBILE", openingHours: "11:00 - 15:00", contactInfo: "02-640-7000", distance: "3.2km" },
                     // Event
                     { id: 99, name: "Red Cross Fair 2025", type: "EVENT", openingHours: "11:00 - 22:00", contactInfo: "Red Cross Society", distance: "1.5km", latitude: 13.7314, longitude: 100.5414 },
