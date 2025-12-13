@@ -27,9 +27,6 @@ public class DonationLocation {
     @Column(nullable = false)
     private String address;
 
-    private Double latitude;
-    private Double longitude;
-
     private String contactInfo;
 
     private String openingHours;

@@ -12,8 +12,6 @@ export interface FeedPost {
     locationId: number;
     locationName: string;
     locationAddress: string;
-    latitude: number | null;
-    longitude: number | null;
     donationDate: string;
     reviewText: string | null;
     likeCount: number;
@@ -26,7 +24,6 @@ interface PostCardProps {
     onLike?: (postId: number) => void;
     onUnlike?: (postId: number) => void;
     onClick?: () => void;
-    showMapPreview?: boolean;
     truncateReview?: boolean;
 }
 
@@ -35,7 +32,6 @@ export default function PostCard({
     onLike,
     onUnlike,
     onClick,
-    showMapPreview = true,
     truncateReview = true,
 }: PostCardProps) {
     const displayName = post.username || post.firstName;
@@ -123,25 +119,6 @@ export default function PostCard({
                     <p className={`${styles.postReview} ${truncateReview ? styles.truncated : ""}`}>
                         {post.reviewText}
                     </p>
-                </div>
-            )}
-
-            {/* Map Preview */}
-            {showMapPreview && (
-                <div className={styles.mapPreview}>
-                    {post.latitude && post.longitude ? (
-                        <>
-                            {/* Simple map tile placeholder - will be replaced with actual map */}
-                            <div className={styles.mapPreviewPlaceholder}>
-                                <MapPin className={styles.mapMarker} size={32} />
-                            </div>
-                        </>
-                    ) : (
-                        <div className={styles.mapPreviewPlaceholder}>
-                            <MapPin size={24} />
-                            <span style={{ marginLeft: "0.5rem" }}>{post.locationAddress}</span>
-                        </div>
-                    )}
                 </div>
             )}
 

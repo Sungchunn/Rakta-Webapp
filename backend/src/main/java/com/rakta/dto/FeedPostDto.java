@@ -23,8 +23,6 @@ public record FeedPostDto(
         Long locationId,
         String locationName,
         String locationAddress,
-        Double latitude,
-        Double longitude,
 
         // Post content
         LocalDate donationDate,

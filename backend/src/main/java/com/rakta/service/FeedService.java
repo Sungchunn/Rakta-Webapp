@@ -217,8 +217,6 @@ public class FeedService {
                 location.getId(),
                 location.getName(),
                 location.getAddress(),
-                location.getLatitude(),
-                location.getLongitude(),
                 // Post content
                 post.getDonationDate(),
                 post.getReviewText(),
@@ -245,8 +243,6 @@ public class FeedService {
                 location.getName(),
                 location.getType(),
                 location.getAddress(),
-                location.getLatitude(),
-                location.getLongitude(),
                 location.getContactInfo(),
                 location.getOpeningHours(),
                 // Post content

@@ -121,33 +121,6 @@
     overflow: hidden;
 }
 
-/* Map Preview */
-.mapPreview {
-    height: 180px;
-    background: hsl(240 6% 8%);
-    border-top: 1px solid hsl(240 3.7% 15.9%);
-    position: relative;
-    overflow: hidden;
-}
-
-.mapPreviewPlaceholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: hsl(240 5% 40%);
-    font-size: 0.875rem;
-}
-
-.mapMarker {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -100%);
-    color: hsl(0 72% 51%);
-}
-
 /* Post Footer */
 .postFooter {
     padding: 0.75rem 1.5rem 1rem;

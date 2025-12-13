@@ -124,8 +124,6 @@ public class DataSeeder implements CommandLineRunner {
                     .name("National Blood Centre")
                     .type("HQ")
                     .address("Pathum Wan, Bangkok")
-                    .latitude(13.7375)
-                    .longitude(100.5311)
                     .contactInfo("02-256-4300")
                     .openingHours("07:30 - 19:30")
                     .build();
@@ -134,8 +132,6 @@ public class DataSeeder implements CommandLineRunner {
                     .name("Emporium Donation Room")
                     .type("STATION")
                     .address("The Emporium, Sukhumvit")
-                    .latitude(13.7297)
-                    .longitude(100.5693)
                     .contactInfo("02-269-1000")
                     .openingHours("10:00 - 19:00")
                     .build();
@@ -144,8 +140,6 @@ public class DataSeeder implements CommandLineRunner {
                     .name("Siriraj Hospital")
                     .type("HOSPITAL")
                     .address("Bangkok Noi, Bangkok")
-                    .latitude(13.7593)
-                    .longitude(100.4851)
                     .contactInfo("02-419-7000")
                     .openingHours("08:00 - 16:00")
                     .build();
@@ -154,8 +148,6 @@ public class DataSeeder implements CommandLineRunner {
                     .name("Red Cross Fair 2025")
                     .type("EVENT")
                     .address("Lumphini Park, Bangkok")
-                    .latitude(13.7314)
-                    .longitude(100.5414)
                     .contactInfo("Red Cross Society")
                     .openingHours("11:00 - 22:00")
                     .startDate(LocalDate.of(2025, 12, 11))

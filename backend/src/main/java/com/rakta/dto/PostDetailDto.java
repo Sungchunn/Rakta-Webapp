@@ -18,13 +18,11 @@ public record PostDetailDto(
         String username,
         String firstName,
 
-        // Location full details (for map view)
+        // Location full details
         Long locationId,
         String locationName,
         String locationType, // e.g., "HOSPITAL", "MOBILE_VAN"
         String locationAddress,
-        Double latitude,
-        Double longitude,
         String contactInfo, // Optional
         String openingHours, // Optional
 
@@ -49,12 +47,5 @@ public record PostDetailDto(
             return String.format("%s (%s) just donated @ %s", username, firstName, locationName);
         }
         return String.format("%s just donated @ %s", firstName, locationName);
-    }
-
-    /**
-     * Check if location has valid coordinates for map display.
-     */
-    public boolean hasValidCoordinates() {
-        return latitude != null && longitude != null;
     }
 }
