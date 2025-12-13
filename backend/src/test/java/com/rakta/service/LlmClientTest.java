@@ -1,6 +1,6 @@
 package com.rakta.service;
 
-import com.rakta.service.LlmClient.LlmCoachRequest;
+import com.rakta.dto.DashboardStatsDTO;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import okhttp3.mockwebserver.MockResponse;
@@ -69,13 +69,14 @@ class LlmClientTest {
         }
     }
 
-    private LlmCoachRequest createTestRequest() {
-        return LlmCoachRequest.builder()
-                .userId("test-user")
-                .sessionId("test-session")
-                .readinessSummary("Score: 85")
-                .metricsSummary("Sleep: 7h, HRV: 50ms")
-                .recentMessages(Collections.emptyList())
+    private DashboardStatsDTO createTestStats() {
+        return DashboardStatsDTO.builder()
+                .currentStreak(3)
+                .readinessScore(85)
+                .daysToNextDonation(0)
+                .totalDonations(5)
+                // Add other necessary fields if needed by simple mapping, mostly for JSON
+                // serialization
                 .build();
     }
 
@@ -99,16 +100,14 @@ class LlmClientTest {
     void shouldReturnSuccessOnFirstTry() {
         // Arrange
         mockWebServer.enqueue(new MockResponse()
-                .setBody(mockOpenAiResponse("Hello! I'm your health coach."))
+                .setBody(mockOpenAiResponse("Your iron levels look great!"))
                 .setHeader("Content-Type", "application/json"));
 
         // Act
-        String response = llmClient.generateCoachReply(createTestRequest());
+        String response = llmClient.generateDailyInsight(createTestStats());
 
         // Assert
         assertNotNull(response);
-        // May get actual response or fallback depending on how annotations are
-        // processed
         assertFalse(response.isEmpty(), "Response should not be empty");
     }
 
@@ -123,11 +122,12 @@ class LlmClientTest {
         }
 
         // Act
-        String response = llmClient.generateCoachReply(createTestRequest());
+        String response = llmClient.generateDailyInsight(createTestStats());
 
         // Assert: Should return fallback message, not throw
         assertNotNull(response);
         assertFalse(response.isEmpty());
+        // Verify fallback message content if needed
     }
 
     @Test
@@ -142,7 +142,7 @@ class LlmClientTest {
                 .setHeader("Content-Type", "application/json"));
 
         // Act
-        String response = llmClient.generateCoachReply(createTestRequest());
+        String response = llmClient.generateDailyInsight(createTestStats());
 
         // Assert
         assertNotNull(response);
@@ -167,7 +167,7 @@ class LlmClientTest {
 
         // Act & Assert: Should never throw, always return fallback
         assertDoesNotThrow(() -> {
-            String response = llmClient.generateCoachReply(createTestRequest());
+            String response = llmClient.generateDailyInsight(createTestStats());
             assertNotNull(response);
         });
     }
@@ -181,7 +181,7 @@ class LlmClientTest {
                 .setHeader("Content-Type", "application/json"));
 
         // Act
-        String response = llmClient.generateCoachReply(createTestRequest());
+        String response = llmClient.generateDailyInsight(createTestStats());
 
         // Assert: Should return fallback
         assertNotNull(response);
