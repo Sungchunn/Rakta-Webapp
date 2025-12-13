@@ -39,4 +39,9 @@ public interface UserBadgeRepository extends JpaRepository<UserBadge, Long> {
      */
     @Query("SELECT ub FROM UserBadge ub JOIN FETCH ub.badge WHERE ub.user.id = :userId AND ub.isViewed = false")
     List<UserBadge> findUnviewedByUserId(@Param("userId") Long userId);
+
+    /**
+     * Get the 3 most recent badges for dashboard display
+     */
+    List<UserBadge> findTop3ByUserIdOrderByEarnedAtDesc(Long userId);
 }
