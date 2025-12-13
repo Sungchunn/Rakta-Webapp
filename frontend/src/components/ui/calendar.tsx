@@ -13,11 +13,12 @@ export type CalendarProps = React.ComponentProps<typeof DayPicker>
 function Calendar({
     className,
     classNames,
-    showOutsideDays = true,
+    showOutsideDays = false,
     ...props
 }: CalendarProps) {
     return (
         <ReactDayPicker
+            weekStartsOn={1}
             showOutsideDays={showOutsideDays}
             className={cn("p-3", className)}
             classNames={{
