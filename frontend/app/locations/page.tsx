@@ -16,6 +16,8 @@ interface Location {
     openingHours?: string; // Corrected field name from openHours
     contactInfo?: string; // Corrected field name from address
     distance?: string; // Calculated client-side or mocked
+    latitude?: number;
+    longitude?: number;
 }
 
 export default function LocationsPage() {
@@ -33,6 +35,10 @@ export default function LocationsPage() {
                     distance: (Math.random() * 10).toFixed(1) + "km", // Mock distance for now
                     hours: d.openingHours || "09:00 - 17:00"
                 }));
+
+                if (mapped.length === 0) {
+                    throw new Error("No locations found");
+                }
                 setLocations(mapped);
             } catch (error) {
                 console.error("Failed to load locations", error);
@@ -43,6 +49,8 @@ export default function LocationsPage() {
                     { id: 3, name: "The Mall Bangkapi", type: "MALL", openingHours: "12:00 - 18:00", contactInfo: "02-173-1000", distance: "12km" },
                     { id: 4, name: "Red Cross Station 11", type: "STATION", openingHours: "08:30 - 16:30", contactInfo: "02-552-1000", distance: "8km" },
                     { id: 5, name: "Central World Mobile Unit", type: "MOBILE", openingHours: "11:00 - 15:00", contactInfo: "02-640-7000", distance: "3.2km" },
+                    // Event
+                    { id: 99, name: "Red Cross Fair 2025", type: "EVENT", openingHours: "11:00 - 22:00", contactInfo: "Red Cross Society", distance: "1.5km", latitude: 13.7314, longitude: 100.5414 },
                 ];
                 setLocations(mockData);
             } finally {
