@@ -352,30 +352,34 @@ export default function RegisterPage() {
                         <Label htmlFor="height">Height (cm) <span className="text-zinc-500">(Optional)</span></Label>
                         <Input
                             id="height"
-                            type="number"
-                            step="0.1"
-                            min="50"
-                            max="300"
+                            type="text"
+                            inputMode="decimal"
                             value={formData.height}
-                            onChange={(e) => handleChange('height', e.target.value)}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                                    handleChange('height', val);
+                                }
+                            }}
                             placeholder="170"
-                            className="bg-zinc-950 border-zinc-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            style={{ MozAppearance: 'textfield' }}
+                            className="bg-zinc-950 border-zinc-800"
                         />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="weight">Weight (kg) <span className="text-zinc-500">(Optional)</span></Label>
                         <Input
                             id="weight"
-                            type="number"
-                            step="0.1"
-                            min="20"
-                            max="500"
+                            type="text"
+                            inputMode="decimal"
                             value={formData.weight}
-                            onChange={(e) => handleChange('weight', e.target.value)}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                                    handleChange('weight', val);
+                                }
+                            }}
                             placeholder="65"
-                            className="bg-zinc-950 border-zinc-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            style={{ MozAppearance: 'textfield' }}
+                            className="bg-zinc-950 border-zinc-800"
                         />
                     </div>
                 </div>
