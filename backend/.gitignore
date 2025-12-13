@@ -5,6 +5,9 @@ target/
 !**/src/test/**/target/
 .env
 
+# H2 Database files (local persistence)
+data/
+
 ### STS ###
 .apt_generated
 .classpath

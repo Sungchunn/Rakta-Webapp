@@ -2,7 +2,8 @@ spring:
   application:
     name: rakta-backend
   datasource:
-    url: jdbc:h2:mem:raktadb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    # File-based H2 database - persists data across restarts
+    url: jdbc:h2:file:./data/raktadb;DB_CLOSE_DELAY=-1
     driverClassName: org.h2.Driver
     username: sa
     password: password
@@ -11,7 +12,7 @@ spring:
       enabled: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    defer-datasource-initialization: true
+    defer-datasource-initialization: false # DataSeeder.java handles seeding with duplicate checks
     hibernate:
       ddl-auto: update # Flyway might have issues with H2 if scripts are Postgres-specific, so we use update for now
     show-sql: true
