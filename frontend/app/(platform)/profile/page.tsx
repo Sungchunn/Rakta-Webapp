@@ -155,9 +155,7 @@ export default function ProfilePage() {
 
                         {/* Sidebar - Devices & Actions */}
                         <div className="space-y-8 lg:sticky lg:top-10 self-start">
-                            <div className="opacity-95">
-                                <WearableSync />
-                            </div>
+                            <WearableSync />
 
                             {/* Danger Zone Card */}
                             <Card className="bg-card/60 border-white/5">
