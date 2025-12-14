@@ -250,7 +250,7 @@ export default function UserProfilePage() {
                 <div className="h-16 flex items-center px-8 border-b border-border flex-shrink-0">
                     <Skeleton className="h-9 w-20" />
                 </div>
-                <div className="flex-1 overflow-y-auto p-8">
+                <div className="flex-1 overflow-y-auto px-8 pt-12 pb-8">
                     <div className="max-w-3xl mx-auto">
                         {/* Hero Section Skeleton */}
                         <div className="mb-8">
@@ -305,8 +305,8 @@ export default function UserProfilePage() {
                 </Button>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto p-8">
+            {/* Content - Extra top padding to align with sidebar */}
+            <div className="flex-1 overflow-y-auto px-8 pt-12 pb-8">
                 <div className="max-w-3xl mx-auto">
                     {/* Hero Section with ReflectiveCard */}
                     <div className="mb-8">
