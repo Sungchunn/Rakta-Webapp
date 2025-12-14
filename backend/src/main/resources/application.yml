@@ -23,7 +23,7 @@ spring:
     allowed-origins: ${API_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000,https://sungchunn.com}
   jpa:
     database-platform: ${JPA_DIALECT:org.hibernate.dialect.H2Dialect}
-    defer-datasource-initialization: false # DataSeeder.java handles seeding with duplicate checks
+    defer-datasource-initialization: true # DataSeeder.java handles seeding with duplicate checks, but data.sql needs tables first
     hibernate:
       ddl-auto: update # Flyway might have issues with H2 if scripts are Postgres-specific, so we use update for now
     show-sql: ${JPA_SHOW_SQL:true} # Set to false for prod
