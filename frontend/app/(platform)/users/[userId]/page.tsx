@@ -250,10 +250,10 @@ export default function UserProfilePage() {
                 <div className="h-16 flex items-center px-8 border-b border-border flex-shrink-0">
                     <Skeleton className="h-9 w-20" />
                 </div>
-                <div className="flex-1 overflow-y-auto px-8 pt-12 pb-8">
-                    <div className="max-w-3xl mx-auto">
+                <div className="flex-1 overflow-y-auto px-6 sm:px-8 pt-14 lg:pt-24 pb-12">
+                    <div className="max-w-4xl mx-auto">
                         {/* Hero Section Skeleton */}
-                        <div className="mb-8">
+                        <div className="mt-6 lg:mt-10 mb-12">
                             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
                                 <Skeleton className="w-full max-w-[480px] aspect-[1.6/1] rounded-3xl" />
                                 <div className="flex-1 space-y-3">
@@ -265,7 +265,7 @@ export default function UserProfilePage() {
                             </div>
                         </div>
                         {/* Tabs Skeleton */}
-                        <div className="flex justify-center mb-6">
+                        <div className="flex justify-center mb-10">
                             <Skeleton className="h-12 w-72 rounded-lg" />
                         </div>
                     </div>
@@ -306,10 +306,10 @@ export default function UserProfilePage() {
             </div>
 
             {/* Content - Extra top padding to align with sidebar */}
-            <div className="flex-1 overflow-y-auto px-8 pt-12 pb-8">
-                <div className="max-w-3xl mx-auto">
+            <div className="flex-1 overflow-y-auto px-6 sm:px-8 pt-14 lg:pt-24 pb-12">
+                <div className="max-w-4xl mx-auto">
                     {/* Hero Section with ReflectiveCard */}
-                    <div className="mb-8">
+                    <div className="mt-6 lg:mt-10 mb-12">
                         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
                             {/* Reflective Card */}
                             <ReflectiveCard
@@ -385,7 +385,7 @@ export default function UserProfilePage() {
 
                     {/* Tabs - Centered */}
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <div className="flex justify-center mb-6">
+                        <div className="flex justify-center mb-10">
                             <TabsList className="bg-secondary/30 p-1 h-12">
                                 <TabsTrigger value="posts" className="h-10 px-6">Activity</TabsTrigger>
                                 <TabsTrigger value="followers" className="h-10 px-6">Followers</TabsTrigger>
@@ -393,8 +393,8 @@ export default function UserProfilePage() {
                             </TabsList>
                         </div>
 
-                        {/* Posts Tab - 90% width */}
-                        <TabsContent value="posts" className="pt-2">
+                        {/* Posts Tab */}
+                        <TabsContent value="posts" className="pt-6">
                             {posts.length === 0 ? (
                                 <div className="text-center py-16">
                                     <Droplets className="w-16 h-16 mx-auto mb-6 text-muted-foreground opacity-40" />
@@ -406,7 +406,7 @@ export default function UserProfilePage() {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-8 mx-auto" style={{ width: '90%' }}>
+                                <div className="flex flex-col gap-8 mx-auto w-full max-w-3xl">
                                     {posts.map((post) => (
                                         <PostCard
                                             key={post.id}
@@ -421,8 +421,8 @@ export default function UserProfilePage() {
                             )}
                         </TabsContent>
 
-                        {/* Followers Tab - User cards 70% width, 90% height */}
-                        <TabsContent value="followers" className="pt-2">
+                        {/* Followers Tab */}
+                        <TabsContent value="followers" className="pt-6">
                             {followers.length === 0 ? (
                                 <div className="text-center py-16">
                                     <h3 className="text-lg font-semibold text-white mb-2">No followers yet</h3>
@@ -433,7 +433,7 @@ export default function UserProfilePage() {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-3 mx-auto" style={{ width: '70%' }}>
+                                <div className="flex flex-col gap-3 mx-auto w-full max-w-xl">
                                     {followers.map((user) => (
                                         <div
                                             key={user.id}
@@ -456,8 +456,8 @@ export default function UserProfilePage() {
                             )}
                         </TabsContent>
 
-                        {/* Following Tab - User cards 70% width, 90% height */}
-                        <TabsContent value="following" className="pt-2">
+                        {/* Following Tab */}
+                        <TabsContent value="following" className="pt-6">
                             {following.length === 0 ? (
                                 <div className="text-center py-16">
                                     <h3 className="text-lg font-semibold text-white mb-2">Not following anyone</h3>
@@ -468,7 +468,7 @@ export default function UserProfilePage() {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-3 mx-auto" style={{ width: '70%' }}>
+                                <div className="flex flex-col gap-3 mx-auto w-full max-w-xl">
                                     {following.map((user) => (
                                         <div
                                             key={user.id}
