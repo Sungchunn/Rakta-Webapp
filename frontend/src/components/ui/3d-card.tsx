@@ -129,14 +129,16 @@ export const CardItem = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMouseEntered]);
 
+    const Component = Tag as React.ComponentType<{ ref?: React.Ref<HTMLDivElement>; className?: string; children?: React.ReactNode }>;
+
     return (
-        <Tag
+        <Component
             ref={ref}
             className={cn("w-full transition-transform duration-200 ease-linear", className)}
             {...rest}
         >
             {children}
-        </Tag>
+        </Component>
     );
 };
 
