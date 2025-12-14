@@ -1,6 +1,7 @@
 package com.rakta.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * DTO for public user profile display.
@@ -16,6 +17,10 @@ public record UserPublicProfileDto(
         int postCount,
         int followerCount,
         int followingCount,
+        int donationCount,
+        // Badges
+        List<BadgeDto> badges,
         // Relationship to current user
-        Boolean isFollowedByCurrentUser) {
+        Boolean isFollowedByCurrentUser,
+        Boolean isOwnProfile) {
 }

@@ -1,9 +1,13 @@
 package com.rakta.controller;
 
+import com.rakta.dto.BadgeDto;
 import com.rakta.dto.UserProfileDto;
 import com.rakta.dto.UserPublicProfileDto;
 import com.rakta.entity.User;
+import com.rakta.entity.UserBadge;
 import com.rakta.repository.DonationPostRepository;
+import com.rakta.repository.DonationRepository;
+import com.rakta.repository.UserBadgeRepository;
 import com.rakta.repository.UserRepository;
 import com.rakta.service.CommunityService;
 import com.rakta.service.UserService;
@@ -12,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -25,20 +30,26 @@ public class UserController {
     private final UserRepository userRepository;
     private final CommunityService communityService;
     private final DonationPostRepository donationPostRepository;
+    private final DonationRepository donationRepository;
+    private final UserBadgeRepository userBadgeRepository;
 
     public UserController(UserService userService,
             UserRepository userRepository,
             CommunityService communityService,
-            DonationPostRepository donationPostRepository) {
+            DonationPostRepository donationPostRepository,
+            DonationRepository donationRepository,
+            UserBadgeRepository userBadgeRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.communityService = communityService;
         this.donationPostRepository = donationPostRepository;
+        this.donationRepository = donationRepository;
+        this.userBadgeRepository = userBadgeRepository;
     }
 
     /**
      * Get public profile for any user by ID.
-     * Returns public info, stats, and follow status.
+     * Returns public info, stats, badges, and follow status.
      */
     @GetMapping("/{userId}/profile")
     public ResponseEntity<UserPublicProfileDto> getPublicProfile(@PathVariable Long userId) {
@@ -49,12 +60,30 @@ public class UserController {
         long postCount = donationPostRepository.countByUserId(userId);
         int followerCount = communityService.getFollowerCount(userId);
         int followingCount = communityService.getFollowingCount(userId);
+        long donationCount = donationRepository.countByUserId(userId);
 
-        // Check if current user follows this user
+        // Get badges with JOIN FETCH to avoid N+1
+        List<UserBadge> userBadges = userBadgeRepository.findByUserIdWithBadges(userId);
+        List<BadgeDto> badges = userBadges.stream()
+                .map(ub -> new BadgeDto(
+                        ub.getBadge().getId(),
+                        ub.getBadge().getCode(),
+                        ub.getBadge().getName(),
+                        ub.getBadge().getDescription(),
+                        ub.getBadge().getIconUrl(),
+                        ub.getBadge().getCategory() != null ? ub.getBadge().getCategory().name() : null,
+                        ub.getEarnedAt()))
+                .toList();
+
+        // Check if current user follows this user and if viewing own profile
         Boolean isFollowedByCurrentUser = null;
+        Boolean isOwnProfile = null;
         Long currentUserId = getCurrentUserIdOrNull();
-        if (currentUserId != null && !currentUserId.equals(userId)) {
-            isFollowedByCurrentUser = communityService.isFollowing(currentUserId, userId);
+        if (currentUserId != null) {
+            isOwnProfile = currentUserId.equals(userId);
+            if (!isOwnProfile) {
+                isFollowedByCurrentUser = communityService.isFollowing(currentUserId, userId);
+            }
         }
 
         UserPublicProfileDto profile = new UserPublicProfileDto(
@@ -66,7 +95,10 @@ public class UserController {
                 (int) postCount,
                 followerCount,
                 followingCount,
-                isFollowedByCurrentUser);
+                (int) donationCount,
+                badges,
+                isFollowedByCurrentUser,
+                isOwnProfile);
 
         return ResponseEntity.ok(profile);
     }

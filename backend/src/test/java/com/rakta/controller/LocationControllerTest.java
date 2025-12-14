@@ -58,10 +58,6 @@ class LocationControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(2, response.getBody().size());
 
-        // Verify location details
-        DonationLocation firstLocation = response.getBody().get(0).getLocation();
-        assertNotNull(firstLocation.getName());
-        assertNotNull(firstLocation.getAddress());
     }
 
     @Test

@@ -2,11 +2,25 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ArrowLeft, MapPin, Calendar, Droplets } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, MapPin, Calendar, Droplets, Award, Settings, Heart } from "lucide-react";
 import PostCard, { FeedPost } from "@/components/feed/PostCard";
-import styles from "@/components/profile/UserProfile.module.css";
-import feedStyles from "@/components/feed/Feed.module.css";
 import { apiRequest } from "@/lib/api";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface BadgeInfo {
+    id: number;
+    code: string;
+    name: string;
+    description: string | null;
+    iconUrl: string | null;
+    category: string | null;
+    earnedAt: string;
+}
 
 interface UserProfile {
     id: number;
@@ -17,10 +31,11 @@ interface UserProfile {
     postCount: number;
     followerCount: number;
     followingCount: number;
+    donationCount: number;
+    badges: BadgeInfo[];
     isFollowedByCurrentUser: boolean | null;
+    isOwnProfile: boolean | null;
 }
-
-type Tab = "posts" | "followers" | "following";
 
 interface FollowUser {
     id: number;
@@ -37,7 +52,7 @@ export default function UserProfilePage() {
     const [posts, setPosts] = useState<FeedPost[]>([]);
     const [followers, setFollowers] = useState<FollowUser[]>([]);
     const [following, setFollowing] = useState<FollowUser[]>([]);
-    const [activeTab, setActiveTab] = useState<Tab>("posts");
+    const [activeTab, setActiveTab] = useState("posts");
     const [isLoading, setIsLoading] = useState(true);
     const [isFollowLoading, setIsFollowLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -219,217 +234,284 @@ export default function UserProfilePage() {
         return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
     };
 
+    // Loading state with skeletons
     if (isLoading) {
         return (
-            <div className={styles.profileContainer}>
-                <div className={styles.profileHeader}>
-                    <button className={styles.backButton} onClick={() => router.back()}>
-                        <ArrowLeft size={16} />
-                        Back
-                    </button>
+            <div className="flex flex-col h-full">
+                <div className="h-16 flex items-center px-8 border-b border-border flex-shrink-0">
+                    <Skeleton className="h-9 w-20" />
                 </div>
-                <div className={styles.loadingContainer}>
-                    <div className={styles.spinnerRing} />
+                <div className="flex-1 overflow-y-auto p-8">
+                    <div className="max-w-3xl mx-auto">
+                        <Card className="bg-card border-border mb-6">
+                            <CardHeader className="flex flex-row items-start gap-6">
+                                <Skeleton className="w-20 h-20 rounded-full" />
+                                <div className="flex-1 space-y-2">
+                                    <Skeleton className="h-7 w-40" />
+                                    <Skeleton className="h-4 w-24" />
+                                    <Skeleton className="h-4 w-32" />
+                                </div>
+                                <Skeleton className="h-10 w-28" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex gap-8 pt-4 border-t border-border">
+                                    {[1, 2, 3, 4].map((i) => (
+                                        <div key={i} className="space-y-1">
+                                            <Skeleton className="h-7 w-8" />
+                                            <Skeleton className="h-3 w-16" />
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </div>
         );
     }
 
+    // Error state
     if (error || !profile) {
         return (
-            <div className={styles.profileContainer}>
-                <div className={styles.profileHeader}>
-                    <button className={styles.backButton} onClick={() => router.back()}>
+            <div className="flex flex-col h-full">
+                <div className="h-16 flex items-center px-8 border-b border-border flex-shrink-0">
+                    <Button variant="outline" size="sm" onClick={() => router.back()}>
                         <ArrowLeft size={16} />
                         Back
-                    </button>
+                    </Button>
                 </div>
-                <div className={styles.emptyState}>
-                    <Droplets className={styles.emptyStateIcon} />
-                    <h3 className={styles.emptyStateTitle}>User not found</h3>
-                    <p className={styles.emptyStateText}>{error || "This profile does not exist."}</p>
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                        <Droplets className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-40" />
+                        <h3 className="text-lg font-semibold text-white mb-1">User not found</h3>
+                        <p className="text-sm text-muted-foreground">{error || "This profile does not exist."}</p>
+                    </div>
                 </div>
             </div>
         );
     }
 
-    const displayName = profile.username || profile.firstName;
     const initials = profile.firstName.charAt(0).toUpperCase();
 
     return (
-        <div className={styles.profileContainer}>
+        <div className="flex flex-col h-full">
             {/* Header */}
-            <div className={styles.profileHeader}>
-                <button className={styles.backButton} onClick={() => router.back()}>
+            <div className="h-16 flex items-center px-8 border-b border-border flex-shrink-0">
+                <Button variant="outline" size="sm" onClick={() => router.back()}>
                     <ArrowLeft size={16} />
                     Back
-                </button>
+                </Button>
             </div>
 
             {/* Content */}
-            <div className={styles.profileContent}>
-                <div className={styles.profileGrid}>
+            <div className="flex-1 overflow-y-auto p-8">
+                <div className="max-w-3xl mx-auto">
                     {/* Profile Card */}
-                    <div className={styles.profileCard}>
-                        <div className={styles.profileTop}>
-                            <div className={styles.profileAvatar}>{initials}</div>
-                            <div className={styles.profileInfo}>
-                                <h1 className={styles.profileName}>{profile.firstName}</h1>
+                    <Card className="bg-card border-border mb-6">
+                        <CardHeader className="flex flex-row items-start gap-6 pb-0">
+                            {/* Avatar */}
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white text-3xl font-bold flex-shrink-0">
+                                {initials}
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                                <h1 className="text-2xl font-bold text-white mb-1">{profile.firstName}</h1>
                                 {profile.username && (
-                                    <p className={styles.profileUsername}>@{profile.username}</p>
+                                    <p className="text-sm text-primary mb-2">@{profile.username}</p>
                                 )}
                                 {profile.city && (
-                                    <p className={styles.profileCity}>
+                                    <p className="text-sm text-muted-foreground flex items-center gap-1.5 mb-1">
                                         <MapPin size={14} />
                                         {profile.city}
                                     </p>
                                 )}
-                                <p className={styles.profileJoined}>
-                                    <Calendar size={12} style={{ display: "inline", marginRight: "4px" }} />
+                                <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                                    <Calendar size={12} />
                                     Joined {formatJoinDate(profile.joinedAt)}
                                 </p>
                             </div>
-                            {profile.isFollowedByCurrentUser !== null && (
-                                <button
-                                    className={`${styles.followButton} ${profile.isFollowedByCurrentUser ? styles.following : styles.follow
-                                        }`}
+
+                            {/* Action Button */}
+                            {profile.isOwnProfile ? (
+                                <Button variant="outline" onClick={() => router.push('/profile')}>
+                                    <Settings size={16} />
+                                    Edit Profile
+                                </Button>
+                            ) : profile.isFollowedByCurrentUser !== null ? (
+                                <Button
+                                    variant={profile.isFollowedByCurrentUser ? "outline" : "default"}
                                     onClick={handleFollow}
                                     disabled={isFollowLoading}
+                                    className={profile.isFollowedByCurrentUser ? "hover:border-primary hover:text-primary" : ""}
                                 >
                                     {profile.isFollowedByCurrentUser ? "Following" : "Follow"}
-                                </button>
-                            )}
-                        </div>
+                                </Button>
+                            ) : null}
+                        </CardHeader>
 
-                        {/* Stats */}
-                        <div className={styles.statsRow}>
-                            <div
-                                className={styles.statItem}
-                                onClick={() => setActiveTab("posts")}
-                            >
-                                <span className={styles.statValue}>{profile.postCount}</span>
-                                <span className={styles.statLabel}>Posts</span>
+                        <CardContent className="pt-6">
+                            {/* Stats Row */}
+                            <div className="flex gap-8 pt-4 border-t border-border">
+                                <button
+                                    className="text-left hover:opacity-80 transition-opacity"
+                                    onClick={() => setActiveTab("posts")}
+                                >
+                                    <div className="text-2xl font-bold text-white">{profile.postCount}</div>
+                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Posts</div>
+                                </button>
+                                <button
+                                    className="text-left hover:opacity-80 transition-opacity"
+                                    onClick={() => setActiveTab("followers")}
+                                >
+                                    <div className="text-2xl font-bold text-white">{profile.followerCount}</div>
+                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Followers</div>
+                                </button>
+                                <button
+                                    className="text-left hover:opacity-80 transition-opacity"
+                                    onClick={() => setActiveTab("following")}
+                                >
+                                    <div className="text-2xl font-bold text-white">{profile.followingCount}</div>
+                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Following</div>
+                                </button>
+                                <div className="text-left">
+                                    <div className="text-2xl font-bold text-white flex items-center gap-1.5">
+                                        <Heart size={18} className="text-primary" />
+                                        {profile.donationCount}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Donations</div>
+                                </div>
                             </div>
-                            <div
-                                className={styles.statItem}
-                                onClick={() => setActiveTab("followers")}
-                            >
-                                <span className={styles.statValue}>{profile.followerCount}</span>
-                                <span className={styles.statLabel}>Followers</span>
-                            </div>
-                            <div
-                                className={styles.statItem}
-                                onClick={() => setActiveTab("following")}
-                            >
-                                <span className={styles.statValue}>{profile.followingCount}</span>
-                                <span className={styles.statLabel}>Following</span>
-                            </div>
-                        </div>
-                    </div>
+
+                            {/* Badges Section */}
+                            {profile.badges && profile.badges.length > 0 && (
+                                <div className="flex flex-wrap gap-2 pt-4 mt-4 border-t border-border">
+                                    {profile.badges.slice(0, 6).map((badge) => (
+                                        <Badge
+                                            key={badge.id}
+                                            variant="secondary"
+                                            className="flex items-center gap-1.5 py-1"
+                                        >
+                                            {badge.iconUrl ? (
+                                                <img src={badge.iconUrl} alt="" className="w-4 h-4" />
+                                            ) : (
+                                                <Award size={14} />
+                                            )}
+                                            {badge.name}
+                                        </Badge>
+                                    ))}
+                                    {profile.badges.length > 6 && (
+                                        <Badge variant="outline">+{profile.badges.length - 6} more</Badge>
+                                    )}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
 
                     {/* Tabs */}
-                    <div className={styles.tabs}>
-                        <button
-                            className={`${styles.tab} ${activeTab === "posts" ? styles.active : ""}`}
-                            onClick={() => setActiveTab("posts")}
-                        >
-                            Activity
-                        </button>
-                        <button
-                            className={`${styles.tab} ${activeTab === "followers" ? styles.active : ""}`}
-                            onClick={() => setActiveTab("followers")}
-                        >
-                            Followers
-                        </button>
-                        <button
-                            className={`${styles.tab} ${activeTab === "following" ? styles.active : ""}`}
-                            onClick={() => setActiveTab("following")}
-                        >
-                            Following
-                        </button>
-                    </div>
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <TabsList className="mb-6">
+                            <TabsTrigger value="posts">Activity</TabsTrigger>
+                            <TabsTrigger value="followers">Followers</TabsTrigger>
+                            <TabsTrigger value="following">Following</TabsTrigger>
+                        </TabsList>
 
-                    {/* Tab Content */}
-                    {activeTab === "posts" && (
-                        <div className={styles.activityGrid}>
+                        {/* Posts Tab */}
+                        <TabsContent value="posts">
                             {posts.length === 0 ? (
-                                <div className={styles.emptyState}>
-                                    <Droplets className={styles.emptyStateIcon} />
-                                    <h3 className={styles.emptyStateTitle}>No posts yet</h3>
-                                    <p className={styles.emptyStateText}>
-                                        {displayName} hasn&apos;t shared any donations yet.
+                                <div className="text-center py-12">
+                                    <Droplets className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-40" />
+                                    <h3 className="text-lg font-semibold text-white mb-1">No posts yet</h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        {profile.isOwnProfile
+                                            ? "You haven't shared any donations yet."
+                                            : `${profile.username || profile.firstName} hasn't shared any donations yet.`}
                                     </p>
                                 </div>
                             ) : (
-                                posts.map((post) => (
-                                    <PostCard
-                                        key={post.id}
-                                        post={post}
-                                        onLike={handleLike}
-                                        onUnlike={handleUnlike}
-                                        onClick={() => handlePostClick(post.id)}
-                                        truncateReview={true}
-                                    />
-                                ))
+                                <div className="flex flex-col gap-6">
+                                    {posts.map((post) => (
+                                        <PostCard
+                                            key={post.id}
+                                            post={post}
+                                            onLike={handleLike}
+                                            onUnlike={handleUnlike}
+                                            onClick={() => handlePostClick(post.id)}
+                                            truncateReview={true}
+                                        />
+                                    ))}
+                                </div>
                             )}
-                        </div>
-                    )}
+                        </TabsContent>
 
-                    {activeTab === "followers" && (
-                        <div className={styles.usersList}>
+                        {/* Followers Tab */}
+                        <TabsContent value="followers">
                             {followers.length === 0 ? (
-                                <div className={styles.emptyState}>
-                                    <h3 className={styles.emptyStateTitle}>No followers yet</h3>
+                                <div className="text-center py-12">
+                                    <h3 className="text-lg font-semibold text-white mb-1">No followers yet</h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        {profile.isOwnProfile
+                                            ? "You don't have any followers yet."
+                                            : `${profile.username || profile.firstName} doesn't have any followers yet.`}
+                                    </p>
                                 </div>
                             ) : (
-                                followers.map((user) => (
-                                    <div
-                                        key={user.id}
-                                        className={styles.userItem}
-                                        onClick={() => handleUserClick(user.id)}
-                                    >
-                                        <div className={styles.userItemAvatar}>
-                                            {user.fullName.charAt(0).toUpperCase()}
+                                <div className="flex flex-col gap-3">
+                                    {followers.map((user) => (
+                                        <div
+                                            key={user.id}
+                                            className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl cursor-pointer hover:border-muted-foreground/30 transition-all hover:-translate-y-0.5"
+                                            onClick={() => handleUserClick(user.id)}
+                                        >
+                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                                                {user.fullName.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="font-semibold text-white">{user.fullName}</div>
+                                                {user.city && (
+                                                    <div className="text-xs text-muted-foreground">{user.city}</div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className={styles.userItemInfo}>
-                                            <div className={styles.userItemName}>{user.fullName}</div>
-                                            {user.city && (
-                                                <div className={styles.userItemCity}>{user.city}</div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))
+                                    ))}
+                                </div>
                             )}
-                        </div>
-                    )}
+                        </TabsContent>
 
-                    {activeTab === "following" && (
-                        <div className={styles.usersList}>
+                        {/* Following Tab */}
+                        <TabsContent value="following">
                             {following.length === 0 ? (
-                                <div className={styles.emptyState}>
-                                    <h3 className={styles.emptyStateTitle}>Not following anyone</h3>
+                                <div className="text-center py-12">
+                                    <h3 className="text-lg font-semibold text-white mb-1">Not following anyone</h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        {profile.isOwnProfile
+                                            ? "You're not following anyone yet."
+                                            : `${profile.username || profile.firstName} isn't following anyone yet.`}
+                                    </p>
                                 </div>
                             ) : (
-                                following.map((user) => (
-                                    <div
-                                        key={user.id}
-                                        className={styles.userItem}
-                                        onClick={() => handleUserClick(user.id)}
-                                    >
-                                        <div className={styles.userItemAvatar}>
-                                            {user.fullName.charAt(0).toUpperCase()}
+                                <div className="flex flex-col gap-3">
+                                    {following.map((user) => (
+                                        <div
+                                            key={user.id}
+                                            className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl cursor-pointer hover:border-muted-foreground/30 transition-all hover:-translate-y-0.5"
+                                            onClick={() => handleUserClick(user.id)}
+                                        >
+                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                                                {user.fullName.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="font-semibold text-white">{user.fullName}</div>
+                                                {user.city && (
+                                                    <div className="text-xs text-muted-foreground">{user.city}</div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className={styles.userItemInfo}>
-                                            <div className={styles.userItemName}>{user.fullName}</div>
-                                            {user.city && (
-                                                <div className={styles.userItemCity}>{user.city}</div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))
+                                    ))}
+                                </div>
                             )}
-                        </div>
-                    )}
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
         </div>
