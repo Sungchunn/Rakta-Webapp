@@ -6,7 +6,7 @@ databases:
   - name: rakta-db
     databaseName: rakta
     user: rakta_user
-    plan: starter # $7/month, can upgrade later
+    plan: basic-256mb # New flexible plan ($7/month). Use 'free' for testing
 
 services:
   # ============================================
