@@ -21,6 +21,27 @@ interface UserProfile {
 interface DashboardStats {
     totalDonations: number;
     livesImpacted: number;
+};
+
+// Stat pill component for hero card
+function Stat({
+    label,
+    value,
+    icon,
+}: {
+    label: string;
+    value: number | string;
+    icon: React.ReactNode;
+}) {
+    return (
+        <div className="rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3">
+            <div className="text-xl font-semibold text-white tabular-nums leading-none">{value}</div>
+            <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="opacity-80">{icon}</span>
+                <span>{label}</span>
+            </div>
+        </div>
+    );
 }
 
 export default function ProfilePage() {
@@ -77,20 +98,21 @@ export default function ProfilePage() {
     return (
         <div className="flex flex-col min-h-full px-4 sm:px-6 lg:px-8">
             <div className="pt-10 lg:pt-16 pb-14">
-                <div className="max-w-4xl mx-auto w-full space-y-10">
+                <div className="max-w-5xl mx-auto w-full space-y-10">
                     {/* Page Header */}
                     <div>
                         <h1 className="text-2xl lg:text-3xl font-semibold tracking-tight text-white">Profile & Settings</h1>
                         <p className="text-muted-foreground mt-3 max-w-xl leading-relaxed">Manage your account and connected devices</p>
+                        <div className="mt-6 h-px w-full bg-white/5" />
                     </div>
 
                     {/* Profile Hero Card */}
                     <Card className="bg-gradient-to-br from-primary/20 via-card to-card border-primary/30 overflow-hidden">
-                        <CardContent className="p-8 sm:p-10 lg:p-12">
+                        <CardContent className="p-6 sm:p-8 lg:p-9">
                             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
                                 {/* Avatar */}
-                                <Avatar className="h-28 w-28 sm:h-32 sm:w-32 border-4 border-primary/50 shadow-lg shadow-primary/20">
-                                    <AvatarFallback className="bg-primary/30 text-primary text-3xl sm:text-4xl font-bold">
+                                <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-2 border-primary/40 shadow-lg shadow-primary/15">
+                                    <AvatarFallback className="bg-primary/20 text-primary text-2xl sm:text-3xl font-semibold">
                                         {getInitials()}
                                     </AvatarFallback>
                                 </Avatar>
@@ -110,33 +132,12 @@ export default function ProfilePage() {
                                     </div>
                                     <p className="text-muted-foreground mt-1">{profile?.email || ''}</p>
 
-                                    {/* Quick Stats - Soft Inset */}
-                                    <div className="mt-10 rounded-2xl bg-black/20 px-6 py-5 border border-white/5">
-                                        <div className="grid grid-cols-3 gap-6">
-                                            <div className="text-center sm:text-left">
-                                                <div className="flex flex-col">
-                                                    <span className="text-3xl font-semibold text-white tabular-nums">{stats.totalDonations}</span>
-                                                    <p className="text-sm text-muted-foreground mt-1 flex items-center justify-center sm:justify-start gap-1">
-                                                        <Droplets size={14} /> Donations
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="text-center sm:text-left">
-                                                <div className="flex flex-col">
-                                                    <span className="text-3xl font-semibold text-white tabular-nums">{stats.livesImpacted}</span>
-                                                    <p className="text-sm text-muted-foreground mt-1 flex items-center justify-center sm:justify-start gap-1">
-                                                        <Heart size={14} /> Lives Saved
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="text-center sm:text-left">
-                                                <div className="flex flex-col">
-                                                    <span className="text-3xl font-semibold text-white tabular-nums">{memberSince}</span>
-                                                    <p className="text-sm text-muted-foreground mt-1 flex items-center justify-center sm:justify-start gap-1">
-                                                        <Calendar size={14} /> Member Since
-                                                    </p>
-                                                </div>
-                                            </div>
+                                    {/* Quick Stats - Pill Style */}
+                                    <div className="mt-6 border-t border-white/5 pt-5">
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <Stat label="Donations" icon={<Droplets size={14} />} value={stats.totalDonations} />
+                                            <Stat label="Lives Saved" icon={<Heart size={14} />} value={stats.livesImpacted} />
+                                            <Stat label="Member Since" icon={<Calendar size={14} />} value={memberSince} />
                                         </div>
                                     </div>
                                 </div>
@@ -153,24 +154,21 @@ export default function ProfilePage() {
                         </div>
 
                         {/* Sidebar - Devices & Actions */}
-                        <div className="space-y-8">
-                            <div>
-                                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3">Connected Devices</h3>
-                                <div className="opacity-90">
-                                    <WearableSync />
-                                </div>
+                        <div className="space-y-8 lg:sticky lg:top-10 self-start">
+                            <div className="opacity-95">
+                                <WearableSync />
                             </div>
 
                             {/* Danger Zone Card */}
-                            <Card className="bg-card/70 border-destructive/40 mt-6">
+                            <Card className="bg-card/60 border-white/5">
                                 <CardContent className="p-5">
-                                    <h3 className="text-lg font-semibold text-destructive mb-3">Account Actions</h3>
+                                    <h3 className="text-sm font-semibold text-destructive mb-2">Account</h3>
                                     <p className="text-sm text-muted-foreground mb-4">
                                         Sign out from your account on this device.
                                     </p>
                                     <Button
-                                        variant="destructive"
-                                        className="w-full flex items-center justify-center gap-2"
+                                        variant="outline"
+                                        className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive flex items-center justify-center gap-2"
                                         onClick={handleSignOut}
                                     >
                                         <LogOut size={16} /> Sign Out
