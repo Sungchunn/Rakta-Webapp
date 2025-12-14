@@ -56,9 +56,10 @@ services:
       LOG_LEVEL_APP: DEBUG
       # JPA dialect
       JPA_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      # Flyway - disabled for local testing due to migration ordering issues
+      # Flyway - DISABLED: Migrations V7, V8, V10 reference tables not in migration history
+      # These tables are created by Hibernate based on JPA entities
       SPRING_FLYWAY_ENABLED: false
-      # Use Hibernate auto-update for local testing
+      # Use Hibernate auto-update to create schema
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       # OAuth2 placeholders (required even if not using)
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-placeholder-client-id}

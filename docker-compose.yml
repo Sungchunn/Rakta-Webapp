@@ -83,8 +83,12 @@ services:
       LOG_LEVEL_APP: INFO
       # JPA dialect
       JPA_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      # Flyway
-      SPRING_FLYWAY_ENABLED: true
+      # Flyway - DISABLED: Migrations reference tables that don't exist in migration history
+      # These tables (daily_metrics, supplement_logs, user_follows) are created by Hibernate
+      # TODO: Fix migration history before enabling Flyway
+      SPRING_FLYWAY_ENABLED: false
+      # Use Hibernate auto-update to create schema
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
       postgres:
         condition: service_healthy
