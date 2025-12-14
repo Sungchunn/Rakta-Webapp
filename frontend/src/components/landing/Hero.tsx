@@ -9,7 +9,7 @@ export default function Hero() {
     return (
         <section className={styles.heroSection}>
             {/* Silk Background */}
-            <div className={styles.silkBg} aria-hidden>
+            <div className={styles.silkBg} aria-hidden="true">
                 <Silk
                     speed={5}
                     scale={1}
