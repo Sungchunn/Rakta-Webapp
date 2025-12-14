@@ -24,13 +24,21 @@ WORKDIR /app
 
 # Create non-root user for security
 RUN groupadd -r spring && useradd -r -g spring spring
-USER spring:spring
+
+# Copy entrypoint script (as root to set permissions)
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Copy the built jar from build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080
+# Set ownership and switch to non-root user
+RUN chown -R spring:spring /app
+USER spring:spring
+
+# Expose port (Render will use $PORT env var)
 EXPOSE 8080
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run via entrypoint script that parses DATABASE_URL
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["java", "-jar", "app.jar"]
