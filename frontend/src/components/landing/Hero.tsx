@@ -2,11 +2,23 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import Silk from '@/components/Silk';
 import styles from './Hero.module.css';
 
 export default function Hero() {
     return (
         <section className={styles.heroSection}>
+            {/* Silk Background */}
+            <div className={styles.silkBg} aria-hidden>
+                <Silk
+                    speed={5}
+                    scale={1}
+                    noiseIntensity={1.5}
+                    rotation={0}
+                    color="#DC2626"
+                />
+            </div>
+
             {/* Background Effects */}
             <div className={styles.backgroundGlow} />
             <div className={styles.gridOverlay} />
@@ -27,7 +39,7 @@ export default function Hero() {
                         </h1>
 
                         <p className={styles.subheadline}>
-                            The smart health platform for blood donors. Monitor your readiness score, 
+                            The smart health platform for blood donors. Monitor your readiness score,
                             sync fitness data, and join a community of athletes who donate strategically.
                         </p>
 

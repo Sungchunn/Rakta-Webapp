@@ -35,6 +35,25 @@
     z-index: 1;
 }
 
+/* Silk Background Layer */
+.silkBg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    /* Blend Silk into the dark/red palette */
+    opacity: 0.55;
+    filter: saturate(1.05) contrast(1.05);
+}
+
+/* Ensure the canvas fills the container */
+.silkBg :global(canvas) {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
 /* Container */
 .container {
     position: relative;
