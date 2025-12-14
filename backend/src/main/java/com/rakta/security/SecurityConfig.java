@@ -45,6 +45,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
+                                // Health check endpoints (for Docker/Traefik healthchecks)
+                                "/healthz",
+                                "/actuator/health",
+                                // Auth endpoints
                                 "/api/auth/**",
                                 "/api/locations",
                                 "/api/locations/**",
