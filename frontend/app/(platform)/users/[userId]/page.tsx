@@ -2,15 +2,21 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Link from "next/link";
+import dynamic from "next/dynamic";
 import { ArrowLeft, MapPin, Calendar, Droplets, Award, Settings, Heart } from "lucide-react";
 import PostCard, { FeedPost } from "@/components/feed/PostCard";
 import { apiRequest } from "@/lib/api";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+
+// Dynamic import for ReflectiveCard (uses webcam, client-only)
+const ReflectiveCard = dynamic(() => import("@/components/profile/ReflectiveCard"), {
+    ssr: false,
+    loading: () => <Skeleton className="w-full max-w-[480px] aspect-[1.6/1] rounded-3xl" />
+});
 
 interface BadgeInfo {
     id: number;
@@ -26,6 +32,9 @@ interface UserProfile {
     id: number;
     username: string | null;
     firstName: string;
+    lastName: string;
+    email: string;
+    bloodType: string | null;
     city: string | null;
     joinedAt: string;
     postCount: number;
@@ -243,18 +252,22 @@ export default function UserProfilePage() {
                 </div>
                 <div className="flex-1 overflow-y-auto p-8">
                     <div className="max-w-3xl mx-auto">
-                        <Card className="bg-card border-border mb-6">
-                            <CardHeader className="flex flex-row items-start gap-6">
-                                <Skeleton className="w-20 h-20 rounded-full" />
-                                <div className="flex-1 space-y-2">
-                                    <Skeleton className="h-7 w-40" />
+                        {/* Hero Section Skeleton */}
+                        <div className="mb-10">
+                            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+                                <Skeleton className="w-full max-w-[480px] aspect-[1.6/1] rounded-3xl" />
+                                <div className="flex-1 space-y-3">
                                     <Skeleton className="h-4 w-24" />
                                     <Skeleton className="h-4 w-32" />
+                                    <Skeleton className="h-4 w-28" />
+                                    <Skeleton className="h-10 w-32 mt-4" />
                                 </div>
-                                <Skeleton className="h-10 w-28" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex gap-8 pt-4 border-t border-border">
+                            </div>
+                        </div>
+                        {/* Stats Card Skeleton */}
+                        <Card className="bg-card border-border mb-6">
+                            <CardContent className="pt-6">
+                                <div className="flex gap-8">
                                     {[1, 2, 3, 4].map((i) => (
                                         <div key={i} className="space-y-1">
                                             <Skeleton className="h-7 w-8" />
@@ -291,8 +304,6 @@ export default function UserProfilePage() {
         );
     }
 
-    const initials = profile.firstName.charAt(0).toUpperCase();
-
     return (
         <div className="flex flex-col h-full">
             {/* Header */}
@@ -306,53 +317,58 @@ export default function UserProfilePage() {
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-8">
                 <div className="max-w-3xl mx-auto">
-                    {/* Profile Card */}
-                    <Card className="bg-card border-border mb-8">
-                        <CardHeader className="flex flex-row items-start gap-8 pb-6">
-                            {/* Avatar */}
-                            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white text-4xl font-bold flex-shrink-0 shadow-lg shadow-red-500/20">
-                                {initials}
-                            </div>
+                    {/* Hero Section with ReflectiveCard */}
+                    <div className="mb-10">
+                        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+                            {/* Reflective Card */}
+                            <ReflectiveCard
+                                firstName={profile.firstName}
+                                lastName={profile.lastName}
+                                email={profile.email}
+                                bloodType={profile.bloodType || undefined}
+                            />
 
-                            {/* Info */}
-                            <div className="flex-1 min-w-0">
-                                <h1 className="text-3xl font-bold text-white tracking-tight mb-1">{profile.firstName}</h1>
+                            {/* Profile Info & Actions */}
+                            <div className="flex-1 text-center lg:text-left">
                                 {profile.username && (
                                     <p className="text-sm text-primary mb-2">@{profile.username}</p>
                                 )}
                                 {profile.city && (
-                                    <p className="text-sm text-muted-foreground flex items-center gap-1.5 mb-1">
+                                    <p className="text-sm text-muted-foreground flex items-center justify-center lg:justify-start gap-1.5 mb-2">
                                         <MapPin size={14} />
                                         {profile.city}
                                     </p>
                                 )}
-                                <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                                <p className="text-xs text-muted-foreground flex items-center justify-center lg:justify-start gap-1.5 mb-6">
                                     <Calendar size={12} />
                                     Joined {formatJoinDate(profile.joinedAt)}
                                 </p>
+
+                                {/* Action Button */}
+                                {profile.isOwnProfile ? (
+                                    <Button variant="outline" onClick={() => router.push('/profile')} className="w-full lg:w-auto">
+                                        <Settings size={16} />
+                                        Edit Profile
+                                    </Button>
+                                ) : profile.isFollowedByCurrentUser !== null ? (
+                                    <Button
+                                        variant={profile.isFollowedByCurrentUser ? "outline" : "default"}
+                                        onClick={handleFollow}
+                                        disabled={isFollowLoading}
+                                        className={`w-full lg:w-auto ${profile.isFollowedByCurrentUser ? "hover:border-primary hover:text-primary" : ""}`}
+                                    >
+                                        {profile.isFollowedByCurrentUser ? "Following" : "Follow"}
+                                    </Button>
+                                ) : null}
                             </div>
+                        </div>
+                    </div>
 
-                            {/* Action Button */}
-                            {profile.isOwnProfile ? (
-                                <Button variant="outline" onClick={() => router.push('/profile')}>
-                                    <Settings size={16} />
-                                    Edit Profile
-                                </Button>
-                            ) : profile.isFollowedByCurrentUser !== null ? (
-                                <Button
-                                    variant={profile.isFollowedByCurrentUser ? "outline" : "default"}
-                                    onClick={handleFollow}
-                                    disabled={isFollowLoading}
-                                    className={profile.isFollowedByCurrentUser ? "hover:border-primary hover:text-primary" : ""}
-                                >
-                                    {profile.isFollowedByCurrentUser ? "Following" : "Follow"}
-                                </Button>
-                            ) : null}
-                        </CardHeader>
-
-                        <CardContent className="pt-8">
+                    {/* Stats & Badges Card */}
+                    <Card className="bg-card border-border mb-8">
+                        <CardContent className="pt-6">
                             {/* Stats Row */}
-                            <div className="flex gap-12 py-6 border-t border-border/50">
+                            <div className="flex gap-12 py-4">
                                 <button
                                     className="text-left hover:opacity-80 transition-opacity"
                                     onClick={() => setActiveTab("posts")}
