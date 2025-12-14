@@ -32,6 +32,7 @@
     opacity: 0.35;
     transform: scaleX(-1);
     z-index: 0;
+    border-radius: 24px;
 }
 
 .reflective-noise {
@@ -45,6 +46,7 @@
     mix-blend-mode: overlay;
     pointer-events: none;
     z-index: 2;
+    border-radius: 24px;
 }
 
 .reflective-sheen {
@@ -61,6 +63,7 @@
             transparent 100%);
     pointer-events: none;
     z-index: 3;
+    border-radius: 24px;
 }
 
 .reflective-border {
@@ -162,50 +165,49 @@
 
 .card-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-end;
 }
 
-.id-section {
+/* Stats Row - replaces email section */
+.stats-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+}
+
+.stat-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    gap: 2px;
 }
 
-.id-section .label {
-    font-size: 10px;
+.stat-icon {
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 2px;
+}
+
+.stat-icon.donations {
+    color: #f87171;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+    letter-spacing: 0.5px;
+}
+
+.stat-label {
+    font-size: 9px;
     font-weight: 600;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     color: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
-}
-
-.id-section .value {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.9);
-    font-family: var(--font-mono, 'JetBrains Mono', monospace);
-}
-
-.fingerprint-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.fingerprint-icon {
-    color: rgba(255, 255, 255, 0.4);
-    transition: color 0.3s ease;
-}
-
-.reflective-card-container:hover .fingerprint-icon {
-    color: rgba(220, 38, 38, 0.8);
 }
 
 /* Responsive adjustments */
@@ -215,6 +217,9 @@
         border-radius: 16px;
     }
 
+    .reflective-video,
+    .reflective-noise,
+    .reflective-sheen,
     .reflective-border {
         border-radius: 16px;
     }
@@ -232,13 +237,15 @@
         font-size: 0.75rem;
     }
 
-    .fingerprint-section {
-        width: 48px;
-        height: 48px;
+    .stats-row {
+        gap: 20px;
     }
 
-    .fingerprint-icon {
-        width: 24px;
-        height: 24px;
+    .stat-value {
+        font-size: 1rem;
+    }
+
+    .stat-label {
+        font-size: 8px;
     }
 }

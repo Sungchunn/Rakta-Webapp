@@ -2,13 +2,15 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import './ReflectiveCard.css';
-import { Droplets, Activity, Lock } from 'lucide-react';
+import { Droplets, Activity, Lock, Users, Heart } from 'lucide-react';
 
 interface ReflectiveCardProps {
     firstName: string;
     lastName: string;
-    email: string;
     bloodType?: string;
+    donationCount: number;
+    followerCount: number;
+    followingCount: number;
     blurStrength?: number;
     color?: string;
     metalness?: number;
@@ -37,8 +39,10 @@ const BLOOD_TYPE_LABELS: Record<string, string> = {
 const ReflectiveCard: React.FC<ReflectiveCardProps> = ({
     firstName,
     lastName,
-    email,
     bloodType,
+    donationCount,
+    followerCount,
+    followingCount,
     blurStrength = 12,
     color = 'white',
     metalness = 1,
@@ -181,12 +185,22 @@ const ReflectiveCard: React.FC<ReflectiveCardProps> = ({
                 </div>
 
                 <div className="card-footer">
-                    <div className="id-section">
-                        <span className="label">EMAIL</span>
-                        <span className="value">{email}</span>
-                    </div>
-                    <div className="fingerprint-section">
-                        <Droplets size={32} className="fingerprint-icon" />
+                    <div className="stats-row">
+                        <div className="stat-item">
+                            <Heart size={14} className="stat-icon donations" />
+                            <span className="stat-value">{donationCount}</span>
+                            <span className="stat-label">Donations</span>
+                        </div>
+                        <div className="stat-item">
+                            <Users size={14} className="stat-icon" />
+                            <span className="stat-value">{followerCount}</span>
+                            <span className="stat-label">Followers</span>
+                        </div>
+                        <div className="stat-item">
+                            <Users size={14} className="stat-icon" />
+                            <span className="stat-value">{followingCount}</span>
+                            <span className="stat-label">Following</span>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import dynamic from "next/dynamic";
-import { ArrowLeft, MapPin, Calendar, Droplets, Award, Settings, Heart } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Droplets, Award, Settings } from "lucide-react";
 import PostCard, { FeedPost } from "@/components/feed/PostCard";
 import { apiRequest } from "@/lib/api";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -253,7 +253,7 @@ export default function UserProfilePage() {
                 <div className="flex-1 overflow-y-auto p-8">
                     <div className="max-w-3xl mx-auto">
                         {/* Hero Section Skeleton */}
-                        <div className="mb-10">
+                        <div className="mb-8">
                             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
                                 <Skeleton className="w-full max-w-[480px] aspect-[1.6/1] rounded-3xl" />
                                 <div className="flex-1 space-y-3">
@@ -264,19 +264,10 @@ export default function UserProfilePage() {
                                 </div>
                             </div>
                         </div>
-                        {/* Stats Card Skeleton */}
-                        <Card className="bg-card border-border mb-6">
-                            <CardContent className="pt-6">
-                                <div className="flex gap-8">
-                                    {[1, 2, 3, 4].map((i) => (
-                                        <div key={i} className="space-y-1">
-                                            <Skeleton className="h-7 w-8" />
-                                            <Skeleton className="h-3 w-16" />
-                                        </div>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </Card>
+                        {/* Tabs Skeleton */}
+                        <div className="flex justify-center mb-6">
+                            <Skeleton className="h-12 w-72 rounded-lg" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -318,14 +309,16 @@ export default function UserProfilePage() {
             <div className="flex-1 overflow-y-auto p-8">
                 <div className="max-w-3xl mx-auto">
                     {/* Hero Section with ReflectiveCard */}
-                    <div className="mb-10">
+                    <div className="mb-8">
                         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
                             {/* Reflective Card */}
                             <ReflectiveCard
                                 firstName={profile.firstName}
                                 lastName={profile.lastName}
-                                email={profile.email}
                                 bloodType={profile.bloodType || undefined}
+                                donationCount={profile.donationCount}
+                                followerCount={profile.followerCount}
+                                followingCount={profile.followingCount}
                             />
 
                             {/* Profile Info & Actions */}
@@ -339,10 +332,36 @@ export default function UserProfilePage() {
                                         {profile.city}
                                     </p>
                                 )}
-                                <p className="text-xs text-muted-foreground flex items-center justify-center lg:justify-start gap-1.5 mb-6">
+                                <p className="text-xs text-muted-foreground flex items-center justify-center lg:justify-start gap-1.5 mb-4">
                                     <Calendar size={12} />
                                     Joined {formatJoinDate(profile.joinedAt)}
                                 </p>
+
+                                {/* Badges Section - Inline */}
+                                {profile.badges && profile.badges.length > 0 && (
+                                    <div className="mb-4">
+                                        <p className="text-xs font-medium text-muted-foreground mb-2">Achievements</p>
+                                        <div className="flex flex-wrap justify-center lg:justify-start gap-2">
+                                            {profile.badges.slice(0, 4).map((badge) => (
+                                                <Badge
+                                                    key={badge.id}
+                                                    variant="secondary"
+                                                    className="flex items-center gap-1.5 py-1 px-2.5 text-xs"
+                                                >
+                                                    {badge.iconUrl ? (
+                                                        <img src={badge.iconUrl} alt="" className="w-3 h-3" />
+                                                    ) : (
+                                                        <Award size={12} />
+                                                    )}
+                                                    {badge.name}
+                                                </Badge>
+                                            ))}
+                                            {profile.badges.length > 4 && (
+                                                <Badge variant="outline" className="py-1 px-2.5 text-xs">+{profile.badges.length - 4}</Badge>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Action Button */}
                                 {profile.isOwnProfile ? (
@@ -364,78 +383,17 @@ export default function UserProfilePage() {
                         </div>
                     </div>
 
-                    {/* Stats & Badges Card */}
-                    <Card className="bg-card border-border mb-8">
-                        <CardContent className="pt-6">
-                            {/* Stats Row */}
-                            <div className="flex gap-12 py-4">
-                                <button
-                                    className="text-left hover:opacity-80 transition-opacity"
-                                    onClick={() => setActiveTab("posts")}
-                                >
-                                    <div className="text-3xl font-bold text-white tabular-nums">{profile.postCount}</div>
-                                    <div className="text-sm text-muted-foreground font-medium mt-0.5">Posts</div>
-                                </button>
-                                <button
-                                    className="text-left hover:opacity-80 transition-opacity"
-                                    onClick={() => setActiveTab("followers")}
-                                >
-                                    <div className="text-3xl font-bold text-white tabular-nums">{profile.followerCount}</div>
-                                    <div className="text-sm text-muted-foreground font-medium mt-0.5">Followers</div>
-                                </button>
-                                <button
-                                    className="text-left hover:opacity-80 transition-opacity"
-                                    onClick={() => setActiveTab("following")}
-                                >
-                                    <div className="text-3xl font-bold text-white tabular-nums">{profile.followingCount}</div>
-                                    <div className="text-sm text-muted-foreground font-medium mt-0.5">Following</div>
-                                </button>
-                                <div className="text-left">
-                                    <div className="text-3xl font-bold text-white flex items-center gap-2 tabular-nums">
-                                        <Heart size={20} className="text-primary" />
-                                        {profile.donationCount}
-                                    </div>
-                                    <div className="text-sm text-muted-foreground font-medium mt-0.5">Donations</div>
-                                </div>
-                            </div>
+                    {/* Tabs - Centered */}
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <div className="flex justify-center mb-6">
+                            <TabsList className="bg-secondary/30 p-1 h-12">
+                                <TabsTrigger value="posts" className="h-10 px-6">Activity</TabsTrigger>
+                                <TabsTrigger value="followers" className="h-10 px-6">Followers</TabsTrigger>
+                                <TabsTrigger value="following" className="h-10 px-6">Following</TabsTrigger>
+                            </TabsList>
+                        </div>
 
-                            {/* Badges Section */}
-                            {profile.badges && profile.badges.length > 0 && (
-                                <div className="pt-6 mt-2 border-t border-border/50">
-                                    <p className="text-sm font-medium text-muted-foreground mb-3">Achievements</p>
-                                    <div className="flex flex-wrap gap-2.5">
-                                        {profile.badges.slice(0, 6).map((badge) => (
-                                            <Badge
-                                                key={badge.id}
-                                                variant="secondary"
-                                                className="flex items-center gap-1.5 py-1.5 px-3"
-                                            >
-                                                {badge.iconUrl ? (
-                                                    <img src={badge.iconUrl} alt="" className="w-4 h-4" />
-                                                ) : (
-                                                    <Award size={14} />
-                                                )}
-                                                {badge.name}
-                                            </Badge>
-                                        ))}
-                                        {profile.badges.length > 6 && (
-                                            <Badge variant="outline" className="py-1.5 px-3">+{profile.badges.length - 6} more</Badge>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Tabs */}
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-4">
-                        <TabsList className="mb-8 bg-secondary/30 p-1 h-12">
-                            <TabsTrigger value="posts" className="h-10">Activity</TabsTrigger>
-                            <TabsTrigger value="followers" className="h-10">Followers</TabsTrigger>
-                            <TabsTrigger value="following" className="h-10">Following</TabsTrigger>
-                        </TabsList>
-
-                        {/* Posts Tab */}
+                        {/* Posts Tab - 90% width */}
                         <TabsContent value="posts" className="pt-2">
                             {posts.length === 0 ? (
                                 <div className="text-center py-16">
@@ -448,7 +406,7 @@ export default function UserProfilePage() {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-8">
+                                <div className="flex flex-col gap-8 mx-auto" style={{ width: '90%' }}>
                                     {posts.map((post) => (
                                         <PostCard
                                             key={post.id}
@@ -463,7 +421,7 @@ export default function UserProfilePage() {
                             )}
                         </TabsContent>
 
-                        {/* Followers Tab */}
+                        {/* Followers Tab - User cards 70% width, 90% height */}
                         <TabsContent value="followers" className="pt-2">
                             {followers.length === 0 ? (
                                 <div className="text-center py-16">
@@ -475,18 +433,19 @@ export default function UserProfilePage() {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-3 mx-auto" style={{ width: '70%' }}>
                                     {followers.map((user) => (
                                         <div
                                             key={user.id}
-                                            className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl cursor-pointer hover:border-muted-foreground/30 transition-all hover:-translate-y-0.5"
+                                            className="flex items-center gap-4 p-3 bg-card border border-border rounded-xl cursor-pointer hover:border-muted-foreground/30 transition-all hover:-translate-y-0.5"
                                             onClick={() => handleUserClick(user.id)}
+                                            style={{ minHeight: '54px' }}
                                         >
-                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white font-bold flex-shrink-0 text-sm">
                                                 {user.fullName.charAt(0).toUpperCase()}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <div className="font-semibold text-white">{user.fullName}</div>
+                                                <div className="font-semibold text-white text-sm">{user.fullName}</div>
                                                 {user.city && (
                                                     <div className="text-xs text-muted-foreground">{user.city}</div>
                                                 )}
@@ -497,7 +456,7 @@ export default function UserProfilePage() {
                             )}
                         </TabsContent>
 
-                        {/* Following Tab */}
+                        {/* Following Tab - User cards 70% width, 90% height */}
                         <TabsContent value="following" className="pt-2">
                             {following.length === 0 ? (
                                 <div className="text-center py-16">
@@ -509,18 +468,19 @@ export default function UserProfilePage() {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-3 mx-auto" style={{ width: '70%' }}>
                                     {following.map((user) => (
                                         <div
                                             key={user.id}
-                                            className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl cursor-pointer hover:border-muted-foreground/30 transition-all hover:-translate-y-0.5"
+                                            className="flex items-center gap-4 p-3 bg-card border border-border rounded-xl cursor-pointer hover:border-muted-foreground/30 transition-all hover:-translate-y-0.5"
                                             onClick={() => handleUserClick(user.id)}
+                                            style={{ minHeight: '54px' }}
                                         >
-                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white font-bold flex-shrink-0 text-sm">
                                                 {user.fullName.charAt(0).toUpperCase()}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <div className="font-semibold text-white">{user.fullName}</div>
+                                                <div className="font-semibold text-white text-sm">{user.fullName}</div>
                                                 {user.city && (
                                                     <div className="text-xs text-muted-foreground">{user.city}</div>
                                                 )}
