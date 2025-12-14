@@ -12,56 +12,25 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PasswordInput } from "@/components/ui/password-input";
 
 import { format } from "date-fns";
-import { CalendarIcon, Loader2, Check, ChevronsUpDown } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-
-import { COUNTRY_CODES } from '@/lib/countries';
-
-// Blood type options
-const BLOOD_TYPES = [
-    { value: 'A_POSITIVE', label: 'A+' },
-    { value: 'A_NEGATIVE', label: 'A-' },
-    { value: 'B_POSITIVE', label: 'B+' },
-    { value: 'B_NEGATIVE', label: 'B-' },
-    { value: 'AB_POSITIVE', label: 'AB+' },
-    { value: 'AB_NEGATIVE', label: 'AB-' },
-    { value: 'O_POSITIVE', label: 'O+' },
-    { value: 'O_NEGATIVE', label: 'O-' },
-];
-
-// Gender options
-const GENDERS = [
-    { value: 'MALE', label: 'Male' },
-    { value: 'FEMALE', label: 'Female' },
-    { value: 'OTHER', label: 'Other' },
-];
 
 function RegisterForm() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [dateOfBirth, setDateOfBirth] = useState<Date>();
-    const [countryCodeOpen, setCountryCodeOpen] = useState(false);
-    const [countrySearch, setCountrySearch] = useState('');
 
-    // Form state matching backend DTO exactly
+    // Form state - only essential fields required for signup
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
         password: '',
         confirmPassword: '',
-        countryCode: '+66', // Default to Thailand
-        phoneNumber: '',
-        city: '',
-        gender: '',
-        height: '',
-        weight: '',
-        bloodType: '',
         termsAccepted: false
     });
 
@@ -107,7 +76,7 @@ function RegisterForm() {
         setIsLoading(true);
 
         try {
-            // Validation
+            // Validation - only essential fields
             if (!formData.termsAccepted) {
                 throw new Error("You must accept the terms and conditions.");
             }
@@ -117,15 +86,6 @@ function RegisterForm() {
             if (!formData.firstName.trim() || !formData.lastName.trim()) {
                 throw new Error("First name and last name are required.");
             }
-            if (!formData.gender) {
-                throw new Error("Gender is required.");
-            }
-            if (!formData.city.trim()) {
-                throw new Error("City is required.");
-            }
-            if (!formData.phoneNumber.trim()) {
-                throw new Error("Phone number is required.");
-            }
             if (formData.password !== formData.confirmPassword) {
                 throw new Error("Passwords do not match.");
             }
@@ -133,19 +93,13 @@ function RegisterForm() {
                 throw new Error("Password must be at least 6 characters.");
             }
 
-            // Build payload matching backend RegisterRequest DTO
+            // Build payload - only essential fields, rest can be added later in settings
             const payload = {
                 firstName: formData.firstName.trim(),
                 lastName: formData.lastName.trim(),
                 email: formData.email.trim(),
                 password: formData.password,
-                phone: `${formData.countryCode}${formData.phoneNumber.replace(/\D/g, '')}`,
-                city: formData.city.trim(),
                 dateOfBirth: format(dateOfBirth, 'yyyy-MM-dd'),
-                gender: formData.gender,
-                height: formData.height ? parseFloat(formData.height) : null,
-                weight: formData.weight ? parseFloat(formData.weight) : null,
-                bloodType: formData.bloodType || null,
                 termsAccepted: formData.termsAccepted
             };
 
@@ -160,6 +114,10 @@ function RegisterForm() {
                 email: response.email
             });
 
+            // Clear saved form state
+            sessionStorage.removeItem('signup_form');
+            sessionStorage.removeItem('signup_dob');
+
             toast.success(`Welcome to Rakta, ${response.firstName}!`);
 
             // Redirect to dashboard (no email verification needed)
@@ -173,15 +131,15 @@ function RegisterForm() {
     };
 
     return (
-        <div className={styles.container} style={{ maxWidth: '850px' }}>
+        <div className={styles.container} style={{ maxWidth: '550px' }}>
             <h2 className={styles.title}>Join the Movement</h2>
             <p className="text-zinc-400 text-sm mb-6 text-center">
                 Create your account and start your blood donation journey
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-6 text-left">
+            <form onSubmit={handleSubmit} className="space-y-5 text-left">
                 {/* Name Fields - Side by Side */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
                         <Input
@@ -221,7 +179,7 @@ function RegisterForm() {
                 </div>
 
                 {/* Password and Confirm Password */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
                         <PasswordInput
@@ -248,188 +206,34 @@ function RegisterForm() {
                     </div>
                 </div>
 
-                {/* Phone with Country Code */}
+                {/* Date of Birth */}
                 <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number <span className="text-red-500">*</span></Label>
-                    <div className="flex gap-2">
-                        <Popover open={countryCodeOpen} onOpenChange={setCountryCodeOpen}>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={countryCodeOpen}
-                                    className="w-[140px] justify-between bg-zinc-950 border-zinc-800"
-                                >
-                                    {formData.countryCode
-                                        ? COUNTRY_CODES.find((c) => c.code === formData.countryCode)?.flag + ' ' + formData.countryCode
-                                        : "Select..."}
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[300px] p-0">
-                                <div className="p-2">
-                                    <Input
-                                        placeholder="Search country..."
-                                        value={countrySearch}
-                                        onChange={(e) => setCountrySearch(e.target.value)}
-                                        className="h-9 bg-zinc-950 border-zinc-800"
-                                    />
-                                </div>
-                                <div className="h-[300px] overflow-y-auto p-1 scrollbar-custom z-50 relative">
-                                    {COUNTRY_CODES.filter((c) =>
-                                        c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
-                                        c.code.includes(countrySearch)
-                                    ).map((c) => (
-                                        <button
-                                            key={c.code}
-                                            onClick={() => {
-                                                handleChange('countryCode', c.code);
-                                                setCountryCodeOpen(false);
-                                                setCountrySearch('');
-                                            }}
-                                            className={cn(
-                                                "w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors",
-                                                formData.countryCode === c.code && "bg-accent"
-                                            )}
-                                        >
-                                            <span className="shrink-0">{c.flag}</span>
-                                            <span className="font-mono text-zinc-400 w-12 text-right shrink-0">{c.code}</span>
-                                            <span className="truncate text-zinc-300">{c.country}</span>
-                                            {formData.countryCode === c.code && (
-                                                <Check className="ml-auto h-4 w-4 shrink-0 opacity-100" />
-                                            )}
-                                        </button>
-                                    ))}
-                                    {COUNTRY_CODES.filter(c => c.country.toLowerCase().includes(countrySearch.toLowerCase()) || c.code.includes(countrySearch)).length === 0 && (
-                                        <div className="p-4 text-center text-sm text-zinc-500">
-                                            No country found
-                                        </div>
-                                    )}
-                                </div>
-                            </PopoverContent>
-                        </Popover>
-                        <Input
-                            id="phone"
-                            type="tel"
-                            value={formData.phoneNumber}
-                            onChange={(e) => handleChange('phoneNumber', e.target.value)}
-                            placeholder="812345678"
-                            required
-                            className="flex-1 bg-zinc-950 border-zinc-800"
-                        />
-                    </div>
-                </div>
-
-                {/* City */}
-                <div className="space-y-2">
-                    <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
-                    <Input
-                        id="city"
-                        value={formData.city}
-                        onChange={(e) => handleChange('city', e.target.value)}
-                        placeholder="Bangkok"
-                        required
-                        className="bg-zinc-950 border-zinc-800"
-                    />
-                </div>
-
-                {/* Date of Birth and Gender */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <Label>Date of Birth <span className="text-red-500">*</span></Label>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className={cn(
-                                        "w-full h-10 justify-start text-left font-normal bg-zinc-950 border-zinc-800",
-                                        !dateOfBirth && "text-muted-foreground"
-                                    )}
-                                >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {dateOfBirth ? format(dateOfBirth, "PPP") : <span>Select your birthday</span>}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                    mode="single"
-                                    selected={dateOfBirth}
-                                    onSelect={setDateOfBirth}
-                                    captionLayout="dropdown"
-                                    fromYear={1920}
-                                    toYear={new Date().getFullYear() - 16}
-                                    defaultMonth={new Date(2000, 0)}
-                                />
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Gender <span className="text-red-500">*</span></Label>
-                        <Select onValueChange={(val) => handleChange('gender', val)} required>
-                            <SelectTrigger className="h-10 bg-zinc-950 border-zinc-800">
-                                <SelectValue placeholder="Select gender" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {GENDERS.map((g) => (
-                                    <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-
-                {/* Physical: Height and Weight */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="height">Height (cm) <span className="text-zinc-500">(Optional)</span></Label>
-                        <Input
-                            id="height"
-                            type="text"
-                            inputMode="decimal"
-                            value={formData.height}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                if (val === '' || /^\d*\.?\d*$/.test(val)) {
-                                    handleChange('height', val);
-                                }
-                            }}
-                            placeholder="170"
-                            className="bg-zinc-950 border-zinc-800"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="weight">Weight (kg) <span className="text-zinc-500">(Optional)</span></Label>
-                        <Input
-                            id="weight"
-                            type="text"
-                            inputMode="decimal"
-                            value={formData.weight}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                if (val === '' || /^\d*\.?\d*$/.test(val)) {
-                                    handleChange('weight', val);
-                                }
-                            }}
-                            placeholder="65"
-                            className="bg-zinc-950 border-zinc-800"
-                        />
-                    </div>
-                </div>
-
-                {/* Blood Type */}
-                <div className="space-y-2">
-                    <Label>Blood Type <span className="text-zinc-500">(Optional)</span></Label>
-                    <Select onValueChange={(val) => handleChange('bloodType', val)}>
-                        <SelectTrigger className="bg-zinc-950 border-zinc-800">
-                            <SelectValue placeholder="Select if known" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {BLOOD_TYPES.map((bt) => (
-                                <SelectItem key={bt.value} value={bt.value}>{bt.label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <Label>Date of Birth <span className="text-red-500">*</span></Label>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className={cn(
+                                    "w-full h-10 justify-start text-left font-normal bg-zinc-950 border-zinc-800",
+                                    !dateOfBirth && "text-muted-foreground"
+                                )}
+                            >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {dateOfBirth ? format(dateOfBirth, "PPP") : <span>Select your birthday</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                mode="single"
+                                selected={dateOfBirth}
+                                onSelect={setDateOfBirth}
+                                captionLayout="dropdown"
+                                fromYear={1920}
+                                toYear={new Date().getFullYear() - 16}
+                                defaultMonth={new Date(2000, 0)}
+                            />
+                        </PopoverContent>
+                    </Popover>
                 </div>
 
                 {/* Terms Checkbox */}
@@ -449,10 +253,15 @@ function RegisterForm() {
                     </Label>
                 </div>
 
+                {/* Helper text */}
+                <p className="text-xs text-zinc-500 text-center">
+                    You can complete your profile (phone, location, health info) later in Settings.
+                </p>
+
                 {/* Submit Button */}
                 <Button
                     type="submit"
-                    className="w-full mt-6"
+                    className="w-full"
                     disabled={isLoading || !formData.termsAccepted}
                     size="lg"
                 >

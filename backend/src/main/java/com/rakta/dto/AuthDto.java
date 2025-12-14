@@ -43,23 +43,20 @@ public class AuthDto {
         @Size(min = 6, message = "Password must be at least 6 characters")
         private String password;
 
-        @NotBlank(message = "Phone is required")
-        private String phone;
+        private String phone; // Optional - can be added later in settings
 
         @NotNull(message = "Date of birth is required")
         private LocalDate dateOfBirth;
 
-        @NotBlank(message = "Gender is required")
-        private String gender;
+        private String gender; // Optional - can be added later in settings
 
-        private Double height;
+        private Double height; // Optional
 
-        private Double weight;
+        private Double weight; // Optional
 
         private String bloodType; // Optional
 
-        @NotBlank(message = "City is required")
-        private String city;
+        private String city; // Optional - can be added later in settings
 
         @AssertTrue(message = "You must accept the terms and conditions")
         private boolean termsAccepted;
