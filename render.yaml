@@ -6,7 +6,7 @@ databases:
   - name: rakta-db
     databaseName: rakta
     user: rakta_user
-    plan: basic-256mb # New flexible plan ($7/month). Use 'free' for testing
+    plan: free # Free tier for MVP/demo (sleeps after 15 min, 1GB limit, 97-day expiry)
 
 services:
   # ============================================
@@ -17,7 +17,7 @@ services:
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    plan: starter # $7/month
+    plan: free # Free tier (sleeps after 15 min inactivity, ~15-25s cold start)
     healthCheckPath: /healthz
     envVars:
       # Port configuration (Render injects this)
@@ -57,7 +57,7 @@ services:
     runtime: docker
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
-    plan: starter # $7/month
+    plan: free # Free tier (sleeps after 15 min inactivity)
     healthCheckPath: /
     envVars:
       # Port configuration (Render injects this)
