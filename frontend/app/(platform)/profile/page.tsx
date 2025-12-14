@@ -75,96 +75,109 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="flex flex-col min-h-full py-8 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto w-full space-y-10">
-                {/* Page Header */}
-                <div>
-                    <h1 className="text-3xl font-bold font-heading text-white tracking-tight">Profile & Settings</h1>
-                    <p className="text-muted-foreground mt-2 leading-relaxed">Manage your account and connected devices</p>
-                </div>
+        <div className="flex flex-col min-h-full px-4 sm:px-6 lg:px-8">
+            <div className="pt-10 lg:pt-16 pb-14">
+                <div className="max-w-4xl mx-auto w-full space-y-10">
+                    {/* Page Header */}
+                    <div>
+                        <h1 className="text-2xl lg:text-3xl font-semibold tracking-tight text-white">Profile & Settings</h1>
+                        <p className="text-muted-foreground mt-3 max-w-xl leading-relaxed">Manage your account and connected devices</p>
+                    </div>
 
-                {/* Profile Hero Card */}
-                <Card className="bg-gradient-to-br from-primary/20 via-card to-card border-primary/30 overflow-hidden">
-                    <CardContent className="p-8 sm:p-10">
-                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
-                            {/* Avatar */}
-                            <Avatar className="h-28 w-28 sm:h-32 sm:w-32 border-4 border-primary/50 shadow-lg shadow-primary/20">
-                                <AvatarFallback className="bg-primary/30 text-primary text-3xl sm:text-4xl font-bold">
-                                    {getInitials()}
-                                </AvatarFallback>
-                            </Avatar>
+                    {/* Profile Hero Card */}
+                    <Card className="bg-gradient-to-br from-primary/20 via-card to-card border-primary/30 overflow-hidden">
+                        <CardContent className="p-8 sm:p-10 lg:p-12">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
+                                {/* Avatar */}
+                                <Avatar className="h-28 w-28 sm:h-32 sm:w-32 border-4 border-primary/50 shadow-lg shadow-primary/20">
+                                    <AvatarFallback className="bg-primary/30 text-primary text-3xl sm:text-4xl font-bold">
+                                        {getInitials()}
+                                    </AvatarFallback>
+                                </Avatar>
 
-                            {/* User Info */}
-                            <div className="flex-1 text-center sm:text-left">
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                                    <h2 className="text-2xl sm:text-3xl font-bold text-white">
-                                        {profile?.firstName || 'Loading...'} {profile?.lastName || ''}
-                                    </h2>
-                                    {profile?.bloodType && (
-                                        <Badge variant="secondary" className="w-fit mx-auto sm:mx-0 bg-red-500/20 text-red-400 border-red-500/30">
-                                            <Droplets size={14} className="mr-1" />
-                                            {getBloodTypeLabel(profile.bloodType)}
-                                        </Badge>
-                                    )}
-                                </div>
-                                <p className="text-muted-foreground mt-1">{profile?.email || ''}</p>
-
-                                {/* Quick Stats */}
-                                <div className="grid grid-cols-3 gap-6 mt-8 pt-6 border-t border-primary/20">
-                                    <div className="text-center sm:text-left">
-                                        <div className="flex items-center justify-center sm:justify-start gap-2">
-                                            <Droplets size={18} className="text-red-400" />
-                                            <span className="text-3xl font-bold text-white tabular-nums">{stats.totalDonations}</span>
-                                        </div>
-                                        <p className="text-sm text-muted-foreground mt-1 font-medium">Donations</p>
+                                {/* User Info */}
+                                <div className="flex-1 text-center sm:text-left">
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                                        <h2 className="text-2xl sm:text-3xl font-bold text-white">
+                                            {profile?.firstName || 'Loading...'} {profile?.lastName || ''}
+                                        </h2>
+                                        {profile?.bloodType && (
+                                            <Badge variant="secondary" className="w-fit mx-auto sm:mx-0 bg-red-500/20 text-red-400 border-red-500/30">
+                                                <Droplets size={14} className="mr-1" />
+                                                {getBloodTypeLabel(profile.bloodType)}
+                                            </Badge>
+                                        )}
                                     </div>
-                                    <div className="text-center sm:text-left">
-                                        <div className="flex items-center justify-center sm:justify-start gap-2">
-                                            <Heart size={18} className="text-pink-400" />
-                                            <span className="text-3xl font-bold text-white tabular-nums">{stats.livesImpacted}</span>
+                                    <p className="text-muted-foreground mt-1">{profile?.email || ''}</p>
+
+                                    {/* Quick Stats - Soft Inset */}
+                                    <div className="mt-10 rounded-2xl bg-black/20 px-6 py-5 border border-white/5">
+                                        <div className="grid grid-cols-3 gap-6">
+                                            <div className="text-center sm:text-left">
+                                                <div className="flex flex-col">
+                                                    <span className="text-3xl font-semibold text-white tabular-nums">{stats.totalDonations}</span>
+                                                    <p className="text-sm text-muted-foreground mt-1 flex items-center justify-center sm:justify-start gap-1">
+                                                        <Droplets size={14} /> Donations
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="text-center sm:text-left">
+                                                <div className="flex flex-col">
+                                                    <span className="text-3xl font-semibold text-white tabular-nums">{stats.livesImpacted}</span>
+                                                    <p className="text-sm text-muted-foreground mt-1 flex items-center justify-center sm:justify-start gap-1">
+                                                        <Heart size={14} /> Lives Saved
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="text-center sm:text-left">
+                                                <div className="flex flex-col">
+                                                    <span className="text-3xl font-semibold text-white tabular-nums">{memberSince}</span>
+                                                    <p className="text-sm text-muted-foreground mt-1 flex items-center justify-center sm:justify-start gap-1">
+                                                        <Calendar size={14} /> Member Since
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <p className="text-sm text-muted-foreground mt-1 font-medium">Lives Saved</p>
-                                    </div>
-                                    <div className="text-center sm:text-left">
-                                        <div className="flex items-center justify-center sm:justify-start gap-2">
-                                            <Calendar size={18} className="text-blue-400" />
-                                            <span className="text-3xl font-bold text-white tabular-nums">{memberSince}</span>
-                                        </div>
-                                        <p className="text-sm text-muted-foreground mt-1 font-medium">Member Since</p>
                                     </div>
                                 </div>
                             </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Main Content Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Profile Form - Takes 2 columns on large screens */}
+                        <div className="lg:col-span-2">
+                            <h2 className="text-lg font-semibold text-white mb-4">Personal Information</h2>
+                            <ProfileForm />
                         </div>
-                    </CardContent>
-                </Card>
 
-                {/* Main Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Profile Form - Takes 2 columns on large screens */}
-                    <div className="lg:col-span-2">
-                        <ProfileForm />
-                    </div>
+                        {/* Sidebar - Devices & Actions */}
+                        <div className="space-y-8">
+                            <div>
+                                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3">Connected Devices</h3>
+                                <div className="opacity-90">
+                                    <WearableSync />
+                                </div>
+                            </div>
 
-                    {/* Sidebar - Devices & Actions */}
-                    <div className="space-y-8">
-                        <WearableSync />
-
-                        {/* Danger Zone Card */}
-                        <Card className="bg-card border-destructive/30">
-                            <CardContent className="p-6">
-                                <h3 className="text-lg font-semibold text-destructive mb-3">Account Actions</h3>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    Sign out from your account on this device.
-                                </p>
-                                <Button
-                                    variant="destructive"
-                                    className="w-full flex items-center justify-center gap-2"
-                                    onClick={handleSignOut}
-                                >
-                                    <LogOut size={16} /> Sign Out
-                                </Button>
-                            </CardContent>
-                        </Card>
+                            {/* Danger Zone Card */}
+                            <Card className="bg-card/70 border-destructive/40 mt-6">
+                                <CardContent className="p-5">
+                                    <h3 className="text-lg font-semibold text-destructive mb-3">Account Actions</h3>
+                                    <p className="text-sm text-muted-foreground mb-4">
+                                        Sign out from your account on this device.
+                                    </p>
+                                    <Button
+                                        variant="destructive"
+                                        className="w-full flex items-center justify-center gap-2"
+                                        onClick={handleSignOut}
+                                    >
+                                        <LogOut size={16} /> Sign Out
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
                 </div>
             </div>
