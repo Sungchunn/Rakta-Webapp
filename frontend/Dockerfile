@@ -48,11 +48,12 @@ RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
-# Expose port 3000
+# Expose default port 3000
 EXPOSE 3000
 
+# Default PORT, can be overridden by Render
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Run the application
-CMD ["node", "server.js"]
+# Run the application with dynamic port from environment
+CMD ["sh", "-c", "node server.js"]
