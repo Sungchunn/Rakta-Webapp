@@ -2,8 +2,6 @@
 # This skips Traefik and exposes services directly on localhost
 # Usage: docker-compose -f docker-compose.local.yml up --build
 
-version: "3.8"
-
 services:
   # PostgreSQL database
   postgres:
@@ -84,12 +82,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: "http://localhost:8080"
+        NEXT_PUBLIC_API_URL: "http://localhost:8080/api"
     container_name: rakta-frontend-local
     restart: unless-stopped
     environment:
       NODE_ENV: "production"
-      NEXT_PUBLIC_API_URL: "http://localhost:8080"
+      NEXT_PUBLIC_API_URL: "http://localhost:8080/api"
     ports:
       - "3000:3000"
     depends_on:
