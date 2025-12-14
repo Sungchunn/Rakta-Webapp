@@ -43,8 +43,8 @@ const features = [
 
 export default function Features() {
     return (
-        <section style={{ 
-            padding: '100px 24px',
+        <section style={{
+            padding: '72px 24px',
             background: 'linear-gradient(180deg, transparent 0%, rgba(220, 38, 38, 0.02) 50%, transparent 100%)'
         }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -54,14 +54,15 @@ export default function Features() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    style={{ textAlign: 'center', marginBottom: '64px' }}
+                    style={{ textAlign: 'center', marginBottom: '44px' }}
                 >
                     <h2 style={{
                         fontFamily: 'var(--font-display)',
                         fontSize: 'clamp(2rem, 4vw, 3rem)',
                         fontWeight: 700,
                         color: 'var(--bone-white)',
-                        marginBottom: '16px'
+                        marginBottom: '10px',
+                        lineHeight: 1.05
                     }}>
                         Built for Athletes & Health Enthusiasts
                     </h2>
@@ -88,7 +89,7 @@ export default function Features() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            whileHover={{ 
+                            whileHover={{
                                 scale: 1.02,
                                 transition: { duration: 0.2 }
                             }}
@@ -148,8 +149,8 @@ export default function Features() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.3 }}
-                    style={{ 
-                        textAlign: 'center', 
+                    style={{
+                        textAlign: 'center',
                         marginTop: '64px',
                         padding: '48px',
                         background: 'rgba(220, 38, 38, 0.05)',
