@@ -62,14 +62,15 @@ spring:
           starttls:
             enable: true
 
-  # OAuth2 configuration
+  # OAuth2 configuration (optional - set GOOGLE_CLIENT_ID/SECRET in Render dashboard if needed)
+  # Using 'disabled' as placeholder prevents OAuth auto-config failures
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID:}
-            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            client-id: ${GOOGLE_CLIENT_ID:disabled}
+            client-secret: ${GOOGLE_CLIENT_SECRET:disabled}
             scope:
               - email
               - profile
@@ -104,7 +105,8 @@ logging:
 
 # Server configuration
 server:
-  port: 8080
+  port: ${PORT:8080}
+  address: 0.0.0.0
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
