@@ -75,21 +75,21 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="flex flex-col min-h-full py-6 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto w-full space-y-8">
+        <div className="flex flex-col min-h-full py-8 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto w-full space-y-10">
                 {/* Page Header */}
                 <div>
-                    <h1 className="text-3xl font-bold font-heading text-white">Profile & Settings</h1>
-                    <p className="text-muted-foreground mt-1">Manage your account and connected devices</p>
+                    <h1 className="text-3xl font-bold font-heading text-white tracking-tight">Profile & Settings</h1>
+                    <p className="text-muted-foreground mt-2 leading-relaxed">Manage your account and connected devices</p>
                 </div>
 
                 {/* Profile Hero Card */}
                 <Card className="bg-gradient-to-br from-primary/20 via-card to-card border-primary/30 overflow-hidden">
-                    <CardContent className="p-6 sm:p-8">
-                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                    <CardContent className="p-8 sm:p-10">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
                             {/* Avatar */}
-                            <Avatar className="h-24 w-24 sm:h-28 sm:w-28 border-4 border-primary/50 shadow-lg shadow-primary/20">
-                                <AvatarFallback className="bg-primary/30 text-primary text-2xl sm:text-3xl font-bold">
+                            <Avatar className="h-28 w-28 sm:h-32 sm:w-32 border-4 border-primary/50 shadow-lg shadow-primary/20">
+                                <AvatarFallback className="bg-primary/30 text-primary text-3xl sm:text-4xl font-bold">
                                     {getInitials()}
                                 </AvatarFallback>
                             </Avatar>
@@ -110,27 +110,27 @@ export default function ProfilePage() {
                                 <p className="text-muted-foreground mt-1">{profile?.email || ''}</p>
 
                                 {/* Quick Stats */}
-                                <div className="grid grid-cols-3 gap-4 mt-6">
+                                <div className="grid grid-cols-3 gap-6 mt-8 pt-6 border-t border-primary/20">
                                     <div className="text-center sm:text-left">
                                         <div className="flex items-center justify-center sm:justify-start gap-2">
-                                            <Droplets size={16} className="text-red-400" />
-                                            <span className="text-2xl font-bold text-white">{stats.totalDonations}</span>
+                                            <Droplets size={18} className="text-red-400" />
+                                            <span className="text-3xl font-bold text-white tabular-nums">{stats.totalDonations}</span>
                                         </div>
-                                        <p className="text-xs text-muted-foreground mt-0.5">Donations</p>
+                                        <p className="text-sm text-muted-foreground mt-1 font-medium">Donations</p>
                                     </div>
                                     <div className="text-center sm:text-left">
                                         <div className="flex items-center justify-center sm:justify-start gap-2">
-                                            <Heart size={16} className="text-pink-400" />
-                                            <span className="text-2xl font-bold text-white">{stats.livesImpacted}</span>
+                                            <Heart size={18} className="text-pink-400" />
+                                            <span className="text-3xl font-bold text-white tabular-nums">{stats.livesImpacted}</span>
                                         </div>
-                                        <p className="text-xs text-muted-foreground mt-0.5">Lives Saved</p>
+                                        <p className="text-sm text-muted-foreground mt-1 font-medium">Lives Saved</p>
                                     </div>
                                     <div className="text-center sm:text-left">
                                         <div className="flex items-center justify-center sm:justify-start gap-2">
-                                            <Calendar size={16} className="text-blue-400" />
-                                            <span className="text-2xl font-bold text-white">{memberSince}</span>
+                                            <Calendar size={18} className="text-blue-400" />
+                                            <span className="text-3xl font-bold text-white tabular-nums">{memberSince}</span>
                                         </div>
-                                        <p className="text-xs text-muted-foreground mt-0.5">Member Since</p>
+                                        <p className="text-sm text-muted-foreground mt-1 font-medium">Member Since</p>
                                     </div>
                                 </div>
                             </div>
@@ -139,14 +139,14 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* Main Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Profile Form - Takes 2 columns on large screens */}
                     <div className="lg:col-span-2">
                         <ProfileForm />
                     </div>
 
                     {/* Sidebar - Devices & Actions */}
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         <WearableSync />
 
                         {/* Danger Zone Card */}

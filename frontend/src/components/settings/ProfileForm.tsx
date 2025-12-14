@@ -171,10 +171,10 @@ export default function ProfileForm() {
 
     return (
         <Card className="bg-card border-border">
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row items-center justify-between pb-4">
                 <div>
                     <CardTitle className="text-xl font-heading text-primary">Personal Profile</CardTitle>
-                    <CardDescription>Manage your personal information and health data.</CardDescription>
+                    <CardDescription className="mt-1">Manage your personal information and health data.</CardDescription>
                 </div>
                 {!isEditing ? (
                     <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} type="button">
@@ -186,162 +186,191 @@ export default function ProfileForm() {
                     </Button>
                 )}
             </CardHeader>
-            <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Name */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">First Name</Label>
-                            <Input
-                                value={formData.firstName}
-                                onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                                disabled={!isEditing}
-                                className="bg-background"
-                            />
+            <CardContent className="pt-2">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                    {/* Section: Identity */}
+                    <div className="space-y-5">
+                        <div className="pb-2 border-b border-border/50">
+                            <h3 className="text-base font-semibold text-white">Identity</h3>
+                            <p className="text-sm text-muted-foreground mt-0.5">Basic information about you</p>
                         </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Last Name</Label>
-                            <Input
-                                value={formData.lastName}
-                                onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                                disabled={!isEditing}
-                                className="bg-background"
-                            />
-                        </div>
-                    </div>
 
-                    {/* Email (readonly) */}
-                    <div className="space-y-2">
-                        <Label className="text-sm font-medium text-muted-foreground">Email</Label>
-                        <Input
-                            value={profile?.email || ''}
-                            disabled
-                            className="bg-background opacity-50"
-                        />
-                    </div>
+                        {/* Name */}
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">First Name</Label>
+                                <Input
+                                    value={formData.firstName}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                                    disabled={!isEditing}
+                                    className="bg-background"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">Last Name</Label>
+                                <Input
+                                    value={formData.lastName}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                                    disabled={!isEditing}
+                                    className="bg-background"
+                                />
+                            </div>
+                        </div>
 
-                    {/* Contact */}
-                    <div className="grid grid-cols-2 gap-4">
+                        {/* Email (readonly) */}
                         <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Phone</Label>
+                            <Label className="text-sm font-semibold text-foreground/80">Email</Label>
                             <Input
-                                value={formData.phone}
-                                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                                disabled={!isEditing}
-                                className="bg-background"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">City</Label>
-                            <Input
-                                value={formData.city}
-                                onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                                disabled={!isEditing}
-                                className="bg-background"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Birthday, Age & Gender */}
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Date of Birth</Label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        disabled={!isEditing}
-                                        className={cn(
-                                            "w-full justify-start text-left font-normal bg-background",
-                                            !dateOfBirth && "text-muted-foreground"
-                                        )}
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {dateOfBirth ? format(dateOfBirth, "PP") : "Select"}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={dateOfBirth}
-                                        onSelect={setDateOfBirth}
-                                        disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                                        defaultMonth={dateOfBirth}
-                                        captionLayout="dropdown"
-                                        fromYear={1920}
-                                        toYear={new Date().getFullYear()}
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Age</Label>
-                            <Input
-                                value={calculateAge(dateOfBirth)?.toString() || 'N/A'}
+                                value={profile?.email || ''}
                                 disabled
                                 className="bg-background opacity-50"
                             />
                         </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Gender</Label>
+                    </div>
+
+                    {/* Visual Separator */}
+                    <div className="h-px bg-gradient-to-r from-transparent via-border/40 to-transparent" />
+
+                    {/* Section: Contact */}
+                    <div className="space-y-5">
+                        <div className="pb-2 border-b border-border/50">
+                            <h3 className="text-base font-semibold text-white">Contact</h3>
+                            <p className="text-sm text-muted-foreground mt-0.5">How to reach you</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">Phone</Label>
+                                <Input
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                                    disabled={!isEditing}
+                                    className="bg-background"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">City</Label>
+                                <Input
+                                    value={formData.city}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
+                                    disabled={!isEditing}
+                                    className="bg-background"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Visual Separator */}
+                    <div className="h-px bg-gradient-to-r from-transparent via-border/40 to-transparent" />
+
+                    {/* Section: Health Profile */}
+                    <div className="space-y-5">
+                        <div className="pb-2 border-b border-border/50">
+                            <h3 className="text-base font-semibold text-white">Health Profile</h3>
+                            <p className="text-sm text-muted-foreground mt-0.5">Your donor information for eligibility tracking</p>
+                        </div>
+
+                        {/* Birthday, Age & Gender Row */}
+                        <div className="grid grid-cols-3 gap-6">
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">Date of Birth</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            disabled={!isEditing}
+                                            className={cn(
+                                                "w-full justify-start text-left font-normal bg-background",
+                                                !dateOfBirth && "text-muted-foreground"
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {dateOfBirth ? format(dateOfBirth, "PP") : "Select"}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={dateOfBirth}
+                                            onSelect={setDateOfBirth}
+                                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                                            defaultMonth={dateOfBirth}
+                                            captionLayout="dropdown"
+                                            fromYear={1920}
+                                            toYear={new Date().getFullYear()}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">Age</Label>
+                                <Input
+                                    value={calculateAge(dateOfBirth)?.toString() || 'N/A'}
+                                    disabled
+                                    className="bg-background opacity-50"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">Gender</Label>
+                                <Select
+                                    disabled={!isEditing}
+                                    value={formData.gender}
+                                    onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}
+                                >
+                                    <SelectTrigger className="bg-background">
+                                        <SelectValue placeholder="Select gender" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {GENDERS.map((g) => (
+                                            <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        {/* Physical Data Row */}
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">Height (cm)</Label>
+                                <Input
+                                    type="number"
+                                    value={formData.height}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
+                                    disabled={!isEditing}
+                                    className="bg-background"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-foreground/80">Weight (kg)</Label>
+                                <Input
+                                    type="number"
+                                    value={formData.weight}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, weight: e.target.value }))}
+                                    disabled={!isEditing}
+                                    className="bg-background"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Blood Type */}
+                        <div className="space-y-2 w-1/2">
+                            <Label className="text-sm font-semibold text-foreground/80">Blood Type</Label>
                             <Select
                                 disabled={!isEditing}
-                                value={formData.gender}
-                                onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}
+                                value={formData.bloodType}
+                                onValueChange={(value) => setFormData(prev => ({ ...prev, bloodType: value }))}
                             >
                                 <SelectTrigger className="bg-background">
-                                    <SelectValue placeholder="Select gender" />
+                                    <SelectValue placeholder="Select blood type" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {GENDERS.map((g) => (
-                                        <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
+                                    {BLOOD_TYPES.map((bt) => (
+                                        <SelectItem key={bt.value} value={bt.value}>{bt.label}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                    </div>
-
-                    {/* Physical Data */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Height (cm)</Label>
-                            <Input
-                                type="number"
-                                value={formData.height}
-                                onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
-                                disabled={!isEditing}
-                                className="bg-background"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-muted-foreground">Weight (kg)</Label>
-                            <Input
-                                type="number"
-                                value={formData.weight}
-                                onChange={(e) => setFormData(prev => ({ ...prev, weight: e.target.value }))}
-                                disabled={!isEditing}
-                                className="bg-background"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Blood Type */}
-                    <div className="space-y-2">
-                        <Label className="text-sm font-medium text-muted-foreground">Blood Type</Label>
-                        <Select
-                            disabled={!isEditing}
-                            value={formData.bloodType}
-                            onValueChange={(value) => setFormData(prev => ({ ...prev, bloodType: value }))}
-                        >
-                            <SelectTrigger className="bg-background">
-                                <SelectValue placeholder="Select blood type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {BLOOD_TYPES.map((bt) => (
-                                    <SelectItem key={bt.value} value={bt.value}>{bt.label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
                     </div>
 
                     {isEditing && (

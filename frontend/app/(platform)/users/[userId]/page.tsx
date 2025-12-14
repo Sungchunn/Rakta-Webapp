@@ -307,16 +307,16 @@ export default function UserProfilePage() {
             <div className="flex-1 overflow-y-auto p-8">
                 <div className="max-w-3xl mx-auto">
                     {/* Profile Card */}
-                    <Card className="bg-card border-border mb-6">
-                        <CardHeader className="flex flex-row items-start gap-6 pb-0">
+                    <Card className="bg-card border-border mb-8">
+                        <CardHeader className="flex flex-row items-start gap-8 pb-6">
                             {/* Avatar */}
-                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white text-3xl font-bold flex-shrink-0">
+                            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white text-4xl font-bold flex-shrink-0 shadow-lg shadow-red-500/20">
                                 {initials}
                             </div>
 
                             {/* Info */}
                             <div className="flex-1 min-w-0">
-                                <h1 className="text-2xl font-bold text-white mb-1">{profile.firstName}</h1>
+                                <h1 className="text-3xl font-bold text-white tracking-tight mb-1">{profile.firstName}</h1>
                                 {profile.username && (
                                     <p className="text-sm text-primary mb-2">@{profile.username}</p>
                                 )}
@@ -350,86 +350,89 @@ export default function UserProfilePage() {
                             ) : null}
                         </CardHeader>
 
-                        <CardContent className="pt-6">
+                        <CardContent className="pt-8">
                             {/* Stats Row */}
-                            <div className="flex gap-8 pt-4 border-t border-border">
+                            <div className="flex gap-12 py-6 border-t border-border/50">
                                 <button
                                     className="text-left hover:opacity-80 transition-opacity"
                                     onClick={() => setActiveTab("posts")}
                                 >
-                                    <div className="text-2xl font-bold text-white">{profile.postCount}</div>
-                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Posts</div>
+                                    <div className="text-3xl font-bold text-white tabular-nums">{profile.postCount}</div>
+                                    <div className="text-sm text-muted-foreground font-medium mt-0.5">Posts</div>
                                 </button>
                                 <button
                                     className="text-left hover:opacity-80 transition-opacity"
                                     onClick={() => setActiveTab("followers")}
                                 >
-                                    <div className="text-2xl font-bold text-white">{profile.followerCount}</div>
-                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Followers</div>
+                                    <div className="text-3xl font-bold text-white tabular-nums">{profile.followerCount}</div>
+                                    <div className="text-sm text-muted-foreground font-medium mt-0.5">Followers</div>
                                 </button>
                                 <button
                                     className="text-left hover:opacity-80 transition-opacity"
                                     onClick={() => setActiveTab("following")}
                                 >
-                                    <div className="text-2xl font-bold text-white">{profile.followingCount}</div>
-                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Following</div>
+                                    <div className="text-3xl font-bold text-white tabular-nums">{profile.followingCount}</div>
+                                    <div className="text-sm text-muted-foreground font-medium mt-0.5">Following</div>
                                 </button>
                                 <div className="text-left">
-                                    <div className="text-2xl font-bold text-white flex items-center gap-1.5">
-                                        <Heart size={18} className="text-primary" />
+                                    <div className="text-3xl font-bold text-white flex items-center gap-2 tabular-nums">
+                                        <Heart size={20} className="text-primary" />
                                         {profile.donationCount}
                                     </div>
-                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Donations</div>
+                                    <div className="text-sm text-muted-foreground font-medium mt-0.5">Donations</div>
                                 </div>
                             </div>
 
                             {/* Badges Section */}
                             {profile.badges && profile.badges.length > 0 && (
-                                <div className="flex flex-wrap gap-2 pt-4 mt-4 border-t border-border">
-                                    {profile.badges.slice(0, 6).map((badge) => (
-                                        <Badge
-                                            key={badge.id}
-                                            variant="secondary"
-                                            className="flex items-center gap-1.5 py-1"
-                                        >
-                                            {badge.iconUrl ? (
-                                                <img src={badge.iconUrl} alt="" className="w-4 h-4" />
-                                            ) : (
-                                                <Award size={14} />
-                                            )}
-                                            {badge.name}
-                                        </Badge>
-                                    ))}
-                                    {profile.badges.length > 6 && (
-                                        <Badge variant="outline">+{profile.badges.length - 6} more</Badge>
-                                    )}
+                                <div className="pt-6 mt-2 border-t border-border/50">
+                                    <p className="text-sm font-medium text-muted-foreground mb-3">Achievements</p>
+                                    <div className="flex flex-wrap gap-2.5">
+                                        {profile.badges.slice(0, 6).map((badge) => (
+                                            <Badge
+                                                key={badge.id}
+                                                variant="secondary"
+                                                className="flex items-center gap-1.5 py-1.5 px-3"
+                                            >
+                                                {badge.iconUrl ? (
+                                                    <img src={badge.iconUrl} alt="" className="w-4 h-4" />
+                                                ) : (
+                                                    <Award size={14} />
+                                                )}
+                                                {badge.name}
+                                            </Badge>
+                                        ))}
+                                        {profile.badges.length > 6 && (
+                                            <Badge variant="outline" className="py-1.5 px-3">+{profile.badges.length - 6} more</Badge>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </CardContent>
                     </Card>
 
                     {/* Tabs */}
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="mb-6">
-                            <TabsTrigger value="posts">Activity</TabsTrigger>
-                            <TabsTrigger value="followers">Followers</TabsTrigger>
-                            <TabsTrigger value="following">Following</TabsTrigger>
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-4">
+                        <TabsList className="mb-8 bg-secondary/30 p-1 h-12">
+                            <TabsTrigger value="posts" className="h-10">Activity</TabsTrigger>
+                            <TabsTrigger value="followers" className="h-10">Followers</TabsTrigger>
+                            <TabsTrigger value="following" className="h-10">Following</TabsTrigger>
                         </TabsList>
 
                         {/* Posts Tab */}
-                        <TabsContent value="posts">
+                        <TabsContent value="posts" className="pt-2">
                             {posts.length === 0 ? (
-                                <div className="text-center py-12">
-                                    <Droplets className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-40" />
-                                    <h3 className="text-lg font-semibold text-white mb-1">No posts yet</h3>
-                                    <p className="text-sm text-muted-foreground">
+                                <div className="text-center py-16">
+                                    <Droplets className="w-16 h-16 mx-auto mb-6 text-muted-foreground opacity-40" />
+                                    <h3 className="text-lg font-semibold text-white mb-2">No posts yet</h3>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
                                         {profile.isOwnProfile
                                             ? "You haven't shared any donations yet."
                                             : `${profile.username || profile.firstName} hasn't shared any donations yet.`}
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-6">
+                                <div className="flex flex-col gap-8">
                                     {posts.map((post) => (
                                         <PostCard
                                             key={post.id}
@@ -445,18 +448,18 @@ export default function UserProfilePage() {
                         </TabsContent>
 
                         {/* Followers Tab */}
-                        <TabsContent value="followers">
+                        <TabsContent value="followers" className="pt-2">
                             {followers.length === 0 ? (
-                                <div className="text-center py-12">
-                                    <h3 className="text-lg font-semibold text-white mb-1">No followers yet</h3>
-                                    <p className="text-sm text-muted-foreground">
+                                <div className="text-center py-16">
+                                    <h3 className="text-lg font-semibold text-white mb-2">No followers yet</h3>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
                                         {profile.isOwnProfile
                                             ? "You don't have any followers yet."
                                             : `${profile.username || profile.firstName} doesn't have any followers yet.`}
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-4">
                                     {followers.map((user) => (
                                         <div
                                             key={user.id}
@@ -479,18 +482,18 @@ export default function UserProfilePage() {
                         </TabsContent>
 
                         {/* Following Tab */}
-                        <TabsContent value="following">
+                        <TabsContent value="following" className="pt-2">
                             {following.length === 0 ? (
-                                <div className="text-center py-12">
-                                    <h3 className="text-lg font-semibold text-white mb-1">Not following anyone</h3>
-                                    <p className="text-sm text-muted-foreground">
+                                <div className="text-center py-16">
+                                    <h3 className="text-lg font-semibold text-white mb-2">Not following anyone</h3>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
                                         {profile.isOwnProfile
                                             ? "You're not following anyone yet."
                                             : `${profile.username || profile.firstName} isn't following anyone yet.`}
                                     </p>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-4">
                                     {following.map((user) => (
                                         <div
                                             key={user.id}
